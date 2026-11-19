@@ -16,6 +16,8 @@ La première page est une lettre scellée. Un toucher sur la cire soulève le ra
 
 Les deux fichiers Blender natifs contiennent le cachet en noyer et laiton et la presse à volant. L’estampe du carton réapparaît sur le stand. Les veines du travertin, le brossage du métal, le grain du papier et du noyer et le poil du velours proviennent de relevés sous CC0. Un panorama de studio HDR éclaire les surfaces. [Fichiers Blender modifiables](art/blender) · [Storyboard, Awwwards, Adobe Substance et matières](docs/plan-sequence.md)
 
+Le carnet de réalisation rassemble six expériences sur Awwwards. Chaque extrait est relié à un geste précis pour la Maison. Trois études de cadrage et un essai de lumière sur la cire rendu dans Blender prolongent le repérage. [Voir les expériences et le film de la cire](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/reperages/) · [Ouvrir le carnet PDF](public/reperages/carnet-de-realisation.pdf)
+
 ## Développer
 
 Avec Node.js 22 ou ultérieur, installer les dépendances puis ouvrir le serveur local.
