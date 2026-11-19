@@ -2,14 +2,20 @@ import * as T from "three";
 import { HDRLoader } from "three/addons/loaders/HDRLoader.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { group, materials, scanMaterials } from "./atelier";
-import { lensFilter, lighting, soundstage } from "./decor";
+import { lighting, soundstage } from "./decor";
+import { atmosphere } from "./atmosphere";
+import { optique, type Quality } from "./optique";
 import { edition, invitation, printingPress, threshold } from "./imprimerie";
 import { correspondence, pavilion, raster, theatre } from "./lieux";
 import { continuousPaper, frame } from "./trajectoire";
 
-export const stations=[0,-12.0,-27.9,-43.3,-58.6,-74.1] as const;
+import { stations } from "./stations";
+export { stations };
 
-export function stage(renderer:T.WebGLRenderer,base:string,redraw:()=>void) {
+/** What the visitor brings to the frame: time, the speed of travel and the hand that holds the lamp. */
+export type Presence={time:number;speed:number;handX:number;handY:number;hand:number};
+
+export function stage(renderer:T.WebGLRenderer,base:string,redraw:()=>void,quality:Quality="high") {
   let live=true,materialState="base",lightState="base",textileState="base";
   const finishes:T.Texture[]=[];
   const scene=new T.Scene();
@@ -30,7 +36,15 @@ export function stage(renderer:T.WebGLRenderer,base:string,redraw:()=>void) {
   const drapes=theatre(sets[3],palette);
   const pixels=raster(sets[4],palette);
   const letter=correspondence(sets[5],palette,editionArt);
-  continuousPaper(scene,palette);lensFilter(scene);
+  continuousPaper(scene,palette);
+  const air=atmosphere(scene);
+  let lens=optique(renderer,quality);
+  // The visitor holds a small tungsten lamp. It follows the pointer a little in front of the subject,
+  // so brass, wax and velvet answer the hand. On touch screens it wanders slowly around the subject.
+  const lamp=new T.PointLight("#ffcf94",0,9,1.6);lamp.castShadow=false;scene.add(lamp);
+  const lampAt=new T.Vector3(),aim=new T.Vector3(),toward=new T.Vector3();
+  let lampPlaced=false;
+  const practicals=[[palette.core,palette.core.color.clone()],[palette.pearl,palette.pearl.color.clone()]] as const;
   const modelNames=new Set<string>();
   const loader=new GLTFLoader();
   let unscan:(()=>void)|undefined;
@@ -80,8 +94,25 @@ export function stage(renderer:T.WebGLRenderer,base:string,redraw:()=>void) {
       },undefined,()=>{});
     }
   }
-  function paint(p:number,width:number,height:number,glintX:number,glintY:number){
-    const point=frame(camera,p,width,height);
+  function paint(p:number,width:number,height:number,glintX:number,glintY:number,life:Presence={time:0,speed:0,handX:0,handY:0,hand:0}){
+    const rush=Math.min(1,life.speed*3.2);
+    const point=frame(camera,p,width,height,rush*4.5);
+    const focus=camera.position.distanceTo(point);
+    // A held camera: a slow breath, a slight weight, and a glance toward the hand.
+    const t=life.time;
+    camera.rotateY(-life.handX*.028+Math.sin(t*.37)*.0035);
+    camera.rotateX(life.handY*.02+Math.sin(t*.53+1.3)*.0028);
+    camera.rotateZ(Math.sin(t*.29+.4)*.0022);
+    camera.updateMatrixWorld();
+    aim.set(life.handX*.85,life.handY*.75,.5).unproject(camera).sub(camera.position).normalize();
+    toward.copy(camera.position).addScaledVector(aim,focus*.62);
+    if(!lampPlaced){lampAt.copy(toward);lampPlaced=true;}else lampAt.lerp(toward,.18);
+    lamp.position.copy(lampAt);
+    lamp.intensity=life.hand*(6+.6*Math.sin(t*2.3)+.3*Math.sin(t*7.1));
+    for(const [finish,base] of practicals){
+      const flicker=1+.035*Math.sin(t*3.1)+.02*Math.sin(t*11.7+1.)+.012*Math.sin(t*23.);
+      finish.color.copy(base).multiplyScalar(flicker);
+    }
     const atSeal=1-T.MathUtils.smoothstep(p,.001,.013);
     lights.paint(point,glintX*atSeal,glintY*atSeal);
     opening.paint(p);card.paint(p);press.paint(p);drapes.paint(p);pixels.paint(p,height);letter(p);
@@ -89,15 +120,17 @@ export function stage(renderer:T.WebGLRenderer,base:string,redraw:()=>void) {
     sets.forEach((set,i)=>{const depth=camera.position.z-stations[i];set.visible=depth>-5&&depth<31;});
     for(const bay of surroundings.bays){const depth=camera.position.z-bay.position.z;bay.visible=depth>-12&&depth<37;}
     surroundings.mount.visible=camera.position.z>-6;
-    renderer.render(scene,camera);
+    air.paint(camera,focus,t,height,renderer.getPixelRatio());
+    lens.setSize(width,height);
+    lens.render(scene,camera,{focus,time:t,speed:life.speed});
     opening.crest.getWorldPosition(hot).project(camera);
     const surface=renderer.domElement;
     surface.dataset.sealX=((1+hot.x)/2).toFixed(4);surface.dataset.sealY=((1-hot.y)/2).toFixed(4);
 
   }
-  return {paint,refine,state:()=>({materials:materialState,light:lightState,textile:textileState,models:["cachet","presse"].filter(n=>modelNames.has(n)).join(","),engraving:editionArt.engraved()?"ready":"base"}),
+  return {paint,refine,retune:(next:Quality)=>{lens.dispose();lens=optique(renderer,next);},state:()=>({materials:materialState,light:lightState,textile:textileState,models:["cachet","presse"].filter(n=>modelNames.has(n)).join(","),engraving:editionArt.engraved()?"ready":"base"}),
     dispose:()=>{
-      live=false;unscan?.();finishes.forEach(t=>t.dispose());disposeMeshes(scene);scene.clear();opening.dispose();editionArt.dispose();drapes.dispose();pixels.dispose();surroundings.dispose();
+      live=false;unscan?.();finishes.forEach(t=>t.dispose());disposeMeshes(scene);scene.clear();opening.dispose();editionArt.dispose();drapes.dispose();pixels.dispose();surroundings.dispose();air.dispose();lens.dispose();
       palette.environment.dispose();palette.shadow.map?.dispose();Object.values(palette).forEach(a=>{if(a instanceof T.Material)a.dispose();});
     }};
 }

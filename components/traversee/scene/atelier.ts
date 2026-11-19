@@ -136,19 +136,35 @@ function studioEnvironment() {
 }
 
 const standard=(color:string, roughness:number, metalness=0)=>new T.MeshStandardMaterial({color,roughness,metalness});
+const physical=(options:T.MeshPhysicalMaterialParameters)=>new T.MeshPhysicalMaterial(options);
 export function materials() {
-  const paper=standard("#e9dec8",.79), ivory=standard("#eee4d0",.71);
-  const brass=standard("#c59558",.27,.81), cut=standard("#efd097",.19,.87), copper=standard("#9c4b2c",.31,.78);
+  // Laid paper has a soft velvet: its fibres catch a pale sheen at grazing angles.
+  const paper=physical({color:"#ebe0ca",roughness:.78,sheen:.55,sheenColor:"#fff0d6",sheenRoughness:.42});
+  const ivory=physical({color:"#efe5d1",roughness:.7,sheen:.45,sheenColor:"#fff3df",sheenRoughness:.5});
+  // Brass is lacquered: a thin clear coat floats a second, sharper reflection above the brushed metal.
+  const brass=physical({color:"#c99a55",roughness:.3,metalness:.86,clearcoat:.55,clearcoatRoughness:.12,envMapIntensity:1.35});
+  const cut=physical({color:"#f1d39a",roughness:.17,metalness:.9,clearcoat:.4,clearcoatRoughness:.08,envMapIntensity:1.5});
+  const copper=physical({color:"#a5502d",roughness:.3,metalness:.8,clearcoat:.35,clearcoatRoughness:.16,envMapIntensity:1.2});
   const darkMetal=standard("#33383a",.32,.74), iron=standard("#242e32",.53,.63), black=standard("#17232a",.57,.45);
   const stone=standard("#8c8580",.67,.12);
-  const cloth=new T.MeshPhysicalMaterial({color:"#842c27",roughness:.86,metalness:.01,sheen:1,sheenColor:"#9d533e",sheenRoughness:.82});
-  const velvet=standard("#182d30",.96,.02);
-  const wax=new T.MeshPhysicalMaterial({color:"#8e2923",roughness:.38,metalness:.045,specularIntensity:.55,clearcoat:.09,clearcoatRoughness:.37});
-  const waxHi=new T.MeshPhysicalMaterial({color:"#aa4136",roughness:.34,metalness:.095,specularIntensity:.64});
-  const hole=standard("#0d1114",.61,.1), floor=standard("#24292a",.67,.22);
+  const cloth=new T.MeshPhysicalMaterial({color:"#842c27",roughness:.86,metalness:.01,sheen:1,sheenColor:"#c0644a",sheenRoughness:.62});
+  const velvet=physical({color:"#172c2f",roughness:.95,sheen:.9,sheenColor:"#3f6d6c",sheenRoughness:.55});
+  // Sealing wax is glossy and slightly translucent: light enters the edges and returns red.
+  const wax=new T.MeshPhysicalMaterial({color:"#8e2620",roughness:.3,metalness:.02,specularIntensity:.7,clearcoat:.65,clearcoatRoughness:.2});
+  const waxHi=new T.MeshPhysicalMaterial({color:"#ab3e32",roughness:.27,metalness:.04,specularIntensity:.75,clearcoat:.55,clearcoatRoughness:.18});
+  for(const seal of [wax,waxHi]){
+    seal.onBeforeCompile=shader=>{
+      shader.fragmentShader=shader.fragmentShader.replace("#include <emissivemap_fragment>",`#include <emissivemap_fragment>
+        float graze=1.-clamp(dot(normalize(normal),normalize(vViewPosition)),0.,1.);
+        totalEmissiveRadiance+=vec3(.36,.045,.025)*pow(graze,2.6)*.4+vec3(.025,.003,.002);`);
+    };
+    seal.customProgramCacheKey=()=>"wax-translucence-v1";
+  }
+  const hole=standard("#0d1114",.61,.1), floor=standard("#252a2b",.42,.28);
+  floor.envMapIntensity=1.3;
   const glass=new T.MeshStandardMaterial({color:"#80979d",metalness:.61,roughness:.19,transparent:true,opacity:.24,depthWrite:false,side:T.DoubleSide});
-  const core=new T.MeshBasicMaterial({color:new T.Color(1.6,.91,.42)});
-  const pearl=new T.MeshBasicMaterial({color:new T.Color(1.45,1.30,1.03)});
+  const core=new T.MeshBasicMaterial({color:new T.Color(3.4,1.9,.85)});
+  const pearl=new T.MeshBasicMaterial({color:new T.Color(3.0,2.65,2.1)});
   const dim=new T.MeshBasicMaterial({color:"#635444"});
   const shade=canvasTexture(80,80,c=>{
     const g=c.createRadialGradient(40,40,3,40,40,40);

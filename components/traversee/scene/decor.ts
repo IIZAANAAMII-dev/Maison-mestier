@@ -60,16 +60,6 @@ export function soundstage(scene:T.Scene,m:Palette) {
       line(bay,m.iron,[-7.18+j*1.21,5.37,.81],[-6.57+j*1.21,5.68,.81],.027,5);
     assemble(bay);bays.push(bay);
   }
-  const motes:T.Points[]=[];
-  let seed=5267;
-  const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
-  const moteMat=new T.PointsMaterial({color:"#d1aa83",transparent:true,opacity:.32,size:.010,depthWrite:false,blending:T.AdditiveBlending});
-  for(let i=0;i<6;i++){
-    const a:number[]=[];
-    for(let j=0;j<89;j++){a.push((random()-.5)*12,-1.3+random()*6,-i*15+(random()-.5)*12);}
-    const geo=new T.BufferGeometry();geo.setAttribute("position",new T.Float32BufferAttribute(a,3));
-    const particles=new T.Points(geo,moteMat);scene.add(particles);motes.push(particles);
-  }
   // A low, fluted counter gives the otherwise airborne first sheet a physical scale.
   const mount=group(scene,.3,-1.41,-.35);
   for(let i=0;i<3;i++){
@@ -79,7 +69,7 @@ export function soundstage(scene:T.Scene,m:Palette) {
   }
   assemble(mount);
   contact(scene,m,[.2,-1.582,-.35],7.2,5.8);
-  return {bays,mount,dispose:()=>moteMat.dispose()};
+  return {bays,mount,dispose:()=>{}};
 }
 
 export function lighting(scene:T.Scene) {

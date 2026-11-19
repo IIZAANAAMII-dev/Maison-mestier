@@ -30,7 +30,7 @@ const gazes=new T.CatmullRomCurve3(keys.map(k=>v(...k.gaze)),false,"catmullrom",
 const narrowEyes=new T.CatmullRomCurve3(keys.map(k=>v(...k.portrait)),false,"catmullrom",.34);
 const scratch=v(0,0,0),target=v(0,0,0);
 
-export function frame(camera:T.PerspectiveCamera, progress:number, width:number, height:number) {
+export function frame(camera:T.PerspectiveCamera, progress:number, width:number, height:number, widen=0) {
   const p=T.MathUtils.clamp(progress,0,1);
   let i=0;
   while(i<keys.length-2 && p>keys[i+1].t)i++;
@@ -43,7 +43,7 @@ export function frame(camera:T.PerspectiveCamera, progress:number, width:number,
   camera.lookAt(target);
   camera.rotateZ(T.MathUtils.lerp(a.bank,b.bank,hold)*T.MathUtils.lerp(1,.75,portrait));
   camera.aspect=aspect;
-  camera.fov=T.MathUtils.lerp(a.lens,b.lens,hold)+portrait*8;
+  camera.fov=T.MathUtils.lerp(a.lens,b.lens,hold)+portrait*8+widen;
   camera.updateProjectionMatrix();
   camera.projectionMatrix.elements[8]-=T.MathUtils.lerp(a.frame,b.frame,hold)*(1-portrait);
   camera.projectionMatrix.elements[9]-=T.MathUtils.lerp(.055,.24,portrait);

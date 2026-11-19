@@ -14,6 +14,16 @@ Les huit ateliers s’ouvrent comme les feuillets d’un dossier. La table lumin
 
 Le carnet de conduite suit un exemple de lancement sur un salon. À chaque décision correspond une pièce du projet, de la note d’intention au carnet de suivi. En fin de visite, l’enveloppe s’ouvre sur une lettre que le visiteur peut préparer, relire et copier. [Carnet de conduite](../components/methode/Conduite.tsx) · [Papier à lettres](../components/edition/Stationery.tsx)
 
+## L’optique de la visite
+
+La scène n’est plus dessinée directement à l’écran. Elle est exposée en lumière linéaire puis développée comme un tirage. Le laiton et les sources de la régie rayonnent d’une halation chaude, dont les rayons les plus larges virent au rouge comme sur une émulsion. Une profondeur de champ suit le sujet de chaque halte. Le premier plan s’adoucit moins que le fond pour qu’une feuille proche se lise encore comme du papier. Un grain vivant, une séparation des couleurs au bord de l’objectif et une chute de lumière terminent l’image. Quand le visiteur fait défiler vite, le champ s’ouvre légèrement et les bords se dédoublent. [Optique](../components/traversee/scene/optique.ts)
+
+Des rais tombent de l’oculus dans l’axe de la lumière principale. Des poussières y dérivent : elles s’allument en traversant les lames de lumière et s’ouvrent en disques flous hors du plan net. [Atmosphère](../components/traversee/scene/atmosphere.ts)
+
+La scène vit entre deux gestes. La caméra a un poids : elle rejoint la position du défilement avec une légère inertie, respire et regarde un peu vers la main. **Le visiteur tient la lampe.** Une petite source tungstène suit le pointeur devant le sujet, si bien que le laiton, la cire et le velours répondent à la main. Sur écran tactile, elle tourne lentement autour du sujet. Les sources de la régie vacillent à peine.
+
+La cire est vernie et légèrement translucide : la lumière entre par ses bords et ressort rouge. Le laiton porte un vernis qui fait flotter un second reflet, plus net, au-dessus du métal brossé. Le vergé et le velours prennent un velouté aux angles rasants, et le sol est satiné. Un appareil qui ne tient pas la cadence renonce d’abord à la définition, puis à la profondeur de champ, jamais à la lumière. Les tirages de secours sont pris par le même banc avec l’horloge figée et sans lampe.
+
 ## Références de réalisation
 
 | Référence | Détail étudié | Choix pour la Maison |
