@@ -1,7 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { DossierReader } from "../components/dossiers/DossierReader";
-import { Header, Wordmark } from "../components/Header";
 import { path } from "../lib/maison";
 import "./globals.css";
 
@@ -20,7 +18,7 @@ export const metadata: Metadata = {
   icons: { icon: path("/cachet.png") },
   robots: { index: false, follow: false },
 };
-export const viewport: Viewport = { themeColor: "#f3f0ea" };
+export const viewport: Viewport = { themeColor: [{ media: "(prefers-color-scheme: dark)", color: "#141a17" }, { color: "#141a17" }] };
 
 export default function Layout({ children }: Readonly<{children: React.ReactNode}>) {
   return (
@@ -30,14 +28,7 @@ export default function Layout({ children }: Readonly<{children: React.ReactNode
       </head>
       <body id="haut">
         <a className="skip" href="#contenu">Aller au contenu</a>
-        <Header />
         {children}
-        <DossierReader />
-        <footer className="colophon">
-          <a className="brand" href={path("/")} aria-label="Maison Mestier, accueil"><Wordmark /></a>
-          <span>Maison de communication 360 · Sud de la France</span>
-          <a href="#haut">Haut de page</a>
-        </footer>
       </body>
     </html>
   );

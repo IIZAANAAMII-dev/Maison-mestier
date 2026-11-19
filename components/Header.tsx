@@ -6,7 +6,7 @@ import { workshopFiles } from "./dossiers/catalogue";
 import styles from "./edition/sommaire.module.css";
 
 const entries = [
-  ["La visite", "parcours"],
+  ["La visite", "invitation"],
   ["Le laboratoire de matières", "matiere"],
   ["Les recherches", "recherches"],
   ["La méthode", "methode"],
@@ -119,7 +119,7 @@ export function Header() {
     <header className={"masthead " + styles.head} onClick={followLink}>
       <a className="brand" href={path("/")} aria-label="Maison Mestier, accueil"><Wordmark /></a>
       <nav className="shortcuts" aria-label="Accès directs">
-        <a className="desktop-nav" href={path("/#parcours")}>La visite</a>
+        <a className="desktop-nav" href={path("/#invitation")}>La visite</a>
         <a href={path("/#ateliers")} className={styles.directAteliers} aria-label="Les ateliers">
           <span className={styles.fullLabel}>Les ateliers</span><span className={styles.shortLabel}>Ateliers</span>
         </a>

@@ -1,4 +1,6 @@
-# L’atelier en lumière
+# L’atelier en lumière · premières études
+
+Le parcours actuel est documenté avec ses références, son ouverture scellée et ses six haltes dans le [storyboard du plan-séquence](plan-sequence.md).
 
 Le cahier des charges retient une feuille de vergé, un revers de laiton et une lumière d’oculus. Le pli doit finalement devenir un stand. Le dossier de marque lui donne ses couleurs et sa typographie. Les planches de *Faire impression.* ajoutent le geste du cachet, la trame numérique et la scène éclairée. Les pages ateliers donnent à cette visite sa matière éditoriale, les huit métiers de la Maison et leur invitation commune, « Écrire à la Maison ». [Digital Experience](https://www.notion.so/41df4617892881889e73cfdf1a3bda37) · [Faire impression.](https://www.notion.so/40df4617892881598d60dd409d312faf) · [Site · Pages ateliers](https://www.notion.so/41af46178928812496cece45434d7041) · [Dossier de marque](https://www.notion.so/40bf46178928814f8801f51e1aa5c5ed)
 

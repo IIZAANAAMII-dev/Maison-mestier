@@ -1,4 +1,6 @@
-# Recette de L’atelier en lumière
+# Recette des premières études de L’atelier en lumière
+
+La [recette du plan-séquence](recette-plan-sequence.md) couvre la version publique actuelle, de la lettre fermée à la table de correspondance.
 
 Les captures et les mesures ci-dessous proviennent de l’export de production servi localement sous le préfixe GitHub Pages `/Maison-mestier/atelier-en-lumiere/`. Le relevé public indique la révision servie sur GitHub. [Version de la prévisualisation](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/version.json)
 
