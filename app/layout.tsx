@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { DossierReader } from "../components/dossiers/DossierReader";
 import { Header, Wordmark } from "../components/Header";
 import { path } from "../lib/maison";
 import "./globals.css";
@@ -31,6 +32,7 @@ export default function Layout({ children }: Readonly<{children: React.ReactNode
         <a className="skip" href="#contenu">Aller au contenu</a>
         <Header />
         {children}
+        <DossierReader />
         <footer className="colophon">
           <a className="brand" href={path("/")} aria-label="Maison Mestier, accueil"><Wordmark /></a>
           <span>Maison de communication 360 · Sud de la France</span>

@@ -1,29 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Picture } from "../../../components/Picture";
+import { FolioCover } from "../../../components/edition/FolioCover";
+import { EditionMotion } from "../../../components/edition/EditionMotion";
+import { dossier } from "../../../components/dossiers/catalogue";
 import { ateliers, atelierPath, path, studies } from "../../../lib/maison";
 import styles from "../../edition.module.css";
 
 type Props = { params: Promise<{ slug: string }> };
-
-const plates: Record<string, { caption: string; alt: string }> = {
-  atelier: {
-    caption: "Maquette d’espace · Le portique",
-    alt: "Sur un socle de pierre, un portique ivoire abrite un comptoir rond.",
-  },
-  entracte: {
-    caption: "Étude de lumière · L’entracte",
-    alt: "Une tenture vert nuit s’écarte sur une entrée éclairée et un portique bordé de laiton.",
-  },
-  empreinte: {
-    caption: "Étude de signature · L’empreinte",
-    alt: "Une matrice en laiton et son empreinte en creux sur une feuille de papier.",
-  },
-  etude: {
-    caption: "Étude de matière · Le pli",
-    alt: "Un ruban de papier au revers doré se déploie au-dessus d’un socle de pierre.",
-  },
-};
 
 export const dynamicParams = false;
 
@@ -94,45 +78,30 @@ function Questions() {
 export default async function AtelierPage({ params }: Props) {
   const atelier = await getAtelier(params);
   const stand = atelier.slug === "stands-salons";
-  const plate = plates[atelier.image];
+  const plate = dossier("atelier:" + atelier.slug)!.plate;
   const study = studies.find((item) => item.image === atelier.image);
-  const detailHref = study ? path("/recherches/" + study.slug + "/") : path("/?etude=pli#matiere");
   const related = atelier.related.flatMap((name) => ateliers.filter((item) => item.name === name));
   const contactHref = path("/?atelier=" + atelier.slug + "#contact");
 
   return (
-    <main className={styles.edition} id="contenu" tabIndex={-1}>
-      <div className={styles.workshopCover} data-night={atelier.slug === "evenement"}>
-        <div className={styles.shell}>
-          <nav aria-label="Fil d’Ariane" className={styles.breadcrumb}>
-            <a href={path("/#atelier-" + atelier.slug)}>Les ateliers</a>
-            <span aria-hidden="true">/</span>
-            <span aria-current="page">{atelier.name}</span>
-          </nav>
-          <div className={styles.coverSpread}>
-            <header className={styles.titleColumn}>
-              <p className="eyebrow ruled">Atelier de la Maison</p>
-              <h1 className={styles.workshopTitle}>
-                {stand ? <>Stands <i>&amp; Salons</i></> : atelier.name}
-              </h1>
-              <p className={styles.headline}>{atelier.headline}</p>
-              <p className={styles.introduction}>{atelier.intro}</p>
-              <a className={styles.underlineLink} href={contactHref}>Écrire à la Maison</a>
-            </header>
-            <figure className={styles.coverFigure}>
-              <a className={styles.plateLink} href={detailHref} aria-label={study ? "Ouvrir la recherche " + study.name : "Ouvrir le laboratoire de matière"}>
-                <Picture name={atelier.image} alt={plate.alt} className={styles.coverPlate} priority />
-              </a>
-              <figcaption className={styles.caption}><span>{plate.caption}</span><em>Recherche de la Maison</em></figcaption>
-            </figure>
-          </div>
-        </div>
-      </div>
+    <main className={styles.edition} id="contenu" tabIndex={-1} data-edition="">
+      <EditionMotion />
+      <FolioCover section="Les ateliers" back={path("/#atelier-" + atelier.slug)}
+        title={atelier.name} label="Atelier de la Maison" image={plate.image} position={plate.position}
+        alt={plate.alt} caption={plate.label} lead={atelier.headline} contact={contactHref}
+        next={{ href: "#travail-atelier", label: "Lire le dossier" }}
+        study={study && { href: path("/recherches/" + study.slug + "/"), slug: study.slug, name: study.name }}
+        night={plate.image === "entracte" || plate.image === "correspondance"} />
 
       <div className={styles.shell}>
+        <section className={styles.serviceLead} aria-labelledby="travail-atelier">
+          <h2 id="travail-atelier" tabIndex={-1}>Le travail de <i>l’atelier.</i></h2>
+          <p>{atelier.intro}</p>
+        </section>
         <div className={styles.reading}>
           <aside className={styles.contents}>
-            <nav aria-label="Dans cette fiche">
+            <nav aria-label="Dans cette fiche" data-reading-index="">
+              <div className={styles.indexPicture} aria-hidden="true"><Picture name={plate.image} alt="" /></div>
               <p className="eyebrow ruled">Dans cet atelier</p>
               <ul>{atelier.chapters.map((chapter, i) => (
                 <li key={chapter.title}><a href={"#geste-" + (i + 1)}>{chapter.title.replaceAll("'", "’")}</a></li>
@@ -141,8 +110,9 @@ export default async function AtelierPage({ params }: Props) {
           </aside>
           <div className={styles.chapters}>
             {atelier.chapters.map((chapter, i) => (
-              <section key={chapter.title} aria-labelledby={"geste-" + (i + 1)}>
-                <h2 tabIndex={-1} id={"geste-" + (i + 1)}>{chapter.title.replaceAll("'", "’")}</h2>
+              <section key={chapter.title} data-reading-chapter={"geste-" + (i + 1)} aria-labelledby={"geste-" + (i + 1)}>
+                <span className={styles.chapterRule} data-chapter-rule="" aria-hidden="true" />
+                <h2 tabIndex={-1} id={"geste-" + (i + 1)} data-chapter-heading="">{chapter.title.replaceAll("'", "’")}</h2>
                 <p>{chapter.body}</p>
               </section>
             ))}
@@ -161,7 +131,7 @@ export default async function AtelierPage({ params }: Props) {
       <div className={styles.shell}>
         <nav aria-labelledby="ateliers-lies" className={styles.related}>
           <h2 id="ateliers-lies">Ateliers <i>connexes.</i></h2>
-          <ul>{related.map((item) => <li key={item.slug}><a href={atelierPath(item.slug)}>{item.name}</a></li>)}</ul>
+          <ul>{related.map((item) => <li key={item.slug}><a data-dossier={"atelier:" + item.slug} aria-haspopup="dialog" href={atelierPath(item.slug)}>{item.name}</a></li>)}</ul>
           <a className={styles.underlineLink} href={path("/#atelier-" + atelier.slug)}>Retour aux huit ateliers</a>
         </nav>
       </div>

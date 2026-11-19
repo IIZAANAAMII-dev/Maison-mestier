@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo } from "react";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { Block, Counter, useGrain } from "./Surfaces";
+import { Block, Counter, PaperStock, usePaper } from "./Surfaces";
 
 const lineCount = 48;
 function makeLattice() {
@@ -20,7 +20,7 @@ function makeLattice() {
 }
 export function Lattice({progress}: {progress: number}) {
   const shapes = useMemo(makeLattice, []);
-  const grain = useGrain("papier");
+  const grain = usePaper();
   const invalidate = useThree(state => state.invalidate);
   useLayoutEffect(() => {
     const pos = shapes.surface.getAttribute("position") as THREE.BufferAttribute;
@@ -40,7 +40,7 @@ export function Lattice({progress}: {progress: number}) {
   useEffect(() => () => { shapes.grid.dispose(); shapes.surface.dispose(); }, [shapes]);
   return <group>
     <mesh geometry={shapes.surface} castShadow={progress<.9} receiveShadow>
-      <meshStandardMaterial color="#f8f3e2" map={grain} roughness={.84} transparent opacity={1-progress*.97} depthWrite={progress<.8} side={THREE.DoubleSide} polygonOffset polygonOffsetFactor={2} />
+      <PaperStock color="#f8f3e2" texture={grain} transparent opacity={1-progress*.97} depthWrite={progress<.8} side={THREE.DoubleSide} polygonOffset polygonOffsetFactor={2} />
     </mesh>
     <lineSegments geometry={shapes.grid} position={[0,.007,0]}><lineBasicMaterial color="#444e60" transparent opacity={progress*.85} /></lineSegments>
     <points geometry={shapes.surface} position={[0,.018,0]}><pointsMaterial color="#802e28" size={1.65} transparent opacity={progress*.88} /></points>
@@ -67,7 +67,7 @@ function Curtain({ side, open }: { side: number; open: number }) {
 }
 
 function Arcade() {
-  const grain = useGrain("papier");
+  const grain = usePaper(1.7, 1.23);
   const arch = useMemo(() => {
     const panel = new THREE.Shape();
     panel.moveTo(-1.98,0); panel.lineTo(1.98,0); panel.lineTo(1.98,2.53);

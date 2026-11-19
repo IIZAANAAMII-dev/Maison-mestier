@@ -1,23 +1,24 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type ComponentType } from "react";
-import { image, materials, type MaterialId } from "../lib/maison";
+import { image, materials, path, type MaterialId } from "../lib/maison";
 import "./material.css";
 
 type StageProps = {
-  kind: MaterialId; progress: number; angle: number; visible: boolean;
+  kind: MaterialId; progress: number; angle: number; visible: boolean; grazing: boolean;
   onReady: () => void; onFailure: () => void;
 };
 type ViewMode = "auto" | "image" | "webgl";
 type Tween = { kill(): unknown };
 
-export function MaterialLab() {
+export function MaterialLab({ initialKind, sectionId = "matiere" }: {initialKind?: MaterialId; sectionId?: string} = {}) {
   const frame = useRef<HTMLDivElement>(null);
   const progressRef = useRef(.03);
   const supported = useRef<boolean | null>(null);
   const [Stage, setStage] = useState<ComponentType<StageProps> | null>(null);
-  const [kind, setKind] = useState<MaterialId>("pli");
+  const [kind, setKind] = useState<MaterialId>(initialKind ?? "pli");
   const [angle, setAngle] = useState(0);
+  const [grazing, setGrazing] = useState(false);
   const [progress, setProgress] = useState(.03);
   const [motionAllowed, setMotionAllowed] = useState<boolean | null>(null);
   const [mode, setMode] = useState<ViewMode>("auto");
@@ -33,7 +34,7 @@ export function MaterialLab() {
   useEffect(() => {
     const initial = new URLSearchParams(location.search).get("etude");
     const selected = materials.find(item => item.id === initial);
-    if (selected) setKind(selected.id);
+    if (!initialKind && selected) setKind(selected.id);
     const prefersQuiet = matchMedia("(prefers-reduced-motion: reduce)");
     const connection = (navigator as Navigator & {connection?: {saveData?: boolean}}).connection;
     const preferences = () => {
@@ -51,7 +52,7 @@ export function MaterialLab() {
       observer.disconnect(); prefersQuiet.removeEventListener("change", preferences);
       document.removeEventListener("visibilitychange", visibility);
     };
-  }, []);
+  }, [initialKind]);
 
   useEffect(() => {
     if (!visible || !live || Stage) return;
@@ -91,7 +92,11 @@ export function MaterialLab() {
 
   function choose(id: MaterialId) {
     if (id === kind) return;
-    setKind(id); setAngle(0); changeProgress(.03); setRunning(motionAllowed === true);
+    setKind(id); setAngle(0); setGrazing(false); changeProgress(.03); setRunning(motionAllowed === true);
+    const address = new URL(location.href);
+    address.searchParams.set("etude", id);
+    if (address.hash.startsWith("#geste-")) address.hash = "geste-" + id;
+    history.replaceState(history.state, "", address);
   }
   function togglePresentation() {
     const next = live ? "image" : "webgl";
@@ -107,7 +112,7 @@ export function MaterialLab() {
   const words = study.title.split(" ");
   const last = words.pop();
   return (
-    <section id="matiere" className="lab" aria-labelledby="titre-matiere">
+    <section id={sectionId} className="lab" aria-labelledby="titre-matiere">
       <div className="lab-inner">
         <div className="lab-menu">
           <p className="eyebrow ruled">Le laboratoire de matières</p>
@@ -117,15 +122,16 @@ export function MaterialLab() {
           </div>
         </div>
         <div className="lab-spread">
-          <div className="lab-copy">
+          <div className="lab-copy" id={sectionId === "matiere" ? "geste-" + kind : undefined}>
             <h2 id="titre-matiere">{words.join(" ")} <i>{last}</i></h2>
             <p>{study.copy}</p>
             <span className="material-sample"><span aria-hidden="true" className={"sample sample-" + study.id} />{study.detail}</span>
+            <a className="material-origin" href={path("/licences/matieres-CC0.txt")}>Provenance des matières</a>
           </div>
           <figure className="lab-figure">
             <div className={"stage-window stage-" + kind} ref={frame} data-view={live && ready ? "3d" : "fixe"}>
               <img className="stage-print" src={image("tirage-" + kind)} alt={"Étude de la Maison. " + study.copy} width="1080" height="720" loading="lazy" />
-              {live && Stage && <div className="stage-canvas" data-ready={ready}><Stage kind={kind} angle={angle} progress={progress} visible={visible} onReady={onReady} onFailure={onFailure} /></div>}
+              {live && Stage && <div className="stage-canvas" data-ready={ready}><Stage kind={kind} angle={angle} grazing={grazing} progress={progress} visible={visible} onReady={onReady} onFailure={onFailure} /></div>}
               <span className="print-mark">Maison <i>Mestier</i></span>
             </div>
             <figcaption className="stage-caption">
@@ -143,12 +149,17 @@ export function MaterialLab() {
                   value={Math.round(progress * 100)} onChange={event => { setRunning(false); changeProgress(Number(event.target.value) / 100); }} />
               </label>
               <button className="angle-button" type="button" aria-pressed={angle === 1} onClick={() => setAngle(a => 1 - a)}>Autre angle</button>
+              <button className="raking-light" type="button" aria-pressed={grazing} disabled={!ready}
+                title={grazing ? "Rétablir la lumière d’atelier" : "Éclairer le relief par le côté"}
+                onClick={() => { setRunning(false); setGrazing(value => !value); }}>
+                <span className="light-toggle" aria-hidden="true" />Lumière rasante
+              </button>
             </div>}
           </figure>
         </div>
         <noscript><style>{".js-lab-controls{display:none}"}</style><div className="fixed-studies">
           {materials.slice(1).map(item => <details key={item.id}><summary>{item.name}</summary>
-            <img src={image("tirage-" + item.id)} loading="lazy" alt={item.copy} width="1080" height="720" /><p>{item.copy}</p>
+            <img id={"geste-" + item.id} src={image("tirage-" + item.id)} loading="lazy" alt={item.copy} width="1080" height="720" /><p>{item.copy}</p>
           </details>)}
         </div></noscript>
       </div>

@@ -1,21 +1,22 @@
 "use client";
 
-import { Component, useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { Component, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import type { ReactNode } from "react";
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import type { MaterialId } from "../../lib/maison";
 import { Fold } from "./Fold";
 import { Seal } from "./Seal";
 import { Lattice, Scenography } from "./Studies";
-import { useGrain } from "./Surfaces";
+import { StoneFinish } from "./Surfaces";
 
 type StageProps = {
   kind: MaterialId;
   progress: number;
   visible: boolean;
   angle: number;
+  grazing: boolean;
   onReady: () => void;
   onFailure: () => void;
 };
@@ -165,10 +166,57 @@ function Cyclorama({ night }: {night: boolean}) {
   </mesh>;
 }
 
-function Studio({ kind }: { kind: MaterialId }) {
+function Lamp({ night, grazing }: {night: boolean; grazing: boolean}) {
+  const { gl, invalidate } = useThree();
+  const key = useRef<THREE.DirectionalLight>(null);
+  const fill = useRef<THREE.DirectionalLight>(null);
+  const sky = useRef<THREE.HemisphereLight>(null);
+  const wash = useRef<THREE.SpotLight>(null);
+  const travel = useRef(0);
+  const accentTarget = useMemo(() => {
+    const target = new THREE.Object3D();
+    target.position.set(-1.4, .2, -2.2);
+    return target;
+  }, []);
+  const place = useCallback((t: number) => {
+    if (!key.current || !fill.current || !sky.current || !wash.current) return;
+    travel.current = t;
+    // Move the real shadow-casting key from the oculus to a low side light.
+    // Its oblique ray picks out tiny changes in the normal of the cut stone and pulp.
+    key.current.position.set(-4.1 - 2.75 * t, 6.75 - 5.32 * t, -2.7 + 5.95 * t);
+    key.current.intensity = night ? 1.7 + .55 * t : 2.72 + .65 * t;
+    fill.current.intensity = (night ? .42 : .46) * (1 - .53 * t);
+    sky.current.intensity = (night ? .34 : .48) * (1 - .36 * t);
+    wash.current.intensity = (night ? 22 : 48) * (1 - .66 * t);
+    gl.domElement.dataset.mmLight = t === 0 ? "atelier" : t === 1 ? "rasante" : "transition";
+    invalidate();
+  }, [gl, invalidate, night]);
+  useLayoutEffect(() => {
+    const quiet = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    place(quiet ? Number(grazing) : travel.current);
+  }, [grazing, place]);
+  useFrame((_, delta) => {
+    const target = Number(grazing);
+    if (travel.current === target) return;
+    const next = THREE.MathUtils.damp(travel.current, target, 13, Math.min(.06, delta));
+    place(Math.abs(next - target) < .004 ? target : next);
+  });
+  return <>
+    <hemisphereLight ref={sky} args={[night ? "#d6d7d2" : "#e2e5ee", night ? "#1b211d" : "#977a65", night ? .34 : .48]} />
+    <directionalLight ref={key} position={[-4.1, 6.75, -2.7]} color={night ? "#ffd8a6" : "#ffe8c4"}
+      castShadow shadow-mapSize={[1024,1024]} shadow-camera-left={-5.5} shadow-camera-right={5.5}
+      shadow-camera-top={5.5} shadow-camera-bottom={-5.5} shadow-camera-near={.4} shadow-camera-far={21}
+      shadow-radius={2.4} shadow-normalBias={.015} shadow-bias={-.00013} />
+    <directionalLight ref={fill} position={[-1.5, 2.2, 5.8]} color="#e4e8f6" />
+    <primitive object={accentTarget} />
+    <spotLight ref={wash} position={[-4.2,6.8,-1.5]} target={accentTarget} angle={.79}
+      penumbra={.72} color="#fff1d6" distance={19} />
+  </>;
+}
+
+function Studio({ kind, grazing }: { kind: MaterialId; grazing: boolean }) {
   const night = kind === "scene";
   const radius = views[kind].plinth;
-  const stone = useGrain("pierre");
   const oculus = useOculusTexture();
   const profile = useMemo(() => [
     new THREE.Vector2(.001, -.405),
@@ -179,24 +227,11 @@ function Studio({ kind }: { kind: MaterialId }) {
     new THREE.Vector2(radius - .073, 0),
   ], [radius]);
   const dark = "#171d18";
-  const accentTarget = useMemo(() => {
-    const target = new THREE.Object3D();
-    target.position.set(-1.4, .2, -2.2);
-    return target;
-  }, []);
   return <>
     <color attach="background" args={[night ? dark : "#cfbe9d"]} />
     <fog attach="fog" args={[night ? dark : "#cabeaa", 20, 50]} />
     <Reflections night={night} />
-    <hemisphereLight args={[night ? "#d6d7d2" : "#e2e5ee", night ? "#1b211d" : "#977a65", night ? .34 : .48]} />
-    <directionalLight position={[-4.1, 6.75, -2.7]} color={night ? "#ffd8a6" : "#ffe8c4"} intensity={night ? 1.7 : 2.72}
-      castShadow shadow-mapSize={[1024,1024]} shadow-camera-left={-5.5} shadow-camera-right={5.5}
-      shadow-camera-top={5.5} shadow-camera-bottom={-5.5} shadow-camera-near={.4} shadow-camera-far={21}
-      shadow-radius={2.4} shadow-normalBias={.015} shadow-bias={-.00013} />
-    <directionalLight position={[-1.5, 2.2, 5.8]} intensity={night ? .42 : .46} color="#e4e8f6" />
-    <primitive object={accentTarget} />
-    <spotLight position={[-4.2,6.8,-1.5]} target={accentTarget} angle={.79} penumbra={.72}
-      intensity={night ? 22 : 48} color="#fff1d6" distance={19} />
+    <Lamp night={night} grazing={grazing} />
     <Cyclorama night={night} />
     {!night && <mesh position={[-3.8,4.45,-5.085]} rotation={[0,0,-.28]}>
       <planeGeometry args={[8.4,3.8]} />
@@ -208,16 +243,16 @@ function Studio({ kind }: { kind: MaterialId }) {
     </mesh>
     <mesh scale={[1,1,.79]} castShadow receiveShadow>
       <latheGeometry args={[profile,120]} />
-      <meshStandardMaterial color={night ? "#675945" : "#deceaf"} roughness={.87} map={stone} bumpMap={stone} bumpScale={.033} />
+      <StoneFinish edge night={night} />
     </mesh>
     <mesh rotation={[-Math.PI/2,0,0]} scale={[1,.79,1]} castShadow receiveShadow>
       <circleGeometry args={[radius-.073,120]} />
-      <meshStandardMaterial color={night ? "#675945" : "#deceaf"} roughness={.87} map={stone} bumpMap={stone} bumpScale={.033} />
+      <StoneFinish night={night} />
     </mesh>
   </>;
 }
 
-function RenderStatus({ kind, progress, onFailure, onReady }: Omit<StageProps, "angle" | "visible">) {
+function RenderStatus({ kind, progress, onFailure, onReady }: Pick<StageProps, "kind" | "progress" | "onFailure" | "onReady">) {
   const { gl, scene, invalidate } = useThree();
   const latest = useRef({ onFailure, onReady, progress });
   useLayoutEffect(() => { latest.current = { onFailure, onReady, progress }; }, [onFailure, onReady, progress]);
@@ -251,7 +286,7 @@ function RenderStatus({ kind, progress, onFailure, onReady }: Omit<StageProps, "
   return null;
 }
 
-export default function Stage({ kind, progress, visible, angle, onReady, onFailure }: StageProps) {
+export default function Stage({ kind, progress, visible, angle, grazing, onReady, onFailure }: StageProps) {
   const dpr = typeof window !== "undefined" && (window.innerWidth < 680 || window.matchMedia("(pointer: coarse)").matches)
     ? mobileDpr : desktopDpr;
   return (
@@ -259,7 +294,7 @@ export default function Stage({ kind, progress, visible, angle, onReady, onFailu
       <Canvas orthographic camera={cameraSettings} dpr={dpr} gl={rendererSettings} shadows="percentage"
         frameloop={visible ? "demand" : "never"} aria-hidden="true" style={{ width: "100%", height: "100%" }}>
         <Camera kind={kind} angle={angle} progress={progress} />
-        <Studio kind={kind} />
+        <Studio kind={kind} grazing={grazing} />
         {kind === "pli" && <Fold progress={progress} />}
         {kind === "sceau" && <Seal progress={progress} />}
         {kind === "trame" && <Lattice progress={progress} />}

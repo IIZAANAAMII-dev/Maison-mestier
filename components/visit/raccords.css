@@ -1,0 +1,171 @@
+.chapter-raccords { display:contents; }
+.chapter-raccord {
+  --raccord-depth:clamp(3.4rem,6.1vw,6.4rem);
+  --raccord-axis:51%;
+  position:relative;
+  z-index:2;
+  height:0;
+  pointer-events:none;
+  user-select:none;
+  overflow-anchor:none;
+}
+.raccord-field {
+  position:absolute;
+  left:0;
+  width:100%;
+  top:calc(-.48 * var(--raccord-depth));
+  height:var(--raccord-depth);
+  display:none;
+  contain:paint;
+  overflow:clip;
+  perspective:64rem;
+  perspective-origin:65% 42%;
+}
+.chapter-raccord[data-animated="true"] .raccord-field { display:block; }
+.raccord-field > span { display:block; position:absolute; pointer-events:none; }
+
+/* The ribbon's polished underside meets the edge of the ivory index. */
+[data-raccord="pli"] .raccord-field {
+  --raccord-depth:clamp(2.7rem,5.6vw,5.4rem);
+  top:0;
+}
+[data-raccord="pli"] .raccord-face,
+[data-raccord="pli"] .raccord-reverse {
+  inset:0; transform-origin:65% 0;
+}
+[data-raccord="pli"] .raccord-face {
+  clip-path:polygon(0 0,100% 0,65% 86%,0 20%);
+  background-image:
+    linear-gradient(164deg,#817657ed 1%,#d2c4a6d5 24%,#fff3d2c9 53%,#dcc8a2da 72%,#8d7550f0 100%),
+    var(--raccord-stock);
+  background-size:auto,9rem;
+}
+[data-raccord="pli"] .raccord-reverse {
+  clip-path:polygon(0 19%,65% 82%,100% 0,65.4% 99%,0 27%);
+  background:linear-gradient(96deg,#716b5b,#a38961 35%,#f7e0a0 63%,#7c6745 76%,#3d3e31);
+}
+[data-raccord="pli"] .raccord-edge {
+  height:1px; top:1px; left:10%; right:4%;
+  background:linear-gradient(90deg,transparent,#fff8dc 42%,#b08b4d 76%,transparent);
+  transform-origin:65% center;
+}
+
+/* A moving brass point aligns the ruler with the light table. */
+[data-raccord="laiton"] .raccord-field { --raccord-depth:clamp(2.6rem,4.4vw,4.2rem); }
+[data-raccord="laiton"] .raccord-face,
+[data-raccord="laiton"] .raccord-reverse,
+[data-raccord="laiton"] .raccord-detail {
+  left:var(--gutter); right:var(--gutter); transform-origin:left center;
+}
+[data-raccord="laiton"] .raccord-face {
+  top:calc(var(--raccord-axis) - 3px); height:5px;
+  background:linear-gradient(0deg,#674c31,#cba56e 27%,#ffebae 63%,#96724d);
+  box-shadow:0 2px 4px #1c211a45;
+}
+[data-raccord="laiton"] .raccord-reverse {
+  top:calc(var(--raccord-axis) + 4px); height:1px;
+  background:linear-gradient(90deg,#b0966c,#f2dca9 30%,#73654e);
+}
+[data-raccord="laiton"] .raccord-detail {
+  top:calc(var(--raccord-axis) + 5px); height:.45rem;
+  background:repeating-linear-gradient(90deg,#cbb58e 0 1px,transparent 1px 15px);
+  transform-origin:center top;
+}
+[data-raccord="laiton"] .raccord-edge {
+  top:calc(var(--raccord-axis) - .76rem); left:var(--gutter); width:calc(100% - 2 * var(--gutter)); height:1.3rem;
+}
+[data-raccord="laiton"] .raccord-edge::before {
+  content:""; display:block; width:1.3rem; height:100%; transform:skewX(-14deg);
+  clip-path:polygon(35% 0,81% 0,100% 76%,50% 100%,0 66%);
+  background:linear-gradient(108deg,#775e3a,#f1d79d 42%,#fff3bc 50%,#9e784a 55%,#c5ac76 92%);
+}
+
+/* Translucent tracing stock crosses the seam between two work surfaces. */
+[data-raccord="calque"] .raccord-field { --raccord-depth:clamp(3rem,5vw,4.7rem); }
+[data-raccord="calque"] .raccord-face {
+  inset:13% 7% 20% 18%; transform-origin:60% 53%;
+  clip-path:polygon(0 24%,75% 2%,100% 41%,40% 100%);
+  background:
+    repeating-linear-gradient(90deg,transparent 0 13px,#b4c0a727 13px 14px),
+    repeating-linear-gradient(0deg,transparent 0 13px,#cad1bd35 13px 14px),
+    linear-gradient(165deg,#eff0ce96,#b2c1ad6b 42%,#f6edcdab 72%,#ccd6c278);
+}
+[data-raccord="calque"] .raccord-reverse {
+  inset:24% 3% 7% 27%; transform-origin:70% top;
+  clip-path:polygon(0 24%,82% 0,100% 28%,27% 97%);
+  background:linear-gradient(140deg,#899f875e,#d2dac97d 40%,#1728224a 62%,#e7ceb16b);
+}
+[data-raccord="calque"] .raccord-edge {
+  left:21%; top:53%; height:1px; width:65%; rotate:-2deg;
+  background:linear-gradient(90deg,transparent,#fbf1ca 10%,#eae7c1 59%,transparent);
+}
+
+/* The darker endpaper opens under the lighter printed leaf. */
+[data-raccord="feuillet"] .raccord-field { --raccord-depth:clamp(3.5rem,6vw,6.35rem); }
+[data-raccord="feuillet"] .raccord-reverse,
+[data-raccord="feuillet"] .raccord-face { inset:5% 0 0; transform-origin:48% 53%; }
+[data-raccord="feuillet"] .raccord-reverse {
+  clip-path:polygon(0 46%,41% 33%,79% 7%,100% 29%,100% 62%,42% 64%,0 73%);
+  background:linear-gradient(107deg,#8d806a,#bca688 39%,#dbcbae 71%,#827859);
+}
+[data-raccord="feuillet"] .raccord-face {
+  clip-path:polygon(0 57%,36% 38%,71% 0,100% 26%,100% 51%,59% 68%,0 73%);
+  background-image:linear-gradient(144deg,#ded1b8e8 15%,#fff5dbdb 49%,#f4ecd9f2 66%,#bfab88e8),var(--raccord-stock);
+  background-size:auto,10rem;
+}
+[data-raccord="feuillet"] .raccord-edge,
+[data-raccord="feuillet"] .raccord-detail {
+  left:21%; top:52%; width:59%; height:1px; transform-origin:10% center;
+  rotate:-2.8deg; background:linear-gradient(90deg,transparent,#a3987f,#fff7d9 76%,transparent);
+}
+[data-raccord="feuillet"] .raccord-detail { left:30%; top:57%; width:63%; }
+
+/* An envelope fold carries the same wax impression as the correspondence desk. */
+[data-raccord="cachet"] .raccord-field {
+  --raccord-depth:clamp(4rem,6.45vw,6.25rem);
+  --wax-size:clamp(2.65rem,4.1vw,4.45rem);
+  --wax-seat:72%;
+  top:calc(-.54 * var(--raccord-depth));
+}
+[data-raccord="cachet"] .raccord-face,
+[data-raccord="cachet"] .raccord-reverse { inset:8% 0 0; transform-origin:var(--wax-seat) 45%; }
+[data-raccord="cachet"] .raccord-reverse {
+  clip-path:polygon(14% 48%,100% 36%,100% 69%,72% 80%);
+  background:linear-gradient(96deg,#665945,#c7ab80 51%,#a18d70 79%,#766b52);
+}
+[data-raccord="cachet"] .raccord-face {
+  clip-path:polygon(9% 45%,100% 7%,100% 48%,72% 72%);
+  background-image:linear-gradient(108deg,#d4c5a6ed,#f7edd6e8 64%,#d8c8aedb),var(--raccord-stock);
+  background-size:auto,10rem;
+}
+[data-raccord="cachet"] .raccord-detail,
+[data-raccord="cachet"] .raccord-edge {
+  width:var(--wax-size); height:var(--wax-size);
+  left:calc(var(--wax-seat) - .5 * var(--wax-size)); top:calc(50% - .5 * var(--wax-size));
+}
+[data-raccord="cachet"] .raccord-detail {
+  background:var(--raccord-wax) center/contain no-repeat;
+  filter:drop-shadow(0 2px 2px #321b0f75);
+}
+[data-raccord="cachet"] .raccord-edge { border:1px solid #d2b68a; border-radius:50%; }
+
+@media(max-width:44rem) {
+  .raccord-field { perspective:27rem; }
+  [data-raccord="pli"] .raccord-field { --raccord-depth:2.7rem; }
+  [data-raccord="pli"] .raccord-face { clip-path:polygon(0 0,100% 0,60% 90%,0 19%); }
+  [data-raccord="pli"] .raccord-reverse { clip-path:polygon(0 18%,60% 85%,100% 0,60.8% 100%,0 27%); }
+  [data-raccord="laiton"] .raccord-field { --raccord-depth:2.85rem; }
+  [data-raccord="laiton"] .raccord-face { height:4px; }
+  [data-raccord="laiton"] .raccord-detail { height:.36rem; background-size:auto; }
+  [data-raccord="calque"] .raccord-field { --raccord-depth:3.35rem; }
+  [data-raccord="calque"] .raccord-face { inset:14% -2% 19% 2%; }
+  [data-raccord="calque"] .raccord-reverse { inset:23% -6% 6% 8%; }
+  [data-raccord="calque"] .raccord-edge { left:9%; width:80%; }
+  [data-raccord="feuillet"] .raccord-field { --raccord-depth:3.9rem; }
+  [data-raccord="feuillet"] .raccord-face { clip-path:polygon(0 49%,42% 31%,73% 2%,100% 17%,100% 49%,59% 69%,0 80%); }
+  [data-raccord="cachet"] .raccord-field { --raccord-depth:3.85rem; --wax-size:2.9rem; --wax-seat:70%; }
+  [data-raccord="cachet"] .raccord-face { clip-path:polygon(0 45%,100% 8%,100% 50%,70% 75%); }
+}
+@media(prefers-reduced-motion:reduce) {
+  .chapter-raccord[data-animated="true"] .raccord-field { display:none; }
+}

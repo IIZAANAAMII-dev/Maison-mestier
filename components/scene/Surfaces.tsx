@@ -1,70 +1,68 @@
 import { useEffect, useMemo } from "react";
-import { useThree } from "@react-three/fiber";
+import { useLoader, useThree, type ThreeElements } from "@react-three/fiber";
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
-import { image } from "../../lib/maison";
+import { path } from "../../lib/maison";
 
-export function useGrain(kind: "papier" | "pierre") {
-  const invalidate = useThree(state => state.invalidate);
-  const texture = useMemo(() => {
-    const canvas = document.createElement("canvas");
-    const side = kind === "pierre" ? 512 : 256;
-    canvas.width = canvas.height = side;
-    const ctx = canvas.getContext("2d")!;
-    const data = ctx.createImageData(side, side);
-    let seed = 37;
-    const random = () => {
-      seed = (Math.imul(1664525, seed) + 1013904223) >>> 0;
-      return seed / 4294967296;
-    };
-    for (let y = 0; y < side; y++) {
-      for (let x = 0; x < side; x++) {
-        const grain = (random() - 0.5) * (kind === "papier" ? 21 : 26);
-        const stoneBed = y * .027 + 3.7 * Math.sin(x*.012 + Math.sin(y*.017)) + 1.15*Math.cos(x*.043);
-        const line = kind === "papier"
-          ? (y % 6 === 0 ? -13 : 1) + (x % 85 === 0 ? -7 : 0)
-          : 8 * Math.cos(stoneBed) - 16*Math.pow(Math.max(0,Math.sin(stoneBed * 2.5)),4)
-              + 6*Math.sin(x*.062+Math.sin(y*.07)) + 3*Math.sin((x+y)*.14);
-        const shade = (kind === "papier" ? 238 : 225) + grain + line;
-        const p = (y * side + x) * 4;
-        data.data[p] = shade; data.data[p + 1] = shade - 3; data.data[p + 2] = shade - 8;
-        data.data[p + 3] = 255;
-      }
-    }
-    ctx.putImageData(data, 0, 0);
-    if (kind === "pierre") {
-      for (let i=0;i<1600;i++) {
-        const x = random()*side, y = random()*side;
-        const pit = .35 + Math.pow(random(),2)*2.5;
-        ctx.fillStyle = "rgba(87,65,43," + (.09 + random()*.24) + ")";
-        ctx.beginPath(); ctx.ellipse(x,y,pit,pit*(.25+random()*.4),random()*.6,0,Math.PI*2); ctx.fill();
-      }
-    }
-    const result = new THREE.CanvasTexture(canvas);
-    result.wrapS = result.wrapT = THREE.RepeatWrapping;
-    result.repeat.set(kind === "pierre" ? 3 : 2.5, kind === "pierre" ? 1.8 : 1.6);
-    result.colorSpace = THREE.SRGBColorSpace;
-    return result;
-  }, [kind]);
-  useEffect(() => {
-    if (kind !== "papier") return;
-    const fiber = new Image();
-    fiber.onload = () => {
-      const c = texture.image.getContext("2d");
-      if (!c) return;
-      c.save();
-      c.globalCompositeOperation = "soft-light";
-      c.globalAlpha = .76;
-      c.drawImage(fiber,0,0,texture.image.width,texture.image.height);
-      c.restore();
-      texture.needsUpdate = true;
-      invalidate();
-    };
-    fiber.src = image("pli-verge");
-    return () => { fiber.onload = null; };
-  }, [kind, texture, invalidate]);
-  useEffect(() => () => texture.dispose(), [texture]);
-  return texture;
+const scans = {
+  paper: ["papier-fibres"],
+  stone: ["travertin-couleur", "travertin-normale", "travertin-relief"],
+  brass: ["metal-brosse-normale", "metal-brosse-relief"],
+};
+type Surface = keyof typeof scans;
+
+function useTiles(surface: Surface, u: number, v: number, offset = 0) {
+  const names = scans[surface];
+  const originals = useLoader(THREE.TextureLoader, names.map(name => path("/matieres/" + name + ".webp")));
+  const maxAnisotropy = useThree(state => state.gl.capabilities.getMaxAnisotropy());
+  const tiles = useMemo(() => originals.map((original, index) => {
+    // A face and an edge may be different cuts of the same scan. Keep their transforms independent.
+    const tile = original.clone();
+    tile.colorSpace = names[index] === "travertin-couleur" ? THREE.SRGBColorSpace : THREE.NoColorSpace;
+    tile.wrapS = tile.wrapT = THREE.RepeatWrapping;
+    tile.repeat.set(u, v);
+    tile.offset.set(.13, offset);
+    tile.anisotropy = Math.min(4, maxAnisotropy);
+    tile.needsUpdate = true;
+    return tile;
+  }), [originals, names, u, v, offset, maxAnisotropy]);
+  useEffect(() => () => tiles.forEach(tile => tile.dispose()), [tiles]);
+  return tiles;
+}
+
+export function usePaper(u = 2.1, v = 1.24) {
+  return useTiles("paper", u, v)[0];
+}
+
+const paperChannels: THREE.MeshStandardMaterial["onBeforeCompile"] = shader => {
+  // The photographed sample carries linear reflectance, height and roughness in that order.
+  // Read once so the fibres, their raking shadow and their gloss stay registered.
+  shader.fragmentShader = shader.fragmentShader
+    .replace("#include <map_fragment>", "vec3 pulp = texture2D(map, vMapUv).rgb; diffuseColor.rgb *= pulp.r;")
+    .replace("#include <roughnessmap_fragment>", "float roughnessFactor = roughness * pulp.b;")
+    .replace("#include <normal_fragment_maps>", "normal = perturbNormalArb(-vViewPosition, normal, bumpScale * vec2(dFdx(pulp.g), dFdy(pulp.g)), faceDirection);");
+};
+
+export function PaperStock({ texture, ...finish }: ThreeElements["meshStandardMaterial"] & {texture: THREE.Texture}) {
+  return <meshStandardMaterial {...finish} map={texture} bumpMap={texture} bumpScale={.14}
+    roughness={1} onBeforeCompile={paperChannels} />;
+}
+
+const stoneChannels: THREE.MeshStandardMaterial["onBeforeCompile"] = shader => {
+  shader.fragmentShader = shader.fragmentShader.replace("#include <roughnessmap_fragment>",
+    "vec2 stoneCut = texture2D(roughnessMap, vRoughnessMapUv).rg; float roughnessFactor = roughness * stoneCut.g; diffuseColor.rgb *= mix(.93, 1., smoothstep(.16, .80, stoneCut.r));");
+};
+
+export function StoneFinish({ edge = false, night }: {edge?: boolean; night: boolean}) {
+  const [colour, normal, relief] = useTiles("stone", edge ? 4.15 : 1.42, edge ? .18 : 1.13, edge ? .37 : .15);
+  return <meshStandardMaterial color={night ? "#a79a82" : "#ece3cc"} map={colour}
+    normalMap={normal} normalScale={[.82,.82]} roughnessMap={relief} roughness={.95} onBeforeCompile={stoneChannels} />;
+}
+
+export function BrassFinish(finish: ThreeElements["meshPhysicalMaterial"]) {
+  const [normal, relief] = useTiles("brass", 2.8, 1.17, .12);
+  return <meshPhysicalMaterial {...finish} metalness={.89} normalMap={normal} normalScale={[.17,.17]}
+    roughnessMap={relief} roughness={.82} />;
 }
 
 type BoxProps = {
@@ -76,7 +74,7 @@ export function Block({ size, at, color, radius = .035, metal = 0, grain, rotati
   const geometry = useMemo(() => new RoundedBoxGeometry(x, y, z, 2, radius), [x, y, z, radius]);
   useEffect(() => () => geometry.dispose(), [geometry]);
   return <mesh geometry={geometry} position={at} rotation={rotation} castShadow receiveShadow>
-    <meshStandardMaterial color={color} metalness={metal} roughness={metal ? .31 : .82} map={grain} />
+    {grain ? <PaperStock texture={grain} color={color} /> : <meshStandardMaterial color={color} metalness={metal} roughness={metal ? .31 : .82} />}
   </mesh>;
 }
 

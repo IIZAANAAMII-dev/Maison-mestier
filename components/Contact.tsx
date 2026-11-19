@@ -1,8 +1,10 @@
 "use client";
 
 import { type FormEvent, useEffect, useRef, useState } from "react";
-import { ateliers, image } from "../lib/maison";
+import { ateliers } from "../lib/maison";
 import { Picture } from "./Picture";
+import { Stationery } from "./edition/Stationery";
+import styles from "./edition/correspondence.module.css";
 
 const recipient = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "";
 const emailAction = "mailto:" + encodeURIComponent(recipient).replace("%40", "@");
@@ -74,26 +76,15 @@ export function Contact() {
       : "L’adresse de la Maison reste à confirmer. Vous pouvez déjà préparer votre brouillon.";
 
   return (
-    <section id="contact" className="contact-section" tabIndex={-1} aria-labelledby="titre-contact">
-      <div className="contact-art">
-        <Picture name="correspondance" alt="" />
-        <div className="invite">
-          <span className="eyebrow">Correspondance</span>
-          <h2 id="titre-contact">Écrire à<br /><i>la Maison.</i></h2>
-          <details className="envelope">
-            <summary>
-              <span className="envelope-body" aria-hidden="true">
-                <span className="envelope-card">Au plaisir<br />de vous lire.</span>
-                <span className="envelope-flap" /><img alt="" src={image("cire-correspondance")} loading="lazy" />
-              </span>
-              <span className="envelope-label">L’invitation de la Maison</span>
-            </summary>
-            <p>Un stand à préparer, un lieu à ouvrir, une marque à faire évoluer. Parlez-nous de votre projet.</p>
-          </details>
-        </div>
+    <section id="contact" className={styles.desk} tabIndex={-1} aria-labelledby="titre-contact">
+      <Picture name="correspondance" alt="" />
+      <div className={styles.intro}>
+        <span className="eyebrow ruled">Correspondance</span>
+        <h2 id="titre-contact">Écrire à<br /><i>la Maison.</i></h2>
+        <p>Un stand à préparer, un lieu à ouvrir, une marque à faire évoluer. Parlez-nous de votre projet.</p>
       </div>
-      <div className="letter">
-        <p className="eyebrow ruled">Votre projet</p><h3>Quelques <i>mots.</i></h3>
+      <Stationery>
+        <h3>Quelques <i>mots.</i></h3>
         <form method="post" action={emailAction} encType="text/plain" onSubmit={prepareDraft}>
           <label htmlFor="atelier">L’atelier qui vous intéresse</label>
           <select id="atelier" name="Atelier" ref={workshop} defaultValue="" onChange={updateDraft}>
@@ -116,7 +107,7 @@ export function Contact() {
             </>}
           </div>}
         </form>
-      </div>
+      </Stationery>
     </section>
   );
 }

@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 import * as THREE from "three";
-import { Block, useGrain } from "./Surfaces";
+import { Block, BrassFinish, usePaper } from "./Surfaces";
 
 const handleProfile = [
   [.35,0], [.43,.07], [.43,.15], [.31,.23], [.21,.34], [.18,.48],
@@ -52,7 +52,7 @@ const glyph = initial();
 const glyphOptions = { depth:.017, bevelEnabled:true, bevelSize:.004, bevelThickness:.005, bevelSegments:2, steps:1 };
 
 export function Seal({ progress }: {progress: number}) {
-  const paper = useGrain("papier");
+  const paper = usePaper();
   const wax = useMemo(sealGeometry, []);
   useEffect(() => () => wax.dispose(), [wax]);
   const down = THREE.MathUtils.smoothstep(progress,.05,.54) - THREE.MathUtils.smoothstep(progress,.61,.99);
@@ -71,8 +71,8 @@ export function Seal({ progress }: {progress: number}) {
       </group>
     </group>
     <group position={[.68*(1-down),.205+(1-down)*1.46,-.48*(1-down)]} rotation={[.10*(1-down),-.12,-.23*(1-down)]}>
-      <mesh position={[0,.125,0]} castShadow><cylinderGeometry args={[.76,.785,.23,80]} /><meshStandardMaterial color="#b09255" roughness={.28} metalness={.93} /></mesh>
-      <mesh position={[0,.274,0]} castShadow><cylinderGeometry args={[.43,.70,.10,80]} /><meshStandardMaterial color="#bd9c58" roughness={.28} metalness={.87} /></mesh>
+      <mesh position={[0,.125,0]} castShadow><cylinderGeometry args={[.76,.785,.23,80]} /><BrassFinish color="#b09255" /></mesh>
+      <mesh position={[0,.274,0]} castShadow><cylinderGeometry args={[.43,.70,.10,80]} /><BrassFinish color="#bd9c58" /></mesh>
       <mesh position={[0,.33,0]} castShadow><latheGeometry args={[handleProfile,64]} /><meshPhysicalMaterial color="#352820" metalness={.06} roughness={.32} clearcoat={.34} clearcoatRoughness={.35} /></mesh>
       <mesh position={[0,.61,0]} rotation={[Math.PI/2,0,0]}><torusGeometry args={[.254,.018,10,64]} /><meshStandardMaterial color="#b39a62" metalness={.92} roughness={.25} /></mesh>
     </group>

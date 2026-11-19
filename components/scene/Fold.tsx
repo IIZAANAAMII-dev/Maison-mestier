@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { Counter, useGrain } from "./Surfaces";
+import { BrassFinish, Counter, PaperStock, usePaper } from "./Surfaces";
 
 const rows = 88, columns = 22;
 const span = 1.38, leg = 1.82;
@@ -43,7 +43,7 @@ export function Fold({ progress }: {progress: number}) {
     g.setIndex(indices);
     return {g,loop};
   }, []);
-  const paper = useGrain("papier");
+  const paper = usePaper(2.85, 1.13);
   const invalidate = useThree(state => state.invalidate);
   const edge = useRef<THREE.Group>(null);
   useLayoutEffect(() => {
@@ -93,8 +93,8 @@ export function Fold({ progress }: {progress: number}) {
   }, [geometry, lining, edgeGeometry, progress, invalidate]);
   useEffect(() => () => { geometry.dispose(); lining.dispose(); edgeGeometry.g.dispose(); }, [geometry, lining, edgeGeometry]);
   return <group>
-    <mesh geometry={geometry} castShadow receiveShadow><meshStandardMaterial color="#fff9eb" map={paper} bumpMap={paper} bumpScale={.016} roughness={.81} side={THREE.FrontSide} shadowSide={THREE.DoubleSide} /></mesh>
-    <mesh geometry={lining} receiveShadow><meshPhysicalMaterial color="#cda15c" metalness={.87} roughness={.30} roughnessMap={paper} clearcoat={.20} clearcoatRoughness={.18} anisotropy={.42} side={THREE.BackSide} /></mesh>
+    <mesh geometry={geometry} castShadow receiveShadow><PaperStock color="#fff8e7" texture={paper} side={THREE.FrontSide} shadowSide={THREE.DoubleSide} /></mesh>
+    <mesh geometry={lining} receiveShadow><BrassFinish color="#cda15c" clearcoat={.16} clearcoatRoughness={.24} anisotropy={.42} side={THREE.BackSide} /></mesh>
     <mesh geometry={edgeGeometry.g}><meshStandardMaterial color="#c5a875" roughness={.47} side={THREE.DoubleSide} /></mesh>
     <group ref={edge}><Counter /></group>
   </group>;

@@ -1,0 +1,96 @@
+.atelier-atlas {
+  --atlas-paper:#f2ede2;
+  padding:clamp(4rem,8.5vw,9rem) var(--gutter);
+  color:var(--ink); background:var(--atlas-paper);
+  scroll-margin-top:1rem;
+}
+.atlas-mast {
+  display:grid; grid-template-columns:1.48fr minmax(16rem,.61fr);
+  align-items:end; gap:clamp(1.5rem,5vw,6.5rem);
+  padding-bottom:clamp(1.75rem,3.6vw,3.7rem);
+}
+.atlas-mast .eyebrow {color:var(--cachet)}
+.atlas-mast h2 {font:400 clamp(4rem,7.7vw,8.2rem)/1.04 var(--display);letter-spacing:-.078em;margin-top:.48rem}
+.atlas-mast h2 i {font-weight:400}
+.atlas-mast>p {max-width:37ch;margin-bottom:.3rem;font-size:clamp(1rem,1.25vw,1.24rem);line-height:1.55;color:#55524b}
+.atlas-rail {
+  list-style:none; margin:0; padding:0;
+  display:flex; isolation:isolate; position:relative; gap:0;
+  border:1px solid #a99d89;
+  box-shadow:0 2px 0 #e4dccd,0 3px 0 #b9ad99,0 5px 0 #ebe3d6,0 6px 0 #b8aa94,0 16px 23px -24px #342620;
+}
+.atlas-leaf {
+  flex:1 1 0; position:relative; min-width:0; overflow:hidden;
+  background:linear-gradient(90deg,#e6ddcb 0%,#f2eee4 11%,#eee7d9 98%);
+}
+.atlas-leaf + .atlas-leaf {border-inline-start:1px solid #a99d89}
+.atlas-leaf[data-active="true"] {flex-grow:7.3; background:#f7f3eb}
+.atlas-leaf>a {
+  display:block; position:relative; height:clamp(28rem,36vw,40rem);
+  color:inherit; text-decoration:none; outline-offset:-5px; -webkit-tap-highlight-color:#985c3720;
+}
+.atlas-leaf>a:focus-visible {z-index:1;outline:3px solid #8e2a23}
+.atlas-photowell {
+  position:absolute; inset:0 0 auto; height:43%; overflow:hidden;
+  background:var(--plate-tone); transition:height .56s cubic-bezier(.18,.69,.2,1);
+}
+.atlas-photowell::after {
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(90deg,#382b1a33,transparent 18%,transparent 93%,#40301b33);
+  box-shadow:inset 0 -1px 0 #796b55;
+}
+.atlas-leaf[data-active="true"] .atlas-photowell {height:63%}
+.atlas-leaf[data-active="true"] .atlas-photowell::after {background:linear-gradient(0deg,#3022156b,transparent 35%)}
+.atlas-photograph,.atlas-leaf .atlas-photograph img {display:block;width:100%;height:100%;object-fit:cover;object-position:var(--plate-position)}
+.atlas-photo-edition {position:absolute;inset:auto auto .85rem 1.1rem;z-index:1;color:#fff;opacity:0;font:italic 400 1.16rem/1.2 var(--display);text-shadow:0 1px 8px #211b15aa;white-space:nowrap}
+.atlas-leaf[data-active="true"] .atlas-photo-edition {opacity:1;transition:opacity .32s .14s}
+.atlas-ink {position:absolute;top:63%;right:0;left:0;padding:clamp(.95rem,1.8vw,2rem) clamp(.85rem,2vw,2.2rem) 2.25rem;opacity:0;pointer-events:none;min-width:clamp(15rem,24vw,29rem)}
+.atlas-leaf[data-active="true"] .atlas-ink {opacity:1}
+.atlas-ink h3 {font:400 clamp(2rem,3.05vw,4.3rem)/1.12 var(--display);letter-spacing:-.06em}
+.atlas-ink p {margin-top:.48rem;max-width:40ch;font-size:clamp(.95rem,1.07vw,1.1rem);line-height:1.45;color:#4f4b43}
+.atlas-spine {position:absolute;left:50%;top:calc(43% + 1rem);bottom:3.15rem;writing-mode:vertical-rl;transform:translateX(-50%) rotate(180deg);text-align:end;white-space:nowrap;font:400 clamp(1.2rem,1.83vw,2.1rem)/1.17 var(--display);letter-spacing:-.04em;transition:opacity .2s}
+.atlas-leaf[data-active="true"] .atlas-spine {opacity:0}
+.atlas-open {position:absolute;bottom:1rem;left:50%;display:flex;align-items:center;gap:.55rem;transform:translateX(-50%);font:500 .83rem/1.4 var(--sans);color:#6d3028;white-space:nowrap}
+.atlas-open>span {display:none}
+.atlas-open i {display:inline-grid;width:.9rem;height:.9rem;place-items:center;position:relative}
+.atlas-open i::before,.atlas-open i::after {content:"";position:absolute;width:100%;height:1px;background:currentColor}
+.atlas-open i::after {transform:rotate(90deg)}
+.atlas-leaf[data-active="true"] .atlas-open {left:clamp(.85rem,2vw,2.2rem);transform:none}
+.atlas-leaf[data-active="true"] .atlas-open>span {display:block}
+.atlas-leaf a:focus-visible .atlas-open>span {text-decoration:underline;text-underline-offset:.24em}
+
+@media (max-width:55.999rem) {
+  .atlas-mast {display:block;padding-bottom:1.45rem}
+  .atlas-mast h2 {font-size:clamp(3.25rem,10.4vw,5.45rem);margin-bottom:.75rem}
+  .atlas-mast>p {max-width:47ch}
+  .atlas-rail {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:0;border-top:1px solid #a99d89;box-shadow:none;column-gap:1.45rem}
+  .atlas-leaf,.atlas-leaf[data-active="true"] {background:transparent;border-bottom:1px solid #b8ad99}
+  .atlas-leaf + .atlas-leaf {border-inline-start:0}
+  .atlas-leaf>a {min-height:7.9rem;height:auto;display:grid;grid-template-columns:clamp(4rem,9vw,6.5rem) minmax(0,1fr) .75rem;align-items:center;gap:.8rem;padding:.85rem 0}
+  .atlas-photowell,.atlas-leaf[data-active="true"] .atlas-photowell {position:relative;inset:auto;height:100%;min-height:5.8rem;max-height:8.75rem}
+  .atlas-ink {position:static;min-width:0;opacity:1;padding:0}
+  .atlas-ink h3 {font-size:clamp(1.65rem,3.8vw,2.15rem)}
+  .atlas-ink p {font-size:.98rem;margin-top:.42rem}
+  .atlas-spine,.atlas-leaf .atlas-photo-edition,.atlas-leaf .atlas-open>span,.atlas-leaf[data-active="true"] .atlas-open>span {display:none}
+  .atlas-open,.atlas-leaf[data-active="true"] .atlas-open {position:static;transform:none;justify-self:end}
+  .atlas-leaf .atlas-open i {width:.65rem;height:.65rem}
+}
+@media (max-width:39rem) {
+  .atelier-atlas {padding-block:3.65rem}
+  .atlas-rail {grid-template-columns:1fr}
+  .atlas-leaf>a {min-height:6.4rem;grid-template-columns:clamp(3.75rem,18vw,6.4rem) minmax(0,1fr) .75rem;gap:.8rem}
+  .atlas-ink h3 {font-size:clamp(1.6rem,6.7vw,2.1rem)}
+  .atlas-ink p {font-size:.96rem;line-height:1.4;margin-top:.25rem}
+  .atlas-photowell,.atlas-leaf[data-active="true"] .atlas-photowell {min-height:4.9rem}
+}
+@media (prefers-reduced-motion:reduce) { .atelier-atlas *, .atelier-atlas *::after {transition:none!important} }
+@media (scripting:none) and (min-width:56rem) {
+  .atlas-rail {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));box-shadow:none}
+  .atlas-leaf .atlas-photowell,.atlas-leaf[data-active="true"] .atlas-photowell {height:51%}
+  .atlas-leaf>a {height:22rem}
+  .atlas-ink {opacity:1;min-width:0;top:51%;padding:1rem}
+  .atlas-ink h3 {font-size:1.6rem}
+  .atlas-spine,.atlas-photo-edition {display:none}
+  .atlas-open,.atlas-leaf[data-active="true"] .atlas-open {left:1rem;transform:none}
+  .atlas-open>span {display:block}
+}
