@@ -84,14 +84,14 @@
         "nombreImages": 241,
         "imagesParSeconde": 24,
         "approcheDernierePose": 10,
-        "octets": 4209135
+        "octets": 5121358
       },
       "ouverture": {
         "chemin": "large/ouverture.mp4",
         "nombreImages": 63,
         "imagesParSeconde": 30,
         "duree": 2.1,
-        "octets": 457218
+        "octets": 574527
       }
     },
     "portrait": {
@@ -143,14 +143,14 @@
         "nombreImages": 241,
         "imagesParSeconde": 24,
         "approcheDernierePose": 10,
-        "octets": 2098605
+        "octets": 2584214
       },
       "ouverture": {
         "chemin": "portrait/ouverture.mp4",
         "nombreImages": 63,
         "imagesParSeconde": 30,
         "duree": 2.1,
-        "octets": 271912
+        "octets": 357452
       }
     }
   }
