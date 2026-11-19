@@ -55,7 +55,7 @@ function movePhotograph(timeline: ReturnType<typeof Gsap.timeline>, dialog: HTML
 function CycleLink({ file, backwards }: {file: Dossier; backwards?: boolean}) {
   return <a className={"dossier-cycle" + (backwards ? " cycle-back" : " cycle-next")}
     href={file.href} data-dossier={file.key} data-turn={backwards ? "back" : "next"}
-    aria-label={(backwards ? "Dossier précédent : " : "Dossier suivant : ") + file.name}>
+    aria-label={(backwards ? "Dossier précédent : " : "Dossier suivant : ") + file.name}>
     <span className="dossier-chevron" aria-hidden="true" />
     <span>{backwards ? "Précédent" : "Suivant"}</span>
   </a>;

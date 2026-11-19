@@ -20,12 +20,13 @@ html[data-carnet-ouvert] {overflow:hidden;}
 .tr-webgl[data-exposed=true]{opacity:1;}
 .tr-opening-film{transition:opacity .12s linear;}
 [data-overture-media=projection] .tr-opening-film{visibility:hidden;}
-.tr-shade{z-index:1;background:linear-gradient(180deg,rgba(8,13,15,.67) 0%,rgba(8,13,15,.05) 15%,transparent 30%,transparent 55%,rgba(8,13,15,.35) 80%,rgba(8,13,15,.88) 100%),linear-gradient(70deg,rgba(9,13,15,.89) 0%,rgba(9,13,15,.65) 23%,rgba(9,13,15,.16) 48%,transparent 69%);}
+.tr-shade{z-index:1;background:linear-gradient(180deg,rgba(8,13,15,.8) 0%,rgba(8,13,15,.42) 9%,rgba(8,13,15,.06) 17%,transparent 30%,transparent 55%,rgba(8,13,15,.35) 80%,rgba(8,13,15,.88) 100%),linear-gradient(70deg,rgba(9,13,15,.92) 0%,rgba(9,13,15,.72) 26%,rgba(9,13,15,.24) 50%,transparent 70%);}
 .tr-mast{position:absolute;z-index:8;inset:0 0 auto;display:flex;align-items:center;justify-content:space-between;min-height:5.7rem;padding:1rem var(--film-edge);gap:1rem;}
 .tr-brand{color:var(--film-paper);text-decoration:none;white-space:nowrap;font:500 clamp(1.9rem,2.55vw,3.05rem)/1.1 var(--display);letter-spacing:-.09em;}
 .tr-brand i{font-weight:400;}
 .tr-mast-links{display:flex;align-items:center;gap:clamp(1.25rem,2.8vw,3.3rem);}
 .tr-mast-links a{display:inline-flex;align-items:center;min-height:2.75rem;color:var(--film-paper);text-decoration:none;font:500 1rem/1.15 var(--sans);white-space:nowrap;}
+.tr-contact-long::before{content:"\00a0";}
 .tr-mast-links .tr-contact{text-decoration:underline;text-underline-offset:.34em;text-decoration-color:#c3ac8c;}
 .tr-mast-links a:hover,.tr-tools button:hover,.tr-story-link:hover,.tr-next:hover,.tr-skip:hover{color:#fff;text-decoration:underline;text-underline-offset:.35em;}
 .tr-menu{gap:.6em;}
@@ -39,6 +40,8 @@ html[data-carnet-ouvert] {overflow:hidden;}
   position:absolute;left:var(--film-edge);right:var(--film-edge);
   bottom:clamp(6.6rem,15.8vh,12.2rem);pointer-events:none;
 }
+.tr-lettering,.tr-gate-copy{text-shadow:0 0 1.6rem rgba(8,12,13,.55),0 1px 2px rgba(8,12,13,.45);}
+.tr-mast{text-shadow:0 0 1.1rem rgba(8,12,13,.6);}
 .tr-kicker{color:var(--film-secondary);font:500 clamp(.69rem,.78vw,.84rem)/1.5 var(--mono);letter-spacing:.13em;text-transform:uppercase;}
 .tr-kicker span{color:var(--film-copper);margin:0 .35em;}
 .tr-moment-title,.tr-gate-copy h2,.tr-film-title{

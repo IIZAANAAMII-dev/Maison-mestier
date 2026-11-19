@@ -6,25 +6,25 @@ import styles from "./conduite.module.css";
 
 const phases = [
   {
-    name: "Le brief", plate: "La note d’intention", lead: "Que doit apporter le salon à votre marque ?",
+    name: "Le brief", plate: "La note d’intention", lead: "Que doit apporter le salon à votre marque ?",
     answer: "La Maison cadre le public, la démonstration et les rendez-vous attendus. L’Intendance rassemble ces décisions dans un budget et un calendrier communs.",
     entries: [["Public", "Les acheteurs que votre équipe souhaite rencontrer."], ["Objectif", "Donner à voir le produit en situation."], ["À décider", "Le lieu, l’espace et les temps de démonstration."]],
     crafts: ["intendance", "stands-salons"],
   },
   {
-    name: "L’invitation", plate: "Le carton d’invitation", lead: "Pourquoi ferait-on le déplacement ?",
+    name: "L’invitation", plate: "Le carton d’invitation", lead: "Pourquoi ferait-on le déplacement ?",
     answer: "Identité prépare le signe et le carton. Digital prolonge l’invitation sur une page de rendez-vous. Visibilité fait parvenir le message aux entreprises visées.",
     entries: [["Au recto", "Le nom du lancement et la promesse de la rencontre."], ["Au verso", "Le salon, le stand et le créneau proposé."], ["À l’écran", "Une page pour réserver son rendez-vous."]],
     crafts: ["identite","digital","visibilite"],
   },
   {
-    name: "Le lieu", plate: "La feuille de conduite", lead: "Que se passe-t-il quand un invité franchit le seuil ?",
+    name: "Le lieu", plate: "La feuille de conduite", lead: "Que se passe-t-il quand un invité franchit le seuil ?",
     answer: "La maquette sert à tester la circulation et les lignes de vue. La Maison coordonne les équipes sur le stand. Pour un pop-up, Éphémère adapte le même parcours au lieu temporaire.",
     entries: [["Au seuil", "Orienter les visiteurs et accueillir les rendez-vous."], ["Au centre", "Montrer le produit et laisser la place à la démonstration."], ["En retrait", "Poursuivre la conversation avec un client."]],
     crafts: ["stands-salons","evenement","ephemere"],
   },
   {
-    name: "Les suites", plate: "Le carnet de suivi", lead: "Que garde-t-on de la rencontre ?",
+    name: "Les suites", plate: "Le carnet de suivi", lead: "Que garde-t-on de la rencontre ?",
     answer: "Les contacts qualifiés sont transmis à l’équipe commerciale pour la relance. Contenu prépare les images du salon. L’Intendance remet le bilan et décide avec vous des suites.",
     entries: [["À transmettre", "Les sujets abordés et les prochaines étapes convenues."], ["À publier", "Les extraits du film et les images de la démonstration."], ["À suivre", "Les rendez-vous obtenus et les demandes qui en découlent."]],
     crafts: ["contenu","visibilite","intendance"],

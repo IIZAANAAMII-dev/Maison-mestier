@@ -64,7 +64,7 @@ export function Traversee() {
           <a className="tr-brand" href="#invitation" onClick={e=>go(e,0)} aria-label="Maison Mestier, début de la visite">Maison <i>Mestier</i></a>
           <nav aria-label="La Maison" className="tr-mast-links">
             <a ref={carnet.fallback} className="tr-ateliers" aria-haspopup="dialog" href="#ateliers" onClick={e=>open(e,"ateliers")}>Les ateliers</a>
-            <a className="tr-contact" aria-haspopup="dialog" aria-label="Écrire à la Maison" href="#contact" onClick={e=>open(e,"contact")}><span>Écrire</span><span className="tr-contact-long"> à la Maison</span></a>
+            <a className="tr-contact" aria-haspopup="dialog" aria-label="Écrire à la Maison" href="#contact" onClick={e=>open(e,"contact")}><span>Écrire</span><span className="tr-contact-long">à la Maison</span></a>
             <a className="tr-menu" href="#sommaire" onClick={e=>open(e,"sommaire")} aria-haspopup="dialog" aria-label="Sommaire de la Maison"><span className="tr-menu-lines" aria-hidden="true"/><span>Sommaire</span></a>
           </nav>
         </header>

@@ -105,7 +105,14 @@
 .inviteButton:hover { background:#dfd2bd; }
 .related { padding-block:clamp(3.6rem,6.7vw,8rem); }
 .related ul { margin-block:1.65rem 1.1rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,12rem),1fr)); gap:0 clamp(1.15rem,3.4vw,4rem); }
-.related li a { display:flex; align-items:center; min-height:3.75rem; border-top:1px solid var(--editorial-rule); font:400 clamp(1.4rem,2.1vw,2.35rem)/1.2 var(--display); letter-spacing:-.04em; text-decoration:none; }
+.related li { display:flex; }
+.related li a { display:flex; flex-direction:column; gap:.55rem; width:100%; padding:1.1rem 0 1.6rem; border-top:1px solid var(--editorial-rule); text-decoration:none; transition:border-color .3s ease; }
+.related li a:hover { border-top-color:var(--cachet); }
+.relatedNumber { font:500 .72rem/1 var(--mono); letter-spacing:.12em; color:var(--brass); }
+.relatedName { display:flex; justify-content:space-between; gap:1rem; align-items:baseline; font:400 clamp(1.4rem,2.1vw,2.35rem)/1.15 var(--display); letter-spacing:-.04em; }
+.relatedName span { display:inline-block; font:400 1rem/1 var(--sans); opacity:.45; transition:transform .3s ease, opacity .3s ease; }
+.related li a:hover .relatedName span { opacity:1; transform:translateX(.3rem); }
+.relatedSummary { color:var(--muted); font:400 .95rem/1.5 var(--sans); letter-spacing:0; max-width:32ch; text-wrap:pretty; }
 .related li a:hover,.underlineLink:hover,.followStudy:hover em { color:var(--cachet); }
 .underlineLink { font-weight:550; font-size:.96rem; width:fit-content; }
 .studyNotebook { display:grid; grid-template-columns:minmax(0,.85fr) minmax(0,1.24fr); align-items:start; gap:clamp(2rem,6vw,8rem); padding-block:clamp(3.5rem,6.8vw,8rem); }

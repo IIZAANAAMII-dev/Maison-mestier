@@ -105,7 +105,7 @@ export function DraftLetter({ defaultWorkshop, idPrefix = "", keepInCarnet = fal
       </select>
       <label htmlFor={idPrefix + "message"}>Votre message</label>
       <textarea id={idPrefix + "message"} name="Message" rows={4} maxLength={4000} ref={message}
-        required placeholder="Qu’aimeriez-vous réaliser ?" onInput={updateDraft} />
+        required placeholder="Qu’aimeriez-vous réaliser ?" onInput={updateDraft} />
       <button className="button ink" type="submit" aria-describedby={idPrefix + "brouillon-note"}>Préparer mon e-mail</button>
       <p id={idPrefix + "brouillon-note"} className="form-note" role="status">{hint}</p>
       <noscript><p className="form-note">Le bouton ouvre un brouillon dans votre application de messagerie. Vous pouvez aussi copier votre texte depuis le champ ci-dessus.</p></noscript>
