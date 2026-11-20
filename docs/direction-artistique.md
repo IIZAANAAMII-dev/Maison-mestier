@@ -14,6 +14,38 @@ Les huit ateliers s’ouvrent comme les feuillets d’un dossier. La table lumin
 
 Le carnet de conduite suit un exemple de lancement sur un salon. À chaque décision correspond une pièce du projet, de la note d’intention au carnet de suivi. En fin de visite, l’enveloppe s’ouvre sur une lettre que le visiteur peut préparer, relire et copier. [Carnet de conduite](../components/methode/Conduite.tsx) · [Papier à lettres](../components/edition/Stationery.tsx)
 
+## L’optique de la visite
+
+La scène n’est plus dessinée directement à l’écran. Elle est exposée en lumière linéaire puis développée comme un tirage. Le laiton et les sources de la régie rayonnent d’une halation chaude, dont les rayons les plus larges virent au rouge comme sur une émulsion. Une profondeur de champ suit le sujet de chaque halte. Le premier plan s’adoucit moins que le fond pour qu’une feuille proche se lise encore comme du papier. Un grain vivant, une séparation des couleurs au bord de l’objectif et une chute de lumière terminent l’image. Quand le visiteur fait défiler vite, le champ s’ouvre légèrement et les bords se dédoublent. [Optique](../components/traversee/scene/optique.ts)
+
+Des rais tombent de l’oculus dans l’axe de la lumière principale. Des poussières y dérivent : elles s’allument en traversant les lames de lumière et s’ouvrent en disques flous hors du plan net. [Atmosphère](../components/traversee/scene/atmosphere.ts)
+
+La scène vit entre deux gestes. La caméra a un poids : elle rejoint la position du défilement avec une légère inertie, respire et regarde un peu vers la main. **Le visiteur tient la lampe.** Une petite source tungstène suit le pointeur devant le sujet, si bien que le laiton, la cire et le velours répondent à la main. Sur écran tactile, elle tourne lentement autour du sujet. Les sources de la régie vacillent à peine.
+
+La cire est vernie et légèrement translucide : la lumière entre par ses bords et ressort rouge. Le laiton porte un vernis qui fait flotter un second reflet, plus net, au-dessus du métal brossé. Le vergé et le velours prennent un velouté aux angles rasants, et le sol est satiné. Un appareil qui ne tient pas la cadence renonce d’abord à la définition, puis à la profondeur de champ, jamais à la lumière. Les tirages de secours sont pris par le même banc avec l’horloge figée et sans lampe.
+
+## La main, l’oreille et la lettre
+
+**La lampe devient le pointeur.** À la souris, le pointeur est un point de laiton suivi d’un anneau qui garde un peu de poids, et d’une flaque de lumière chaude sur les scènes de nuit. Ce qui peut s’ouvrir répond : l’anneau s’élargit et nomme le geste (« Soulever », « Ouvrir », « Rejoindre »), en disque sur les grandes cibles, en étiquette à côté de la main sur une ligne de texte. Les petits boutons se penchent vers la main. Le pointeur passe au-dessus du carnet grâce à la couche supérieure du navigateur. Les écrans tactiles et le clavier gardent le comportement du système. [La lampe](../components/Lampe.tsx)
+
+**L’atelier s’écoute.** Tous les sons sont synthétisés dans le navigateur, sans fichier : le souffle de l’atelier sous une nappe très basse, le froissement du papier dont la densité suit la vitesse du défilement, une cloche de laiton à chaque halte, le choc sourd du cachet, une page qui tourne quand le carnet s’ouvre. Le son reste coupé tant que le visiteur ne l’a pas demandé. Son choix est retenu sur l’appareil et ne reprend qu’au premier geste. [L’atelier sonore](../components/son/atelier-sonore.ts)
+
+**Le visiteur cachette sa lettre.** Le formulaire est une feuille de vergé réglée où l’on écrit en italique. Une signature facultative grave ses initiales dans un cachet ; à l’envoi, la cire tombe et s’imprime. La signature rejoint le brouillon. [Le cachet](../components/traversee/carnet/Cachet.tsx)
+
+**Le rideau se lève une fois.** La première visite d’une session s’ouvre sur la nuit de l’atelier. Le nom de la Maison s’imprime lettre à lettre pendant que les polices et le premier tirage arrivent, un filet de laiton se remplit, puis le rideau se lève sur l’enveloppe. Un visiteur qui préfère moins de mouvement, ou qui revient dans le même onglet, arrive directement sur l’enveloppe. [Le rideau](../components/traversee/Rideau.tsx)
+
+Le sommaire est composé en très grands caractères ; une épreuve flotte sous la main et s’incline avec sa vitesse. Les ateliers connexes et le pied de page font de même. Entre deux pages, la nouvelle monte comme une feuille glissée sur la précédente. Le bandeau des huit ateliers défile, accélère et se penche avec le défilement. Le pied de page se termine sur le nom de la Maison, imprimé lettre à lettre à son arrivée. Les traînées anamorphiques étirent les points les plus vifs du laiton, et un voile chaud brûle le bord de l’image quand on voyage vite. Sur les téléphones qui le permettent sans autorisation, l’inclinaison guide la lampe, et la cire cède sous le pouce d’une brève vibration.
+
+## Les jeux de la Maison
+
+Deux jeux prolongent la visite. Ils viennent de références récentes : *Messenger* d’abeto (Site de l’année Awwwards 2025), un petit monde où l’on distribue des lettres ; *Igloo Inc*, du même studio (Site de l’année 2024), une 3D immersive pilotée par le simple défilement ; *La Famiglia : Mystery Unfolds* de MONOGRID pour Gucci (Site du jour 2026), un jeu d’indices pour une maison de luxe.
+
+**La chasse aux poinçons.** Huit poinçons d’orfèvre, un par atelier, attendent dans l’air de l’atelier, chacun au-dessus d’une partie sombre de l’image et à un moment précis de la visite. À l’œil nu, on ne voit qu’un scintillement. Sous la lampe, la poussière d’or se rassemble et dessine le losange et le sigle de l’atelier. Une lunette graduée se remplit pendant qu’on tient la lumière, puis le poinçon est frappé : éclat de poussière, médaille qui vole jusqu’à la collection, cloche de laiton, brève vibration. La collection donne un indice pour chaque poinçon manquant et ouvre le dossier de chaque atelier trouvé. Au huitième, une pluie de feuilles d’or tombe et la prochaine lettre du visiteur est cachetée à l’or. Au doigt, la lampe suit le pouce posé sur la scène ; sur les téléphones qui le permettent, elle suit l’inclinaison. Les emplacements ont été choisis en mesurant la luminosité des tirages, séparément en paysage et en portrait. [La chasse](../components/traversee/Chasse.tsx) · [Les poinçons dans la scène](../components/traversee/scene/poincons.ts)
+
+**La casse.** On compose un mot en caractères de plomb, gravés à l’envers comme les vrais : au clic, en glissant les caractères de la casse jusqu’au composteur, ou au clavier. On passe le rouleau encreur, puis on tire le levier de la presse. L’épreuve sort sur un vergé, l’encre irrégulière et légèrement en relief, numérotée et datée. Elle se télécharge, ou se joint à la lettre. Glisser, lancer et réordonner reposent sur Draggable, InertiaPlugin et Flip de GSAP. [La casse](../components/traversee/carnet/Casse.tsx)
+
+**Le mouvement.** Les titres de la visite sont composés en caractères mobiles (SplitText) : à chaque étape, les lettres partent vers le haut et les suivantes montent de leur ligne de pied, au rythme du défilement, comme la caméra. Les titres du carnet se composent à chaque page. Sur les pages éditoriales, les titres montent mot à mot, les paragraphes ligne à ligne, les planches se déplient, et le défilement est adouci (Lenis, synchronisé avec ScrollTrigger) à la souris. Sans JavaScript, ou en mouvement réduit, tout reste tel qu’imprimé. [Le mouvement des pages](../components/edition/Mouvement.tsx)
+
 ## Références de réalisation
 
 | Référence | Détail étudié | Choix pour la Maison |

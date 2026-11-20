@@ -8,6 +8,8 @@ import { Projection, Still } from "./Projection";
 import { useTravellingScore } from "./useTravellingScore";
 import { useCarnetRoute } from "./useCarnetRoute";
 import { useContinuousPlay } from "./useContinuousPlay";
+import { BoutonSon } from "../son/BoutonSon";
+import { Chasse } from "./Chasse";
 import "./traversee.css";
 
 const Carnet = dynamic(()=>import("./carnet/Carnet"),{ssr:false});
@@ -51,6 +53,8 @@ export function Traversee() {
     event.preventDefault();goTo(index);
   }
   function touchSeal(keyboard:boolean) {
+    // The wax gives under the thumb.
+    if (!keyboard) navigator.vibrate?.(14);
     setFocusFromSeal(keyboard);
     openSeal();
   }
@@ -63,8 +67,9 @@ export function Traversee() {
         <header className="tr-mast">
           <a className="tr-brand" href="#invitation" onClick={e=>go(e,0)} aria-label="Maison Mestier, début de la visite">Maison <i>Mestier</i></a>
           <nav aria-label="La Maison" className="tr-mast-links">
+            <BoutonSon className="tr-son" />
             <a ref={carnet.fallback} className="tr-ateliers" aria-haspopup="dialog" href="#ateliers" onClick={e=>open(e,"ateliers")}>Les ateliers</a>
-            <a className="tr-contact" aria-haspopup="dialog" aria-label="Écrire à la Maison" href="#contact" onClick={e=>open(e,"contact")}><span>Écrire</span><span className="tr-contact-long"> à la Maison</span></a>
+            <a className="tr-contact" aria-haspopup="dialog" aria-label="Écrire à la Maison" href="#contact" onClick={e=>open(e,"contact")}><span>Écrire</span><span className="tr-contact-long">à la Maison</span></a>
             <a className="tr-menu" href="#sommaire" onClick={e=>open(e,"sommaire")} aria-haspopup="dialog" aria-label="Sommaire de la Maison"><span className="tr-menu-lines" aria-hidden="true"/><span>Sommaire</span></a>
           </nav>
         </header>
@@ -91,6 +96,8 @@ export function Traversee() {
               <p className="tr-copy" data-line-in="">{m.copy}</p>
               <a className="tr-story-link" data-line-in="" href={m.href.startsWith("#") ? m.href : path(m.href)}
                 aria-haspopup="dialog" onClick={e=>open(e,m.view)}>{m.action}<span className="tr-leaf-icon" aria-hidden="true" /></a>
+              {m.slug==="impression" && <a className="tr-jeu" data-line-in="" href={path("/?carnet=casse#impression")} aria-haspopup="dialog" onClick={e=>open(e,"casse")}>
+                <span className="tr-jeu-sort" aria-hidden="true">A</span>Composer en plomb</a>}
             </div>
           </article>)}
         </div>
@@ -113,9 +120,10 @@ export function Traversee() {
           </a>
         </nav>
         <div className="tr-tools" aria-label="Options de lecture">
+          <Chasse live={!sealed && !intro && !prints && !carnet.view && active} onOpen={view=>carnet.open(view)} />
           <button type="button" onClick={()=>{replayIntro(); requestAnimationFrame(()=>root.current?.querySelector<HTMLButtonElement>("[data-open-seal]")?.focus({preventScroll:true}));}}
-            className="tr-replay"><span aria-hidden="true">↺</span> Revoir l’ouverture</button>
-          <button type="button" aria-pressed={prints} onClick={()=>setPrints(!prints)} className="tr-mode"><span aria-hidden="true" />Mode photo</button>
+            className="tr-replay" aria-label="Revoir l’ouverture"><span aria-hidden="true">↺</span><span className="tr-outil-mot" aria-hidden="true"> Revoir l’ouverture</span></button>
+          <button type="button" aria-pressed={prints} onClick={()=>setPrints(!prints)} className="tr-mode" aria-label="Mode photo"><span aria-hidden="true" /><span className="tr-outil-mot" aria-hidden="true">Mode photo</span></button>
         </div>
       </div>
     </section>

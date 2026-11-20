@@ -1,4 +1,4 @@
-import { useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { path } from "../../../lib/maison";
 import { Picture } from "../../Picture";
 import { dossier } from "../../dossiers/catalogue";
@@ -93,19 +93,63 @@ export function Correspondance({ workshop }: { workshop?: string }) {
   </div>;
 }
 
+const contents = [
+  { view: "ateliers", article: "Les", word: "ateliers", detail: "Les huit métiers de la Maison", image: "atelier" },
+  { view: "recherches", article: "Les", word: "recherches", detail: "Trois études de matière et d’espace", image: "empreinte" },
+  { view: "methode", article: "La", word: "méthode", detail: "Les étapes d’un lancement de produit", image: "etude" },
+  { view: "contact", article: "La", word: "correspondance", detail: "Écrire à la Maison", image: "correspondance" },
+  { view: "casse", article: "La", word: "casse", detail: "Composer et imprimer en plomb", image: "tirage-sceau" },
+] as const;
+
 export function Sommaire({ halt }: { halt?: string }) {
+  const list = useRef<HTMLElement>(null);
+  const card = useRef<HTMLDivElement>(null);
+  const [lit, setLit] = useState<number | null>(null);
+
+  // A print of each chapter floats under the hand and leans with its speed.
+  useEffect(() => {
+    const nav = list.current, print = card.current;
+    if (!nav || !print || !matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let x = 0, y = 0, cx = 0, cy = 0, lean = 0, raf = 0, placed = false;
+    function step() {
+      raf = 0;
+      const k = still ? 1 : .15;
+      const nx = cx + (x - cx) * k, ny = cy + (y - cy) * k;
+      lean += ((nx - cx) * .55 - lean) * .2;
+      cx = nx; cy = ny;
+      print!.style.transform = `translate3d(${cx.toFixed(1)}px,${cy.toFixed(1)}px,0) rotate(${Math.max(-11, Math.min(11, lean)).toFixed(2)}deg)`;
+      if (Math.abs(x - cx) + Math.abs(y - cy) + Math.abs(lean) > .15) raf = requestAnimationFrame(step);
+    }
+    function move(event: PointerEvent) {
+      const box = nav!.getBoundingClientRect();
+      x = event.clientX - box.left; y = event.clientY - box.top;
+      if (!placed) { placed = true; cx = x; cy = y; }
+      if (!raf) raf = requestAnimationFrame(step);
+    }
+    const leave = () => { placed = false; };
+    nav.addEventListener("pointermove", move);
+    nav.addEventListener("pointerleave", leave);
+    return () => { cancelAnimationFrame(raf); nav.removeEventListener("pointermove", move); nav.removeEventListener("pointerleave", leave); };
+  }, []);
+
   return <div className={s.contents}>
     <header className={s.introduction}>
       <h2 id="carnet-page-title" tabIndex={-1}>Le <i>sommaire.</i></h2>
     </header>
-    <nav className={s.contentsList} aria-label="Sommaire du carnet">
-      {[
-        ["ateliers", "Les ateliers", "Les huit métiers de la Maison"],
-        ["recherches", "Les recherches", "Trois études de matière et d’espace"],
-        ["methode", "La méthode", "Les étapes d’un lancement de produit"],
-        ["contact", "La correspondance", "Écrire à la Maison"],
-      ].map(([view, title, detail]) =>
-        <CarnetLink view={view} halt={halt} key={view}><span>{title}</span><small>{detail}</small></CarnetLink>)}
+    <nav ref={list} className={s.contentsList} aria-label="Sommaire du carnet" data-lit={lit ?? undefined}
+      onPointerLeave={() => setLit(null)}>
+      {contents.map((entry, i) =>
+        <CarnetLink view={entry.view} halt={halt} key={entry.view} style={{ "--i": i } as CSSProperties}
+          data-active={lit === i || undefined} data-lampe-disque=""
+          onPointerEnter={() => setLit(i)} onFocus={() => setLit(i)} onBlur={() => setLit(null)}>
+          <span className={s.contentsIndex} aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+          <span className={s.contentsTitle}><span>{entry.article} <i>{entry.word}</i></span></span>
+          <small>{entry.detail}</small>
+        </CarnetLink>)}
+      <div ref={card} className={s.contentsPrint} aria-hidden="true" data-shown={lit !== null || undefined}>
+        {contents.map((entry, i) => <div key={entry.view} data-shown={lit === i || undefined}><Picture name={entry.image} alt="" /></div>)}
+      </div>
     </nav>
     <a className={s.textLink} href={path("/laboratoire/")}>Manipuler les matières</a>
   </div>;

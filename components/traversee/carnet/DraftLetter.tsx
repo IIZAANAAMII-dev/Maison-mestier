@@ -2,12 +2,17 @@
 
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { ateliers } from "../../../lib/maison";
+import { cacheter } from "../../son/atelier-sonore";
+import { Cachet } from "./Cachet";
+import { CarnetLink } from "./CarnetLink";
+
+const EPREUVE = "mestier:epreuve";
 
 const recipient = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "";
 const emailAction = "mailto:" + encodeURIComponent(recipient).replace("%40", "@");
 
 type Draft = { subject: string; body: string };
-type LetterPage = { workshop: string; message: string; prepared?: Draft };
+type LetterPage = { workshop: string; message: string; signature: string; prepared?: Draft };
 
 // A visitor may put the letter down and browse another folio in the same tab.
 const openLetters = new WeakMap<Document, LetterPage>();
@@ -28,6 +33,10 @@ export function DraftLetter({ defaultWorkshop, idPrefix = "", keepInCarnet = fal
   const workshop = useRef<HTMLSelectElement>(null);
   const message = useRef<HTMLTextAreaElement>(null);
   const copyField = useRef<HTMLTextAreaElement>(null);
+  const [signature, setSignature] = useState("");
+  // A proof composed at the casse travels with the letter.
+  const [epreuve, setEpreuve] = useState("");
+  useEffect(() => { try { setEpreuve(sessionStorage.getItem(EPREUVE) || ""); } catch { /* private mode */ } }, []);
   const [draft, setDraft] = useState<Draft>();
   const [copyStatus, setCopyStatus] = useState<"copied" | "manual">();
 
@@ -36,6 +45,7 @@ export function DraftLetter({ defaultWorkshop, idPrefix = "", keepInCarnet = fal
     const requested = defaultWorkshop || saved?.workshop || new URLSearchParams(location.search).get("atelier");
     if (message.current && saved) {
       message.current.value = saved.message;
+      setSignature(saved.signature);
       if (saved.workshop === (requested || "")) setDraft(saved.prepared);
     }
     if (workshop.current && !workshop.current.value && requested &&
@@ -51,9 +61,9 @@ export function DraftLetter({ defaultWorkshop, idPrefix = "", keepInCarnet = fal
     }
   }, [copyStatus]);
 
-  function keep(prepared?: Draft) {
+  function keep(prepared?: Draft, signed = signature) {
     if (keepInCarnet && message.current && workshop.current) {
-      openLetters.set(document, { workshop: workshop.current.value, message: message.current.value, prepared });
+      openLetters.set(document, { workshop: workshop.current.value, message: message.current.value, signature: signed, prepared });
     }
   }
 
@@ -75,7 +85,10 @@ export function DraftLetter({ defaultWorkshop, idPrefix = "", keepInCarnet = fal
       return;
     }
     const selected = ateliers.find(item => item.slug === workshop.current?.value);
-    const prepared = { subject: "Projet · " + (selected?.name ?? "Maison Mestier"), body };
+    const signed = signature.trim();
+    const joined = epreuve ? body + "\n\nÉpreuve composée à la casse : « " + epreuve + " »" : body;
+    const prepared = { subject: "Projet · " + (selected?.name ?? "Maison Mestier"), body: signed ? joined + "\n\n" + signed : joined };
+    if (!draft) cacheter();
     setDraft(prepared);
     keep(prepared);
     setCopyStatus(undefined);
@@ -105,8 +118,19 @@ export function DraftLetter({ defaultWorkshop, idPrefix = "", keepInCarnet = fal
       </select>
       <label htmlFor={idPrefix + "message"}>Votre message</label>
       <textarea id={idPrefix + "message"} name="Message" rows={4} maxLength={4000} ref={message}
-        required placeholder="Qu’aimeriez-vous réaliser ?" onInput={updateDraft} />
-      <button className="button ink" type="submit" aria-describedby={idPrefix + "brouillon-note"}>Préparer mon e-mail</button>
+        required placeholder="Qu’aimeriez-vous réaliser ?" onInput={updateDraft} />
+      {epreuve ? <p className="lettre-epreuve">Épreuve jointe · « <b>{epreuve}</b> »
+        <button type="button" onClick={() => { try { sessionStorage.removeItem(EPREUVE); } catch { /* private mode */ } setEpreuve(""); setDraft(undefined); }}>Retirer</button></p>
+        : <p className="lettre-epreuve"><CarnetLink view="casse">Joindre une épreuve composée en plomb</CarnetLink></p>}
+      <div className="lettre-pied">
+        <div className="lettre-signature">
+          <label htmlFor={idPrefix + "signature"}>Votre signature <span>(facultatif)</span></label>
+          <input id={idPrefix + "signature"} name="Signature" autoComplete="name" maxLength={80} value={signature}
+            placeholder="Prénom Nom" onChange={event => { setSignature(event.target.value); message.current?.setCustomValidity(""); setDraft(undefined); setCopyStatus(undefined); keep(undefined, event.target.value); }} />
+        </div>
+        <Cachet signature={signature} pose={!!draft} />
+      </div>
+      <button className="button ink" type="submit" aria-describedby={idPrefix + "brouillon-note"}>Cacheter et préparer l’e-mail</button>
       <p id={idPrefix + "brouillon-note"} className="form-note" role="status">{hint}</p>
       <noscript><p className="form-note">Le bouton ouvre un brouillon dans votre application de messagerie. Vous pouvez aussi copier votre texte depuis le champ ci-dessus.</p></noscript>
       {draft && <div className="draft">

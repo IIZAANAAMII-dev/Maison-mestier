@@ -7,6 +7,7 @@ import { dossier } from "../../dossiers/catalogue";
 import { CarnetLink } from "./CarnetLink";
 import { Correspondance, Methode, Sommaire } from "./Feuillets";
 import { Ateliers, DossierPage, Recherches } from "./Registres";
+import { Casse } from "./Casse";
 import s from "./carnet.module.css";
 
 type Props = {
@@ -26,6 +27,7 @@ export default function Carnet({ view, halt, onClose, onNavigate }: Props) {
   const scroll = useRef<HTMLDivElement>(null);
   const layer = useRef<HTMLDivElement>(null);
   const motion = useRef<typeof Gsap | null>(null);
+  const letters = useRef<typeof import("gsap/SplitText")["SplitText"] | null>(null);
   const plate = useRef<Tirage | null>(null);
   const stopFlip = useRef<(() => void) | undefined>(undefined);
   const departure = useRef<Animation | null>(null);
@@ -62,11 +64,25 @@ export default function Carnet({ view, halt, onClose, onNavigate }: Props) {
   useEffect(() => {
     if (!isOpen || motion.current || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let alive = true;
-    import("gsap").then(module => { if (alive) motion.current = module.gsap; }).catch(() => {});
+    Promise.all([import("gsap"), import("gsap/SplitText")]).then(([module, split]) => {
+      if (!alive) return;
+      module.gsap.registerPlugin(split.SplitText);
+      motion.current = module.gsap; letters.current = split.SplitText;
+    }).catch(() => {});
     return () => { alive = false; };
   }, [isOpen]);
 
   useEffect(() => () => { stopFlip.current?.(); departure.current?.cancel(); }, []);
+
+  // The title of each folio is composed in movable type as the page turns.
+  useEffect(() => {
+    const gsap = motion.current, SplitText = letters.current;
+    const title = dialog.current?.querySelector<HTMLElement>("#carnet-page-title");
+    if (!view || !gsap || !SplitText || !title) return;
+    const split = SplitText.create(title, { type: "words,chars", mask: "words", wordsClass: "carnet-mot" });
+    const tween = gsap.from(split.chars, { yPercent: 115, rotate: 7, duration: 1.05, ease: "expo.out", stagger: .022, delay: .12, onComplete: () => split.revert() });
+    return () => { tween.kill(); split.revert(); };
+  }, [view]);
 
   function dismiss() {
     const node = dialog.current;
@@ -151,6 +167,7 @@ export default function Carnet({ view, halt, onClose, onNavigate }: Props) {
             view === "ateliers" ? <Ateliers /> :
             view === "recherches" ? <Recherches /> :
             view === "methode" ? <Methode /> :
+            view === "casse" ? <Casse /> :
             contact ? <Correspondance workshop={view.slice("contact:".length)} /> :
             <Sommaire halt={halt} />}
         </div>

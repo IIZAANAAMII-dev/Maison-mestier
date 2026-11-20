@@ -42,6 +42,7 @@ async function startServer() {
   const content = `
     import { createRoot } from "react-dom/client";
     import TravellingScene from ${JSON.stringify(source)};
+    window.mestierCapture = true;
     const progress = {current: Math.min(1, Math.max(0, Number(new URLSearchParams(location.search).get("pose")) || 0))};
     window.go = p => {progress.current = p; window.dispatchEvent(new Event("mestier:travelling"));};
     const ready = () => { document.body.dataset.ready = "true"; };

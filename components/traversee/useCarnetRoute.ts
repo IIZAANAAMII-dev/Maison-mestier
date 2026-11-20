@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ateliers, materials, path, studies } from "../../lib/maison";
 import { moments } from "./moments";
 
-const indexes = new Set(["sommaire","ateliers","methode","recherches","contact"]);
+const indexes = new Set(["sommaire","ateliers","methode","recherches","contact","casse"]);
 function possible(view: string|null) {
   if (!view || indexes.has(view)) return view;
   const [group,slug]=view.split(":");

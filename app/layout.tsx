@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { path } from "../lib/maison";
+import { Lampe } from "../components/Lampe";
+import { rideauPrecoce } from "../components/traversee/rideau-precoce";
 import "./globals.css";
 
 const display = localFont({
@@ -22,13 +24,15 @@ export const viewport: Viewport = { themeColor: [{ media: "(prefers-color-scheme
 
 export default function Layout({ children }: Readonly<{children: React.ReactNode}>) {
   return (
-    <html lang="fr" className={[display.variable, sans.variable, mono.variable].join(" ")}>
+    <html lang="fr" className={[display.variable, sans.variable, mono.variable].join(" ")} suppressHydrationWarning>
       <head>
         <style>{"@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }"}</style>
+        <script dangerouslySetInnerHTML={{ __html: rideauPrecoce }} />
       </head>
       <body id="haut">
         <a className="skip" href="#contenu">Aller au contenu</a>
         {children}
+        <Lampe />
       </body>
     </html>
   );
