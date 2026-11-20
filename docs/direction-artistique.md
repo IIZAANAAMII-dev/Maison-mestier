@@ -24,6 +24,18 @@ La scène vit entre deux gestes. La caméra a un poids : elle rejoint la positio
 
 La cire est vernie et légèrement translucide : la lumière entre par ses bords et ressort rouge. Le laiton porte un vernis qui fait flotter un second reflet, plus net, au-dessus du métal brossé. Le vergé et le velours prennent un velouté aux angles rasants, et le sol est satiné. Un appareil qui ne tient pas la cadence renonce d’abord à la définition, puis à la profondeur de champ, jamais à la lumière. Les tirages de secours sont pris par le même banc avec l’horloge figée et sans lampe.
 
+## La main, l’oreille et la lettre
+
+**La lampe devient le pointeur.** À la souris, le pointeur est un point de laiton suivi d’un anneau qui garde un peu de poids, et d’une flaque de lumière chaude sur les scènes de nuit. Ce qui peut s’ouvrir répond : l’anneau s’élargit et nomme le geste (« Soulever », « Ouvrir », « Rejoindre »), en disque sur les grandes cibles, en étiquette à côté de la main sur une ligne de texte. Les petits boutons se penchent vers la main. Le pointeur passe au-dessus du carnet grâce à la couche supérieure du navigateur. Les écrans tactiles et le clavier gardent le comportement du système. [La lampe](../components/Lampe.tsx)
+
+**L’atelier s’écoute.** Tous les sons sont synthétisés dans le navigateur, sans fichier : le souffle de l’atelier sous une nappe très basse, le froissement du papier dont la densité suit la vitesse du défilement, une cloche de laiton à chaque halte, le choc sourd du cachet, une page qui tourne quand le carnet s’ouvre. Le son reste coupé tant que le visiteur ne l’a pas demandé. Son choix est retenu sur l’appareil et ne reprend qu’au premier geste. [L’atelier sonore](../components/son/atelier-sonore.ts)
+
+**Le visiteur cachette sa lettre.** Le formulaire est une feuille de vergé réglée où l’on écrit en italique. Une signature facultative grave ses initiales dans un cachet ; à l’envoi, la cire tombe et s’imprime. La signature rejoint le brouillon. [Le cachet](../components/traversee/carnet/Cachet.tsx)
+
+**Le rideau se lève une fois.** La première visite d’une session s’ouvre sur la nuit de l’atelier. Le nom de la Maison s’imprime lettre à lettre pendant que les polices et le premier tirage arrivent, un filet de laiton se remplit, puis le rideau se lève sur l’enveloppe. Un visiteur qui préfère moins de mouvement, ou qui revient dans le même onglet, arrive directement sur l’enveloppe. [Le rideau](../components/traversee/Rideau.tsx)
+
+Le sommaire est composé en très grands caractères ; une épreuve flotte sous la main et s’incline avec sa vitesse. Les ateliers connexes et le pied de page font de même. Entre deux pages, la nouvelle monte comme une feuille glissée sur la précédente. Le bandeau des huit ateliers défile, accélère et se penche avec le défilement. Le pied de page se termine sur le nom de la Maison, imprimé lettre à lettre à son arrivée. Les traînées anamorphiques étirent les points les plus vifs du laiton, et un voile chaud brûle le bord de l’image quand on voyage vite. Sur les téléphones qui le permettent sans autorisation, l’inclinaison guide la lampe, et la cire cède sous le pouce d’une brève vibration.
+
 ## Références de réalisation
 
 | Référence | Détail étudié | Choix pour la Maison |

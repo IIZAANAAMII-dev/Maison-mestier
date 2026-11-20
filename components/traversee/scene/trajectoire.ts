@@ -3,8 +3,8 @@ import { put, smooth, v, type Palette, type Placement } from "./atelier";
 
 type Key={t:number;eye:Placement; gaze:Placement; portrait:Placement; lens:number; bank:number; frame:number};
 const keys:Key[]=[
-  {t:0,eye:[.76,.98,13],gaze:[-.04,.14,7.24],portrait:[.34,.95,19.8],lens:35,bank:-.02,frame:.105},
-  {t:.012,eye:[.53,.78,12.46],gaze:[.0,.24,7.36],portrait:[.29,.83,17.5],lens:37,bank:-.016,frame:.077},
+  {t:0,eye:[.76,.98,13.55],gaze:[-.04,.14,7.24],portrait:[.34,.95,19.8],lens:35,bank:-.02,frame:.215},
+  {t:.012,eye:[.53,.78,12.8],gaze:[.0,.24,7.36],portrait:[.29,.83,17.5],lens:37,bank:-.016,frame:.14},
   {t:.027,eye:[.01,.72,10.59],gaze:[.12,.37,7.1],portrait:[.09,.73,11.42],lens:47,bank:.034,frame:.028},
   {t:.043,eye:[.03,.55,7.23],gaze:[.2,.32,1.19],portrait:[.035,.55,7.23],lens:57,bank:.026,frame:.005},
   {t:.06,eye:[1.62,1.20,5.45],gaze:[.12,.21,.0],portrait:[.65,1.02,5.61],lens:48,bank:-.078,frame:.22},

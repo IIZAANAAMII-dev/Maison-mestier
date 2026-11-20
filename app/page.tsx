@@ -1,5 +1,6 @@
 import { Traversee } from "../components/traversee/Traversee";
 import { SansScript } from "../components/traversee/SansScript";
+import { Rideau } from "../components/traversee/Rideau";
 import { path } from "../lib/maison";
 
 export default function Home() {
@@ -7,6 +8,7 @@ export default function Home() {
     <link rel="preload" as="image" href={path("/traversee/portrait/frame-000.webp")} media="(orientation:portrait)" fetchPriority="high" />
     <link rel="preload" as="image" href={path("/traversee/large/frame-000.webp")} media="(orientation:landscape)" fetchPriority="high" />
     <h1 className="sr-only">Maison Mestier, maison de communication 360 dans le Sud de la France</h1>
+    <Rideau />
     <Traversee />
     <SansScript />
     <noscript><style>{`

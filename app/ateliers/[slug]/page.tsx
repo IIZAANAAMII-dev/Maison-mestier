@@ -121,7 +121,7 @@ export default async function AtelierPage({ params }: Props) {
         {stand && <><Salons /><Questions /></>}
       </div>
 
-      <section className={styles.invitation} aria-labelledby="parlons-projet">
+      <section className={styles.invitation} aria-labelledby="parlons-projet" data-nuit="">
         <div className={styles.shell}>
           <h2 id="parlons-projet">{atelier.cta}</h2>
           <a className={styles.inviteButton} href={contactHref}>Écrire à la Maison</a>
@@ -131,7 +131,7 @@ export default async function AtelierPage({ params }: Props) {
       <div className={styles.shell}>
         <nav aria-labelledby="ateliers-lies" className={styles.related}>
           <h2 id="ateliers-lies">Ateliers <i>connexes.</i></h2>
-          <ul>{related.map((item) => <li key={item.slug}><a data-dossier={"atelier:" + item.slug} aria-haspopup="dialog" href={atelierPath(item.slug)}>
+          <ul>{related.map((item) => <li key={item.slug}><a data-dossier={"atelier:" + item.slug} data-apercu={item.image} aria-haspopup="dialog" href={atelierPath(item.slug)}>
             <span className={styles.relatedNumber} aria-hidden="true">{String(ateliers.indexOf(item) + 1).padStart(2, "0")}</span>
             <span className={styles.relatedName}>{item.name}<span aria-hidden="true">→</span></span>
             <span className={styles.relatedSummary}>{item.summary}</span>

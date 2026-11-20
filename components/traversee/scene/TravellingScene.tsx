@@ -31,6 +31,13 @@ export default function TravellingScene({progress,active,onReady,onFailure}:Trav
     // Rendered state eases toward the scroll: the camera has weight and the light lingers.
     let shown=-1,speed=0,clock=0,last=0,slow=0,frames=0;
     let handX=0,handY=0,wantX=0,wantY=0,hand=0,handWanted=0,lastMove=-1e9;
+    // On phones that report their tilt without asking, tilting the phone moves the lamp.
+    let tiltX=0,tiltY=0,lastTilt=-1e9;
+    const tiltFree=typeof DeviceOrientationEvent!=="undefined"&&typeof (DeviceOrientationEvent as unknown as {requestPermission?:unknown}).requestPermission!=="function";
+    function tilt(event:DeviceOrientationEvent){
+      if(event.gamma===null||event.beta===null)return;
+      tiltX=T.MathUtils.clamp(event.gamma/28,-1,1);tiltY=T.MathUtils.clamp((50-event.beta)/28,-1,1);lastTilt=performance.now();
+    }
     const canvas=document.createElement("canvas");
     canvas.setAttribute("aria-hidden","true");
     canvas.style.cssText="display:block;width:100%;height:100%;";
@@ -52,6 +59,7 @@ export default function TravellingScene({progress,active,onReady,onFailure}:Trav
       if(!still)clock+=dt;
       // The hand: pointer on desks, a slow wander around the subject on touch screens.
       if(mouse.matches){handWanted=now-lastMove<2600?1:.55;}
+      else if(now-lastTilt<1200){wantX=tiltX*.9;wantY=tiltY*.7;handWanted=.75;}
       else{wantX=Math.sin(clock*.23)*.55;wantY=Math.sin(clock*.31+1)*.35;handWanted=small?.55:.7;}
       if(still)handWanted=0;
       const k=1-Math.exp(-dt*4);handX+=(wantX-handX)*k;handY+=(wantY-handY)*k;hand+=(handWanted-hand)*(1-Math.exp(-dt*2));
@@ -100,6 +108,7 @@ export default function TravellingScene({progress,active,onReady,onFailure}:Trav
     window.addEventListener("mestier:travelling",request);
     window.addEventListener("resize",request);
     window.addEventListener("pointermove",skim,{passive:true});
+    if(tiltFree&&!mouse.matches&&!still)window.addEventListener("deviceorientation",tilt,{passive:true});
     document.addEventListener("pointerleave",release);mouse.addEventListener("change",release);
     document.addEventListener("visibilitychange",request);
     try{
@@ -112,7 +121,7 @@ export default function TravellingScene({progress,active,onReady,onFailure}:Trav
     return ()=>{
       live=false;cancelAnimationFrame(raf);observer?.disconnect();
       window.removeEventListener("mestier:travelling",request);window.removeEventListener("resize",request);
-      window.removeEventListener("pointermove",skim);document.removeEventListener("pointerleave",release);mouse.removeEventListener("change",release);
+      window.removeEventListener("pointermove",skim);window.removeEventListener("deviceorientation",tilt);document.removeEventListener("pointerleave",release);mouse.removeEventListener("change",release);
       document.removeEventListener("visibilitychange",request);canvas.removeEventListener("webglcontextlost",lost);
       world?.dispose();renderer?.dispose();renderer?.forceContextLoss();canvas.remove();
     };

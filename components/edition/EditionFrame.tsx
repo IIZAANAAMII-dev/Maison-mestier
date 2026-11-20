@@ -1,13 +1,18 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { Header, Wordmark } from "../Header";
 import { DossierReader } from "../dossiers/DossierReader";
 import { ateliers, atelierPath, path, studies } from "../../lib/maison";
+import { Bandeau } from "./Bandeau";
+import { Apercus } from "./Apercus";
 
 export default function EditionFrame({ children }: {children: ReactNode}) {
   return <>
     <Header />
     {children}
+    <div className="grain" aria-hidden="true" />
     <DossierReader />
+    <Bandeau />
+    <Apercus />
     <footer className="colophon">
       <div className="colophon-lead">
         <a className="brand" href={path("/")} aria-label="Maison Mestier, accueil"><Wordmark /></a>
@@ -16,7 +21,7 @@ export default function EditionFrame({ children }: {children: ReactNode}) {
       </div>
       <nav aria-label="Les huit ateliers">
         <p className="colophon-heading">Les ateliers</p>
-        <ul>{ateliers.map((item) => <li key={item.slug}><a href={atelierPath(item.slug)}>{item.name}</a></li>)}</ul>
+        <ul>{ateliers.map((item) => <li key={item.slug}><a href={atelierPath(item.slug)} data-apercu={item.image}>{item.name}</a></li>)}</ul>
       </nav>
       <nav aria-label="Explorer la Maison">
         <p className="colophon-heading">La Maison</p>
@@ -27,6 +32,11 @@ export default function EditionFrame({ children }: {children: ReactNode}) {
           <li><a href={path("/reperages/")}>Repérages</a></li>
         </ul>
       </nav>
+      <p className="colophon-signature" aria-hidden="true">
+        {"Maison".split("").map((letter, i) => <span key={"m" + i} style={{ "--i": i } as CSSProperties}>{letter}</span>)}
+        <span className="colophon-espace"> </span>
+        {"Mestier".split("").map((letter, i) => <i key={"e" + i} style={{ "--i": i + 7 } as CSSProperties}>{letter}</i>)}
+      </p>
       <div className="colophon-base">
         <span>Cannes · Monaco · Marseille · Nice</span>
         <a href="#haut">Haut de page <span aria-hidden="true">↑</span></a>

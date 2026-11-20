@@ -8,6 +8,7 @@ import { Projection, Still } from "./Projection";
 import { useTravellingScore } from "./useTravellingScore";
 import { useCarnetRoute } from "./useCarnetRoute";
 import { useContinuousPlay } from "./useContinuousPlay";
+import { BoutonSon } from "../son/BoutonSon";
 import "./traversee.css";
 
 const Carnet = dynamic(()=>import("./carnet/Carnet"),{ssr:false});
@@ -51,6 +52,8 @@ export function Traversee() {
     event.preventDefault();goTo(index);
   }
   function touchSeal(keyboard:boolean) {
+    // The wax gives under the thumb.
+    if (!keyboard) navigator.vibrate?.(14);
     setFocusFromSeal(keyboard);
     openSeal();
   }
@@ -63,6 +66,7 @@ export function Traversee() {
         <header className="tr-mast">
           <a className="tr-brand" href="#invitation" onClick={e=>go(e,0)} aria-label="Maison Mestier, début de la visite">Maison <i>Mestier</i></a>
           <nav aria-label="La Maison" className="tr-mast-links">
+            <BoutonSon className="tr-son" />
             <a ref={carnet.fallback} className="tr-ateliers" aria-haspopup="dialog" href="#ateliers" onClick={e=>open(e,"ateliers")}>Les ateliers</a>
             <a className="tr-contact" aria-haspopup="dialog" aria-label="Écrire à la Maison" href="#contact" onClick={e=>open(e,"contact")}><span>Écrire</span><span className="tr-contact-long">à la Maison</span></a>
             <a className="tr-menu" href="#sommaire" onClick={e=>open(e,"sommaire")} aria-haspopup="dialog" aria-label="Sommaire de la Maison"><span className="tr-menu-lines" aria-hidden="true"/><span>Sommaire</span></a>

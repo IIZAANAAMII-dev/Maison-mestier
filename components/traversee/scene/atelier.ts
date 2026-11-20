@@ -150,13 +150,13 @@ export function materials() {
   const cloth=new T.MeshPhysicalMaterial({color:"#842c27",roughness:.86,metalness:.01,sheen:1,sheenColor:"#c0644a",sheenRoughness:.62});
   const velvet=physical({color:"#172c2f",roughness:.95,sheen:.9,sheenColor:"#3f6d6c",sheenRoughness:.55});
   // Sealing wax is glossy and slightly translucent: light enters the edges and returns red.
-  const wax=new T.MeshPhysicalMaterial({color:"#8e2620",roughness:.3,metalness:.02,specularIntensity:.7,clearcoat:.65,clearcoatRoughness:.2});
-  const waxHi=new T.MeshPhysicalMaterial({color:"#ab3e32",roughness:.27,metalness:.04,specularIntensity:.75,clearcoat:.55,clearcoatRoughness:.18});
+  const wax=new T.MeshPhysicalMaterial({color:"#7c1d17",roughness:.34,metalness:.02,specularIntensity:.55,clearcoat:.42,clearcoatRoughness:.26});
+  const waxHi=new T.MeshPhysicalMaterial({color:"#982f25",roughness:.3,metalness:.04,specularIntensity:.6,clearcoat:.4,clearcoatRoughness:.22});
   for(const seal of [wax,waxHi]){
     seal.onBeforeCompile=shader=>{
       shader.fragmentShader=shader.fragmentShader.replace("#include <emissivemap_fragment>",`#include <emissivemap_fragment>
         float graze=1.-clamp(dot(normalize(normal),normalize(vViewPosition)),0.,1.);
-        totalEmissiveRadiance+=vec3(.36,.045,.025)*pow(graze,2.6)*.4+vec3(.025,.003,.002);`);
+        totalEmissiveRadiance+=vec3(.3,.03,.016)*pow(graze,2.8)*.32;`);
     };
     seal.customProgramCacheKey=()=>"wax-translucence-v1";
   }

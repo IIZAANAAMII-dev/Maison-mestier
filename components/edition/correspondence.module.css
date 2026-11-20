@@ -26,8 +26,9 @@
 .sheet h3 { margin:.6rem 0 1.45rem; font:400 clamp(2.7rem,4.25vw,5.25rem)/1.02 var(--display); letter-spacing:-.065em; }
 .sheet form { display:grid; align-items:start; }
 .sheet label { margin-bottom:.35rem; font-size:.96rem; font-weight:550; }
-.sheet select,.sheet textarea { background:#fffcf5; border:1px solid #a59d8c; border-radius:0; color:var(--ink); font-size:1rem; width:100%; min-width:0; }
+.sheet select,.sheet textarea,.sheet input { background:#fffcf5; border:1px solid #a59d8c; border-radius:0; color:var(--ink); font-size:1rem; width:100%; min-width:0; }
 .sheet select { min-height:2.9rem; padding:.6rem 1.6rem .6rem .7rem; margin-bottom:1.15rem; }
+.sheet input { min-height:2.9rem; padding:.6rem .7rem; }
 .sheet textarea { padding:.65rem .7rem; min-height:6.7rem; resize:vertical; }
 .sheet :global(.button) { justify-self:start; margin-top:.9rem; }
 .sheet :global(.form-note),.sheet :global(.draft) { font-size:.88rem; line-height:1.55; color:#56574c; margin-top:.68rem; }
