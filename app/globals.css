@@ -344,6 +344,9 @@ html:is([data-curseur=lampe],[data-curseur=lampe-simple]) :is(input:not([type=bu
 /* ---- Le cachet du visiteur -------------------------------------------------------------------- */
 .lettre-pied { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: end; gap: 1.25rem; margin: .4rem 0 .2rem; }
 .lettre-signature { display: grid; gap: .45rem; min-width: 0; }
+.lettre-epreuve { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .8rem; margin: .1rem 0 .3rem; font-size: .88rem; color: #554f43; }
+.lettre-epreuve b { color: #1d2420; letter-spacing: .06em; }
+.lettre-epreuve :is(a, button) { min-height: 2.2rem; padding: 0; border: 0; background: none; color: #872f25; font: inherit; text-decoration: underline; text-underline-offset: .28em; cursor: pointer; }
 .lettre-signature label span { font-weight: 400; opacity: .7; }
 .cachet { position: relative; display: grid; justify-items: center; gap: .3rem; width: 7.6rem; margin: 0; }
 .cachet svg { display: block; width: 100%; height: auto; overflow: visible; }
@@ -356,6 +359,12 @@ html:is([data-curseur=lampe],[data-curseur=lampe-simple]) :is(input:not([type=bu
 .cachet-gravure, .cachet-lumiere { font-family: var(--display); font-style: italic; letter-spacing: -.05em; }
 .cachet-gravure { fill: #571109; }
 .cachet-lumiere { fill: rgba(255,186,160,.45); }
+.cachet[data-or] .cachet-gravure { fill: #4a300a; }
+.cachet[data-or] .cachet-lumiere { fill: rgba(255,244,214,.7); }
+.cachet[data-or] .cachet-sillon { stroke: rgba(60,36,6,.55); }
+.cachet[data-or] .cachet-arete { stroke: rgba(255,240,205,.55); }
+.cachet[data-or] .cachet-attente circle, .cachet[data-or] .cachet-attente text { stroke: #a87a2c; fill: none; }
+.cachet[data-or] .cachet-attente text { fill: #a87a2c; stroke: none; }
 .cachet figcaption { font: 500 .64rem/1.35 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #6c645a; text-align: center; max-width: 9rem; }
 .cachet[data-pose] .cachet-attente { opacity: 0; transition: opacity .15s ease; }
 .cachet[data-pose] .cachet-cire { opacity: 1; filter: drop-shadow(0 4px 5px rgba(60,10,6,.32)); }
@@ -453,3 +462,11 @@ html[data-rideau=passe] .rideau { display: none; }
 .apercu[data-shown] { opacity: 1; clip-path: inset(0 0 0 0); }
 .apercu img { display: block; width: 100%; height: 100%; object-fit: cover; }
 @media (hover: none), (pointer: coarse) { .apercu { display: none; } }
+
+/* ---- Le défilement doux (Lenis) et les révélations -------------------------------------------- */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: clip; }
+.mot-revele-mask { padding: .06em .12em .16em; margin: -.06em -.12em -.16em; }
+.ligne-revelee-mask { padding-bottom: .12em; margin-bottom: -.12em; }

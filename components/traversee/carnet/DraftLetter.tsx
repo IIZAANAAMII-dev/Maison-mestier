@@ -4,6 +4,9 @@ import { type FormEvent, useEffect, useRef, useState } from "react";
 import { ateliers } from "../../../lib/maison";
 import { cacheter } from "../../son/atelier-sonore";
 import { Cachet } from "./Cachet";
+import { CarnetLink } from "./CarnetLink";
+
+const EPREUVE = "mestier:epreuve";
 
 const recipient = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "";
 const emailAction = "mailto:" + encodeURIComponent(recipient).replace("%40", "@");
@@ -31,6 +34,9 @@ export function DraftLetter({ defaultWorkshop, idPrefix = "", keepInCarnet = fal
   const message = useRef<HTMLTextAreaElement>(null);
   const copyField = useRef<HTMLTextAreaElement>(null);
   const [signature, setSignature] = useState("");
+  // A proof composed at the casse travels with the letter.
+  const [epreuve, setEpreuve] = useState("");
+  useEffect(() => { try { setEpreuve(sessionStorage.getItem(EPREUVE) || ""); } catch { /* private mode */ } }, []);
   const [draft, setDraft] = useState<Draft>();
   const [copyStatus, setCopyStatus] = useState<"copied" | "manual">();
 
@@ -80,7 +86,8 @@ export function DraftLetter({ defaultWorkshop, idPrefix = "", keepInCarnet = fal
     }
     const selected = ateliers.find(item => item.slug === workshop.current?.value);
     const signed = signature.trim();
-    const prepared = { subject: "Projet · " + (selected?.name ?? "Maison Mestier"), body: signed ? body + "\n\n" + signed : body };
+    const joined = epreuve ? body + "\n\nÉpreuve composée à la casse : « " + epreuve + " »" : body;
+    const prepared = { subject: "Projet · " + (selected?.name ?? "Maison Mestier"), body: signed ? joined + "\n\n" + signed : joined };
     if (!draft) cacheter();
     setDraft(prepared);
     keep(prepared);
@@ -112,6 +119,9 @@ export function DraftLetter({ defaultWorkshop, idPrefix = "", keepInCarnet = fal
       <label htmlFor={idPrefix + "message"}>Votre message</label>
       <textarea id={idPrefix + "message"} name="Message" rows={4} maxLength={4000} ref={message}
         required placeholder="Qu’aimeriez-vous réaliser ?" onInput={updateDraft} />
+      {epreuve ? <p className="lettre-epreuve">Épreuve jointe · « <b>{epreuve}</b> »
+        <button type="button" onClick={() => { try { sessionStorage.removeItem(EPREUVE); } catch { /* private mode */ } setEpreuve(""); setDraft(undefined); }}>Retirer</button></p>
+        : <p className="lettre-epreuve"><CarnetLink view="casse">Joindre une épreuve composée en plomb</CarnetLink></p>}
       <div className="lettre-pied">
         <div className="lettre-signature">
           <label htmlFor={idPrefix + "signature"}>Votre signature <span>(facultatif)</span></label>

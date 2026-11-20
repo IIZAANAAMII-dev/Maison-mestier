@@ -4,6 +4,7 @@ import { DossierReader } from "../dossiers/DossierReader";
 import { ateliers, atelierPath, path, studies } from "../../lib/maison";
 import { Bandeau } from "./Bandeau";
 import { Apercus } from "./Apercus";
+import { Mouvement } from "./Mouvement";
 
 export default function EditionFrame({ children }: {children: ReactNode}) {
   return <>
@@ -13,6 +14,7 @@ export default function EditionFrame({ children }: {children: ReactNode}) {
     <DossierReader />
     <Bandeau />
     <Apercus />
+    <Mouvement />
     <footer className="colophon">
       <div className="colophon-lead">
         <a className="brand" href={path("/")} aria-label="Maison Mestier, accueil"><Wordmark /></a>

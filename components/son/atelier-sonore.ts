@@ -140,6 +140,28 @@ export function tinter(index: number) {
   for (const node of [carrier, modulator, shimmer]) { node.start(now); node.stop(now + 3.6); }
 }
 
+/** Gold dust settles into a hallmark: a cluster of small, high bells. */
+export function scintiller() {
+  const e = engine; if (!e || !wanted) return;
+  const { ctx } = e, now = ctx.currentTime;
+  [2093, 2637, 3136, 3951].forEach((f, i) => {
+    const start = now + i * .045;
+    const tone = ctx.createOscillator(); tone.type = "sine"; tone.frequency.value = f;
+    const level = ctx.createGain();
+    level.gain.setValueAtTime(0, start); level.gain.linearRampToValueAtTime(.022, start + .004); level.gain.exponentialRampToValueAtTime(.0001, start + 1.1);
+    tone.connect(level); level.connect(e.dry);
+    const send = ctx.createGain(); send.gain.value = .8; level.connect(send).connect(e.hall);
+    tone.start(start); tone.stop(start + 1.2);
+  });
+}
+
+/** All eight hallmarks: three bells rung together, low to high. */
+export function consacrer() {
+  if (!engine || !wanted) return;
+  [0, 2, 4].forEach((note, i) => setTimeout(() => tinter(note), i * 140));
+  setTimeout(scintiller, 520);
+}
+
 /** The brass matrix falls on the wax: a soft, low thud and a dry crack of wax. */
 export function cacheter() {
   const e = engine; if (!e || !wanted) return;
@@ -153,6 +175,39 @@ export function cacheter() {
   body.start(now); body.stop(now + .55);
   burst(e, { duration: .09, from: 900, type: "lowpass", level: .22, wet: .3 });
   burst(e, { at: .012, duration: .035, from: 3200, q: .8, level: .06, wet: .1 });
+}
+
+/** A lead sort dropped into the composing stick: a small, bright, metallic click. */
+export function poser() {
+  const e = engine; if (!e || !wanted) return;
+  const { ctx } = e, now = ctx.currentTime;
+  const ring = ctx.createOscillator(); ring.type = "triangle"; ring.frequency.value = 1900 + Math.random() * 500;
+  const level = ctx.createGain();
+  level.gain.setValueAtTime(0, now); level.gain.linearRampToValueAtTime(.05, now + .002); level.gain.exponentialRampToValueAtTime(.0001, now + .09);
+  ring.connect(level).connect(e.dry); ring.start(now); ring.stop(now + .1);
+  burst(e, { duration: .025, from: 3800, q: 2.2, level: .07, wet: .12 });
+}
+
+/** The brayer rolls over the forme: a short, sticky rumble. */
+export function rouler() {
+  const e = engine; if (!e || !wanted) return;
+  burst(e, { duration: .5, from: 260, to: 420, type: "lowpass", q: .8, level: .09, wet: .15 });
+  burst(e, { at: .05, duration: .45, from: 1400, to: 900, q: 3, level: .018, wet: .1 });
+}
+
+/** The platen comes down on the forme: a heavy wooden thud and the creak of the screw. */
+export function presser() {
+  const e = engine; if (!e || !wanted) return;
+  const { ctx } = e, now = ctx.currentTime;
+  const body = ctx.createOscillator(); body.type = "sine";
+  body.frequency.setValueAtTime(110, now); body.frequency.exponentialRampToValueAtTime(38, now + .3);
+  const level = ctx.createGain();
+  level.gain.setValueAtTime(0, now); level.gain.linearRampToValueAtTime(.5, now + .008); level.gain.exponentialRampToValueAtTime(.0001, now + .7);
+  body.connect(level).connect(e.dry);
+  const send = ctx.createGain(); send.gain.value = .35; level.connect(send).connect(e.hall);
+  body.start(now); body.stop(now + .75);
+  burst(e, { duration: .12, from: 600, type: "lowpass", level: .25, wet: .3 });
+  burst(e, { at: .18, duration: .38, from: 900, to: 700, q: 9, level: .03, wet: .25 });
 }
 
 /** A sheet unfolds: a long, rising rustle. */

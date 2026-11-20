@@ -432,20 +432,31 @@ export function useTravellingScore({root, frame, progress, slugs, onChapter, onI
       if (quiet || score || scoreLoading || scoreUnavailable) return;
       scoreLoading = true;
       try {
-        const [{gsap}, {ScrollTrigger}] = await Promise.all([import("gsap"), import("gsap/ScrollTrigger")]);
+        const [{gsap}, {ScrollTrigger}, {SplitText}] = await Promise.all([import("gsap"), import("gsap/ScrollTrigger"), import("gsap/SplitText")]);
         if (!alive || quiet || score) return;
-        gsap.registerPlugin(ScrollTrigger);
+        gsap.registerPlugin(ScrollTrigger, SplitText);
+        try { await document.fonts?.ready; } catch { /* fallback faces split as well */ }
+        if (!alive || quiet || score) return;
         const timeline = gsap.timeline({paused:true});
+        // Each title of the visit is set in movable type: its letters leave upward and the next
+        // title's letters rise from their baseline, scrubbed by the scroll like the camera itself.
+        const titles = moments.map(moment => {
+          const heading = moment.querySelector<HTMLElement>(".tr-moment-title");
+          return heading ? SplitText.create(heading, {type:"words,chars", mask:"words", wordsClass:"tr-mot", charsClass:"tr-lettre"}) : null;
+        });
         const ctx = gsap.context(() => {
           timeline.set(moments, {autoAlpha:0}, 0).set(moments[0], {autoAlpha:1}, 0);
           for (let i = 1; i < moments.length; i++) {
             const turn = i - .5, previous = moments[i - 1], next = moments[i];
-            const outgoing = previous.querySelectorAll<HTMLElement>("[data-line-in]");
-            const incoming = next.querySelectorAll<HTMLElement>("[data-line-in]");
+            const lines = (moment: HTMLElement) => Array.from(moment.querySelectorAll<HTMLElement>("[data-line-in]")).filter(line => !line.closest(".tr-moment-title"));
+            const outgoing = lines(previous), incoming = lines(next);
             timeline.to(previous,{autoAlpha:0,duration:.20,ease:"sine.in"},turn-.21)
               .fromTo(next,{autoAlpha:0},{autoAlpha:1,duration:.24,ease:"sine.out",immediateRender:false},turn+.004);
             if (outgoing.length) timeline.to(outgoing,{y:-11,rotate:-.42,stagger:{amount:.045},duration:.21,ease:"power2.in"},turn-.27);
-            if (incoming.length) timeline.fromTo(incoming,{y:20,rotate:.72,clipPath:"inset(0 -10% 76% -10%)"},{y:0,rotate:0,clipPath:"inset(-16% -10% -22% -10%)",duration:.25,stagger:{amount:.05},ease:"power3.out",immediateRender:false},turn-.01);
+            if (incoming.length) timeline.fromTo(incoming,{y:20,rotate:.72,clipPath:"inset(0 -10% 76% -10%)"},{y:0,rotate:0,clipPath:"inset(-16% -10% -22% -10%)",duration:.25,stagger:{amount:.05},ease:"power3.out",immediateRender:false},turn+.06);
+            const leaving = titles[i - 1]?.chars, arriving = titles[i]?.chars;
+            if (leaving?.length) timeline.to(leaving,{yPercent:-118,rotate:-7,stagger:{amount:.07},duration:.17,ease:"power2.in"},turn-.24);
+            if (arriving?.length) timeline.fromTo(arriving,{yPercent:118,rotate:9},{yPercent:0,rotate:0,stagger:{amount:.11},duration:.24,ease:"expo.out",immediateRender:false},turn-.03);
           }
           timeline.to({}, {duration:.01}, last-.01);
           ScrollTrigger.create({trigger:section, start:() => geometry.start, end:() => geometry.start + geometry.travel,
@@ -456,7 +467,7 @@ export function useTravellingScore({root, frame, progress, slugs, onChapter, onI
         timeline.time(fraction * last, true);
         if (opening || sealed) {opacityOfFirst = -1; renderOpening();}
         else renderJourney();
-        disposeScore = () => {timeline.revert(); ctx.revert(); delete section!.dataset.score;};
+        disposeScore = () => {timeline.revert(); ctx.revert(); titles.forEach(split => split?.revert()); delete section!.dataset.score;};
       } catch { scoreUnavailable = true; /* Native scroll still directs the camera and selects every caption. */ }
       finally {scoreLoading = false;}
     }

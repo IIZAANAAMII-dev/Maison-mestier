@@ -305,3 +305,5 @@
 .flight { position: absolute; inset: 0; z-index: 2; overflow: hidden; pointer-events: none; }
 .flight img { position: absolute; inset: 0 auto auto 0; display: block; max-width: none; object-fit: cover; }
 .page[data-shared-print] { animation: none; }
+
+.dialog :global(.carnet-mot-mask) { padding: .04em .12em .16em; margin: -.04em -.12em -.16em; }

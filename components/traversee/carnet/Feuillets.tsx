@@ -98,6 +98,7 @@ const contents = [
   { view: "recherches", article: "Les", word: "recherches", detail: "Trois études de matière et d’espace", image: "empreinte" },
   { view: "methode", article: "La", word: "méthode", detail: "Les étapes d’un lancement de produit", image: "etude" },
   { view: "contact", article: "La", word: "correspondance", detail: "Écrire à la Maison", image: "correspondance" },
+  { view: "casse", article: "La", word: "casse", detail: "Composer et imprimer en plomb", image: "tirage-sceau" },
 ] as const;
 
 export function Sommaire({ halt }: { halt?: string }) {

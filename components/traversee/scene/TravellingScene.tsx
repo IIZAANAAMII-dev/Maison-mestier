@@ -38,6 +38,11 @@ export default function TravellingScene({progress,active,onReady,onFailure}:Trav
       if(event.gamma===null||event.beta===null)return;
       tiltX=T.MathUtils.clamp(event.gamma/28,-1,1);tiltY=T.MathUtils.clamp((50-event.beta)/28,-1,1);lastTilt=performance.now();
     }
+    let found=new Set<string>();
+    try{found=new Set(JSON.parse(localStorage.getItem("mestier:poincons")||"[]") as string[]);}catch{/* private mode */}
+    // A finger held on the scene carries the lamp; a moving finger scrolls the visit as usual.
+    let touching=false,touchX=0,touchY=0;
+    let sent="";
     const canvas=document.createElement("canvas");
     canvas.setAttribute("aria-hidden","true");
     canvas.style.cssText="display:block;width:100%;height:100%;";
@@ -58,10 +63,12 @@ export default function TravellingScene({progress,active,onReady,onFailure}:Trav
       speed+=(Math.abs(shown-(before<0?shown:before))/dt-speed)*(1-Math.exp(-dt*5));
       if(!still)clock+=dt;
       // The hand: pointer on desks, a slow wander around the subject on touch screens.
-      if(mouse.matches){handWanted=now-lastMove<2600?1:.55;}
-      else if(now-lastTilt<1200){wantX=tiltX*.9;wantY=tiltY*.7;handWanted=.75;}
+      let pointing=false,pointX=wantX,pointY=wantY;
+      if(touching){wantX=touchX;wantY=touchY;handWanted=1;pointing=true;pointX=touchX;pointY=touchY;}
+      else if(mouse.matches){handWanted=now-lastMove<2600?1:.55;pointing=now-lastMove<2600;}
+      else if(now-lastTilt<1200){wantX=tiltX*.9;wantY=tiltY*.7;handWanted=.75;pointing=true;pointX=wantX;pointY=wantY;}
       else{wantX=Math.sin(clock*.23)*.55;wantY=Math.sin(clock*.31+1)*.35;handWanted=small?.55:.7;}
-      if(still)handWanted=0;
+      if(still){handWanted=0;pointing=false;}
       const k=1-Math.exp(-dt*4);handX+=(wantX-handX)*k;handY+=(wantY-handY)*k;hand+=(handWanted-hand)*(1-Math.exp(-dt*2));
       try{
         if(w!==measuredWidth||h!==measuredHeight){
@@ -70,7 +77,16 @@ export default function TravellingScene({progress,active,onReady,onFailure}:Trav
           renderer.setPixelRatio(Math.max(.65,quality==="low"?Math.min(dpr,1.1):dpr));
           renderer.setSize(w,h,false);
         }
-        world.paint(shown,w,h,glintX,glintY,{time:clock,speed:still?0:speed,handX,handY,hand});
+        world.paint(shown,w,h,glintX,glintY,{time:clock,speed:still?0:speed,handX,handY,hand,pointX,pointY,pointing});
+        const hunt=world.chasse();
+        if(hunt.trouve){
+          found.add(hunt.trouve.id);
+          try{localStorage.setItem("mestier:poincons",JSON.stringify([...found]));}catch{/* private mode */}
+          window.dispatchEvent(new CustomEvent("mestier:poincon",{detail:hunt.trouve}));
+        }
+        const p=hunt.progres;
+        const key=p?p.id+":"+Math.round(p.valeur*40)+":"+Math.round(p.x/3)+":"+Math.round(p.y/3):"";
+        if(key!==sent){sent=key;window.dispatchEvent(new CustomEvent("mestier:chasse",{detail:p}));}
         canvas.dataset.pose=shown.toFixed(4);canvas.dataset.draws=String(renderer.info.render.calls);
         const current=world.state();canvas.dataset.materials=current.materials;canvas.dataset.models=current.models;canvas.dataset.engraving=current.engraving;canvas.dataset.light=current.light;canvas.dataset.textile=current.textile;
         if(!presented){presented=true;canvas.dataset.ready="true";state.current.onReady();world.refine();}
@@ -109,19 +125,33 @@ export default function TravellingScene({progress,active,onReady,onFailure}:Trav
     window.addEventListener("resize",request);
     window.addEventListener("pointermove",skim,{passive:true});
     if(tiltFree&&!mouse.matches&&!still)window.addEventListener("deviceorientation",tilt,{passive:true});
+    function touchDown(event:PointerEvent){
+      if(event.pointerType!=="touch"||!state.current.active)return;
+      if(event.target instanceof Element&&event.target.closest("a,button,input,textarea,select,summary,dialog,[role=dialog]"))return;
+      touching=true;touchX=event.clientX/window.innerWidth*2-1;touchY=-(event.clientY/window.innerHeight*2-1);request();
+    }
+    function touchMove(event:PointerEvent){if(touching&&event.pointerType==="touch"){touchX=event.clientX/window.innerWidth*2-1;touchY=-(event.clientY/window.innerHeight*2-1);}}
+    function touchUp(event:PointerEvent){if(event.pointerType==="touch")touching=false;}
+    function restart(){found=new Set();world?.recommencer();}
+    window.addEventListener("pointerdown",touchDown,{passive:true});window.addEventListener("pointermove",touchMove,{passive:true});
+    window.addEventListener("pointerup",touchUp,{passive:true});window.addEventListener("pointercancel",touchUp,{passive:true});
+    window.addEventListener("mestier:chasse-recommencer",restart);
     document.addEventListener("pointerleave",release);mouse.addEventListener("change",release);
     document.addEventListener("visibilitychange",request);
     try{
       renderer=new T.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:"high-performance",stencil:false});
       renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.04;
       renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFShadowMap;
-      world=stage(renderer,(process.env.NEXT_PUBLIC_BASE_PATH||"").replace(/\/$/,""),request,quality);
+      world=stage(renderer,(process.env.NEXT_PUBLIC_BASE_PATH||"").replace(/\/$/,""),request,quality,still?new Set():found);
       observer=new ResizeObserver(request);observer.observe(wrapper);request();
     }catch{fail();}
     return ()=>{
       live=false;cancelAnimationFrame(raf);observer?.disconnect();
       window.removeEventListener("mestier:travelling",request);window.removeEventListener("resize",request);
-      window.removeEventListener("pointermove",skim);window.removeEventListener("deviceorientation",tilt);document.removeEventListener("pointerleave",release);mouse.removeEventListener("change",release);
+      window.removeEventListener("pointermove",skim);window.removeEventListener("deviceorientation",tilt);
+      window.removeEventListener("pointerdown",touchDown);window.removeEventListener("pointermove",touchMove);
+      window.removeEventListener("pointerup",touchUp);window.removeEventListener("pointercancel",touchUp);
+      window.removeEventListener("mestier:chasse-recommencer",restart);document.removeEventListener("pointerleave",release);mouse.removeEventListener("change",release);
       document.removeEventListener("visibilitychange",request);canvas.removeEventListener("webglcontextlost",lost);
       world?.dispose();renderer?.dispose();renderer?.forceContextLoss();canvas.remove();
     };

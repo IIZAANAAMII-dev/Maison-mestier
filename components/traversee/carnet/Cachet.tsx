@@ -1,4 +1,5 @@
-import { useId } from "react";
+import { useEffect, useId, useState } from "react";
+import { POINCONS, poinconsTrouves } from "../poincons-liste";
 
 /** Initials for the seal: the first letter of the first and last words of a signature. */
 export function initiales(signature: string) {
@@ -25,16 +26,19 @@ const rim = (() => {
  */
 export function Cachet({ signature, pose }: { signature: string; pose: boolean }) {
   const id = "cachet" + useId().replace(/[^a-zA-Z0-9_-]/g, "");
+  // A visitor who struck all eight hallmarks seals with gold.
+  const [or, setOr] = useState(false);
+  useEffect(() => { setOr(poinconsTrouves().length >= POINCONS.length); }, []);
   const letters = initiales(signature) || "MM";
   const own = initiales(signature) !== "";
   const size = letters.length > 1 ? 31 : 40;
-  return <figure className="cachet" data-pose={pose || undefined} data-vierge={!own || undefined} aria-hidden="true">
+  return <figure className="cachet" data-pose={pose || undefined} data-vierge={!own || undefined} data-or={or || undefined} aria-hidden="true">
     <svg viewBox="0 0 120 120" width="120" height="120">
       <defs>
         <radialGradient id={id + "cire"} cx="38%" cy="32%" r="78%">
-          <stop offset="0" stopColor="#c4402e" />
-          <stop offset=".46" stopColor="#8f231b" />
-          <stop offset="1" stopColor="#4e0f0b" />
+          <stop offset="0" stopColor={or ? "#f7dfa2" : "#c4402e"} />
+          <stop offset=".46" stopColor={or ? "#c39443" : "#8f231b"} />
+          <stop offset="1" stopColor={or ? "#5f3f12" : "#4e0f0b"} />
         </radialGradient>
         <filter id={id + "relief"} x="-10%" y="-10%" width="120%" height="120%">
           <feGaussianBlur in="SourceAlpha" stdDeviation="1.4" result="flou" />
@@ -57,6 +61,6 @@ export function Cachet({ signature, pose }: { signature: string; pose: boolean }
         <text x="60" y="60" dominantBaseline="central" textAnchor="middle" fontSize={size} className="cachet-gravure">{letters}</text>
       </g>
     </svg>
-    <figcaption>{pose ? "Lettre cachetée" : own ? "Votre cachet" : "Signez pour graver votre cachet"}</figcaption>
+    <figcaption>{pose ? (or ? "Cachetée à l’or" : "Lettre cachetée") : or ? "Votre cachet d’or" : own ? "Votre cachet" : "Signez pour graver votre cachet"}</figcaption>
   </figure>;
 }

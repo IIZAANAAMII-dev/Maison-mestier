@@ -8,14 +8,17 @@ import { optique, type Quality } from "./optique";
 import { edition, invitation, printingPress, threshold } from "./imprimerie";
 import { correspondence, pavilion, raster, theatre } from "./lieux";
 import { continuousPaper, frame } from "./trajectoire";
+import { poincons, type Chasse } from "./poincons";
 
 import { stations } from "./stations";
 export { stations };
 
 /** What the visitor brings to the frame: time, the speed of travel and the hand that holds the lamp. */
-export type Presence={time:number;speed:number;handX:number;handY:number;hand:number};
+export type Presence={time:number;speed:number;handX:number;handY:number;hand:number;
+  /** Where the visitor is actually pointing the lamp, in normalised screen coordinates, and whether they are. */
+  pointX?:number;pointY?:number;pointing?:boolean};
 
-export function stage(renderer:T.WebGLRenderer,base:string,redraw:()=>void,quality:Quality="high") {
+export function stage(renderer:T.WebGLRenderer,base:string,redraw:()=>void,quality:Quality="high",found:Set<string>=new Set()) {
   let live=true,materialState="base",lightState="base",textileState="base";
   const finishes:T.Texture[]=[];
   const scene=new T.Scene();
@@ -38,6 +41,8 @@ export function stage(renderer:T.WebGLRenderer,base:string,redraw:()=>void,quali
   const letter=correspondence(sets[5],palette,editionArt);
   continuousPaper(scene,palette);
   const air=atmosphere(scene);
+  const hunt=poincons(scene,found);
+  let chasse:Chasse={progres:null,trouve:null};
   let lens=optique(renderer,quality);
   // The visitor holds a small tungsten lamp. It follows the pointer a little in front of the subject,
   // so brass, wax and velvet answer the hand. On touch screens it wanders slowly around the subject.
@@ -121,6 +126,7 @@ export function stage(renderer:T.WebGLRenderer,base:string,redraw:()=>void,quali
     for(const bay of surroundings.bays){const depth=camera.position.z-bay.position.z;bay.visible=depth>-12&&depth<37;}
     surroundings.mount.visible=camera.position.z>-6;
     air.paint(camera,focus,t,height,renderer.getPixelRatio());
+    chasse=hunt.update(camera,width,height,t,!!life.pointing,life.pointX??0,life.pointY??0,renderer.getPixelRatio());
     lens.setSize(width,height);
     lens.render(scene,camera,{focus,time:t,speed:life.speed});
     opening.crest.getWorldPosition(hot).project(camera);
@@ -128,9 +134,9 @@ export function stage(renderer:T.WebGLRenderer,base:string,redraw:()=>void,quali
     surface.dataset.sealX=((1+hot.x)/2).toFixed(4);surface.dataset.sealY=((1-hot.y)/2).toFixed(4);
 
   }
-  return {paint,refine,retune:(next:Quality)=>{lens.dispose();lens=optique(renderer,next);},state:()=>({materials:materialState,light:lightState,textile:textileState,models:["cachet","presse"].filter(n=>modelNames.has(n)).join(","),engraving:editionArt.engraved()?"ready":"base"}),
+  return {paint,refine,chasse:()=>chasse,recommencer:()=>hunt.reset(),retune:(next:Quality)=>{lens.dispose();lens=optique(renderer,next);},state:()=>({materials:materialState,light:lightState,textile:textileState,models:["cachet","presse"].filter(n=>modelNames.has(n)).join(","),engraving:editionArt.engraved()?"ready":"base"}),
     dispose:()=>{
-      live=false;unscan?.();finishes.forEach(t=>t.dispose());disposeMeshes(scene);scene.clear();opening.dispose();editionArt.dispose();drapes.dispose();pixels.dispose();surroundings.dispose();air.dispose();lens.dispose();
+      live=false;unscan?.();finishes.forEach(t=>t.dispose());disposeMeshes(scene);scene.clear();opening.dispose();editionArt.dispose();drapes.dispose();pixels.dispose();surroundings.dispose();air.dispose();hunt.dispose();lens.dispose();
       palette.environment.dispose();palette.shadow.map?.dispose();Object.values(palette).forEach(a=>{if(a instanceof T.Material)a.dispose();});
     }};
 }

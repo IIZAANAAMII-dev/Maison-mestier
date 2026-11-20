@@ -172,3 +172,82 @@ button.tr-speed{border:0;background:transparent;padding:0;min-height:2.75rem;col
 @media(prefers-reduced-motion:reduce){
  .tr-home *, .tr-home *::before, .tr-home *::after{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important;}
 }
+
+/* ---- La chasse aux poinçons ------------------------------------------------------------------ */
+.losange{display:block;width:100%;height:100%;overflow:visible;}
+.losange-bord{fill:none;stroke:#d9b77c;stroke-width:2.4;}
+.losange-filet{fill:none;stroke:#d9b77c;stroke-width:.8;opacity:.7;}
+.losange text{font:italic 400 13px/1 var(--display);fill:#d9b77c;letter-spacing:-.04em;}
+.losange[data-plein] .losange-bord{fill:#d9b77c;}
+.losange[data-plein] .losange-filet{stroke:#3a2a12;opacity:.55;}
+.losange[data-plein] text{fill:#231a0d;}
+.tr-chasse{display:inline-flex;align-items:center;gap:.55rem;}
+.tr-chasse[hidden]{display:none;}
+.tr-chasse-rangee{display:inline-flex;gap:3px;}
+.tr-chasse-rangee i{display:block;width:6px;height:6px;transform:rotate(45deg);border:1px solid #c9a46a;transition:background-color .4s ease,box-shadow .4s ease;}
+.tr-chasse-rangee i[data-trouve]{background:#e2c18a;box-shadow:0 0 6px #e2c18acc;}
+.tr-chasse-compte{font:500 .72rem/1 var(--mono);letter-spacing:.06em;color:#e2c18a;font-variant-numeric:tabular-nums;}
+.chasse-collection{position:fixed;z-index:30;top:calc(clamp(5.95rem,10.5vh,8rem) + 3.4rem);right:var(--film-edge);width:min(25rem,calc(100vw - 2rem));
+  padding:1.3rem 1.3rem 1rem;background:rgba(14,19,18,.88);border:1px solid rgba(217,183,124,.35);backdrop-filter:blur(12px);
+  box-shadow:0 2rem 4rem #0009;color:#efe7da;}
+.chasse-collection[hidden]{display:none;}
+.chasse-titre{font:400 1.7rem/1.05 var(--display);letter-spacing:-.05em;}
+.chasse-titre i{color:#e2c18a;}
+.chasse-regle{margin:.55rem 0 .9rem;color:#bdb5a8;font-size:.86rem;line-height:1.5;}
+.chasse-collection ul{list-style:none;margin:0;padding:0;display:grid;gap:.15rem;}
+.chasse-collection li{display:grid;grid-template-columns:1.9rem 1fr auto;align-items:center;gap:.7rem;min-height:2.5rem;border-top:1px solid rgba(239,231,218,.1);}
+.chasse-collection li .losange{width:1.9rem;height:1.9rem;opacity:.45;}
+.chasse-collection li[data-trouve] .losange{opacity:1;}
+.chasse-atelier{font:400 1.08rem/1.2 var(--display);letter-spacing:-.03em;}
+.chasse-indice{color:#8f897d;font-size:.74rem;text-align:right;max-width:13rem;}
+.chasse-collection a{color:#e2c18a;font-size:.84rem;text-underline-offset:.25em;}
+.chasse-recommencer{margin-top:.8rem;padding:0;border:0;background:none;color:#8f897d;font-size:.78rem;text-decoration:underline;text-underline-offset:.25em;}
+.chasse-anneau{position:fixed;z-index:9;width:150px;height:150px;transform:translate(-50%,-50%);pointer-events:none;overflow:visible;}
+.chasse-lunette{transform-origin:60px 60px;animation:chasseLunette 14s linear infinite;}
+.chasse-lunette line{stroke:rgba(226,193,138,.35);stroke-width:1;transition:stroke .25s ease;}
+.chasse-lunette line[data-passe]{stroke:#f3d7a0;}
+.chasse-anneau-fond{fill:none;stroke:rgba(226,193,138,.2);stroke-width:1;}
+.chasse-anneau-trace{fill:none;stroke:#f3d7a0;stroke-width:2.4;stroke-linecap:round;stroke-dasharray:1;transform:rotate(-90deg);transform-origin:60px 60px;filter:drop-shadow(0 0 5px #f0c27a);}
+.chasse-anneau-mot{font:500 7px/1 var(--mono);letter-spacing:.2em;fill:#f3d7a0;}
+@keyframes chasseLunette{to{transform:rotate(360deg)}}
+.chasse-annonce{position:fixed;z-index:12;left:50%;bottom:clamp(6.4rem,13vh,9rem);display:flex;align-items:center;gap:.7rem;max-width:calc(100vw - 2rem);
+  padding:.6rem 1rem .6rem .7rem;border:1px solid rgba(217,183,124,.4);border-radius:2rem;background:rgba(14,19,18,.82);backdrop-filter:blur(10px);
+  color:#efe7da;font:450 .88rem/1.3 var(--sans);transform:translate(-50%,1rem);opacity:0;pointer-events:none;transition:opacity .5s ease,transform .6s cubic-bezier(.2,.9,.25,1);}
+.chasse-annonce[data-visible]{opacity:1;transform:translate(-50%,0);}
+.chasse-annonce .losange{width:1.7rem;height:1.7rem;flex:none;}
+.chasse-lampe{flex:none;width:1.1rem;height:1.1rem;border-radius:50%;background:radial-gradient(circle,#ffe3b0,#e2a95a 45%,transparent 70%);box-shadow:0 0 14px #f5c57a;animation:chasseLampe 1.6s ease-in-out infinite alternate;}
+@keyframes chasseLampe{from{transform:scale(.8);opacity:.7}to{transform:scale(1.15);opacity:1}}
+.chasse-medaille{position:absolute;z-index:20;left:0;top:0;width:56px;height:56px;margin:-28px 0 0 -28px;pointer-events:none;filter:drop-shadow(0 0 14px #f0c27acc);}
+.chasse-medaille svg{width:100%;height:100%;overflow:visible;}
+.chasse-medaille .losange-bord{fill:#e2c18a;stroke:#f3d9a6;stroke-width:2.4;}
+.chasse-medaille .losange-filet{fill:none;stroke:#3a2a12;stroke-width:.8;opacity:.55;}
+.chasse-medaille text{font:italic 400 13px/1 var(--display);fill:#231a0d;}
+.chasse-etincelle{position:absolute;z-index:19;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;background:#ffe2a8;box-shadow:0 0 8px #f5c57a;pointer-events:none;}
+.chasse-or{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 45%,rgba(24,19,11,.86),rgba(7,9,8,.95));backdrop-filter:blur(6px);animation:chasseOr .9s ease both;}
+.chasse-feuilles{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+.chasse-or-texte{position:relative;display:grid;justify-items:center;gap:1rem;max-width:min(46rem,90vw);text-align:center;color:#f3ebdd;}
+.chasse-or-texte h2{font:400 clamp(3.2rem,8vw,7.4rem)/1 var(--display);letter-spacing:-.065em;}
+.chasse-or-texte h2 i{color:#e8c98c;}
+.chasse-or-texte>p:not(.tr-kicker){max-width:34ch;color:#d8cfbf;font-size:clamp(1rem,1.3vw,1.2rem);line-height:1.5;}
+.chasse-or-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:.8rem 1.4rem;margin-top:.6rem;}
+.chasse-or-actions button{min-height:2.9rem;padding:.7rem 1.3rem;border:1px solid rgba(239,231,218,.4);border-radius:2rem;background:transparent;color:#efe7da;font:500 .95rem/1 var(--sans);}
+.chasse-or-actions .chasse-or-principal{background:linear-gradient(135deg,#f3d9a0,#c99a4f 55%,#9a6d2c);border-color:transparent;color:#1d160b;}
+@keyframes chasseOr{from{opacity:0}to{opacity:1}}
+@media (max-width:39.99rem){
+  .tr-chasse-mot,.tr-outil-mot{display:none;}
+  .tr-tools button{min-width:2.4rem;justify-content:center;}
+  .chasse-collection{top:auto;bottom:5.4rem;left:1rem;right:1rem;width:auto;max-height:62svh;overflow:auto;}
+  .chasse-annonce{bottom:6rem;font-size:.8rem;}
+}
+@media (prefers-reduced-motion:reduce){.chasse-lampe{animation:none;}.chasse-or{animation:none;}}
+
+/* Movable type in the titles of the visit (SplitText masks per word). */
+.tr-mot-mask{padding:0 .12em .16em;margin:0 -.12em -.16em;}
+.tr-lettre{will-change:transform;}
+
+/* An invitation to play at the press. */
+.tr-jeu{display:flex;width:max-content;align-items:center;gap:.6rem;margin-top:.9rem;min-height:2.6rem;color:#e8d3ac;text-decoration:none;pointer-events:auto;
+  font:500 .72rem/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;}
+.tr-jeu:hover{color:#fff;}
+.tr-jeu-sort{display:grid;place-items:center;width:1.5rem;height:1.9rem;border-radius:2px;background:linear-gradient(150deg,#a3a8ad,#6b7177 42%,#464b50);
+  box-shadow:0 2px 0 #222528,inset 0 1px 0 rgba(255,255,255,.45);color:#e5e8ea;font:500 1rem/1 var(--display);letter-spacing:0;transform:scaleX(-1);}
