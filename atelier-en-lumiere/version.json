@@ -1,7 +1,8 @@
 {
-  "projet": "Maison Mestier",
-  "version": "Le plan-séquence · Carnet de repérages Awwwards",
-  "branche": "feat/atelier-en-lumiere",
-  "commit": "4cce4abf971b7ab6b8e93edfb261d6cef2d3c327",
-  "source": "https://github.com/IIZAANAAMII-dev/Maison-mestier/commit/4cce4abf971b7ab6b8e93edfb261d6cef2d3c327"
+  "project": "Maison Mestier",
+  "experience": "La Galerie vivante",
+  "sourceCommit": "dca6a6125ddd7228f2edf40b98ef90c2240c307d",
+  "sourceBranch": "feat/maison-mestier-galerie-vivante",
+  "publishedAt": "2026-11-21T01:24:56.275315+00:00",
+  "basePath": "/Maison-mestier/atelier-en-lumiere"
 }

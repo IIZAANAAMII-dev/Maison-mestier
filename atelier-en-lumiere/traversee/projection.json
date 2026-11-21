@@ -1,5 +1,5 @@
 {
-  "empreinteSourcesSHA256": "f491a3ed9b20ed9f795eb6cc56085c8fd3819702a6a23dfa52c3053b64d4fc13",
+  "empreinteSourcesSHA256": "fb1ab6e421e9104d8fb952a3c86123677541ddee530bf0ae80f0fa84189c107c",
   "images": 31,
   "poses": [
     0,
@@ -84,14 +84,14 @@
         "nombreImages": 241,
         "imagesParSeconde": 24,
         "approcheDernierePose": 10,
-        "octets": 4209135
+        "octets": 5119914
       },
       "ouverture": {
         "chemin": "large/ouverture.mp4",
         "nombreImages": 63,
         "imagesParSeconde": 30,
         "duree": 2.1,
-        "octets": 457218
+        "octets": 577900
       }
     },
     "portrait": {
@@ -143,14 +143,14 @@
         "nombreImages": 241,
         "imagesParSeconde": 24,
         "approcheDernierePose": 10,
-        "octets": 2098605
+        "octets": 2584985
       },
       "ouverture": {
         "chemin": "portrait/ouverture.mp4",
         "nombreImages": 63,
         "imagesParSeconde": 30,
         "duree": 2.1,
-        "octets": 271912
+        "octets": 354560
       }
     }
   }
