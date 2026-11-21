@@ -1,1 +1,1 @@
-export { default } from "../../components/edition/EditionFrame";
+export default function Layout({ children }: { children: React.ReactNode }) { return children; }

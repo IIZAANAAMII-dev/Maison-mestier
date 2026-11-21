@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { path } from "../lib/maison";
-import { Lampe } from "../components/Lampe";
-import { rideauPrecoce } from "../components/traversee/rideau-precoce";
+import { MaisonNav, MaisonFooter, ContactDialog } from "../components/galerie/MaisonChrome";
 import "./globals.css";
+import "./galerie.css";
 
 const display = localFont({
   src: [
@@ -15,24 +15,35 @@ const sans = localFont({ src: "./fonts/instrument-sans.woff2", weight: "400 700"
 const mono = localFont({ src: "./fonts/ibm-plex-mono.woff2", variable: "--font-mono", display: "swap", preload: false });
 
 export const metadata: Metadata = {
-  title: { default: "Maison Mestier — Maison de communication 360", template: "%s · Maison Mestier" },
+  metadataBase: new URL("https://iizaanaamii-dev.github.io"),
+  title: { default: "Maison Mestier — L’art de faire impression", template: "%s · Maison Mestier" },
   description: "Stands de salon, événements professionnels, identité et sites sur mesure. Huit ateliers, une direction de création dans le Sud de la France.",
   icons: { icon: path("/cachet.png") },
   robots: { index: false, follow: false },
+  applicationName: "Maison Mestier",
+  openGraph: {
+    type: "website", locale: "fr_FR", siteName: "Maison Mestier",
+    title: "Maison Mestier — L’art de faire impression",
+    description: "Une maison. Huit ateliers. De l’idée à la matière, nous donnons forme aux marques.",
+    url: path("/"),
+    images: [{ url: path("/galerie/pavilion.webp"), width: 1536, height: 1024, alt: "Le pli monumental, étude de création Maison Mestier" }],
+  },
+  twitter: { card: "summary_large_image", title: "Maison Mestier — L’art de faire impression", images: [path("/galerie/pavilion.webp")] },
 };
-export const viewport: Viewport = { themeColor: [{ media: "(prefers-color-scheme: dark)", color: "#141a17" }, { color: "#141a17" }] };
+export const viewport: Viewport = { themeColor: "#f2ede3", width: "device-width", initialScale: 1 };
 
 export default function Layout({ children }: Readonly<{children: React.ReactNode}>) {
   return (
-    <html lang="fr" className={[display.variable, sans.variable, mono.variable].join(" ")} suppressHydrationWarning>
+    <html lang="fr" className={[display.variable, sans.variable, mono.variable].join(" ")}>
       <head>
         <style>{"@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }"}</style>
-        <script dangerouslySetInnerHTML={{ __html: rideauPrecoce }} />
       </head>
       <body id="haut">
         <a className="skip" href="#contenu">Aller au contenu</a>
+        <MaisonNav />
         {children}
-        <Lampe />
+        <MaisonFooter />
+        <ContactDialog />
       </body>
     </html>
   );

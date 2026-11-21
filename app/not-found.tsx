@@ -1,11 +1,9 @@
 import { path } from "../lib/maison";
-import EditionFrame from "../components/edition/EditionFrame";
-import styles from "./edition.module.css";
+import styles from "./galerie-carnets.module.css";
 
 export default function NotFound() {
-  return <EditionFrame><main id="contenu" tabIndex={-1} className={styles.missing}>
-    <p className="eyebrow ruled">Page introuvable</p>
-    <h1>Retrouver <i>la Maison.</i></h1>
-    <a href={path("/#ateliers")} className={styles.underlineLink}>Voir les ateliers</a>
-  </main></EditionFrame>;
+  return <main id="contenu" tabIndex={-1} className={styles.page}><div className={styles.shell}>
+    <div className={`${styles.folio} ${styles.kicker}`}><span>404 · Page introuvable</span><span>La visite continue</span></div>
+    <div className={styles.hero}><h1>Retrouver<br /><i>la Maison.</i></h1><div className={styles.heroAside}><p>Cette page s’est éclipsée. Les portes de la Maison restent ouvertes.</p><a href={path("/")} className={styles.link}>Revenir à l’accueil<span aria-hidden="true">↗</span></a><br /><a href={path("/#ateliers")} className={styles.link}>Explorer les huit ateliers<span aria-hidden="true">↗</span></a></div></div>
+  </div></main>;
 }

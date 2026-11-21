@@ -12,7 +12,7 @@ const recipient = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "";
 const emailAction = "mailto:" + encodeURIComponent(recipient).replace("%40", "@");
 
 type Draft = { subject: string; body: string };
-type LetterPage = { workshop: string; message: string; signature: string; prepared?: Draft };
+type LetterPage = { workshop: string; message: string; signature: string; epreuve: string; prepared?: Draft };
 
 // A visitor may put the letter down and browse another folio in the same tab.
 const openLetters = new WeakMap<Document, LetterPage>();
@@ -36,17 +36,20 @@ export function DraftLetter({ defaultWorkshop, idPrefix = "", keepInCarnet = fal
   const [signature, setSignature] = useState("");
   // A proof composed at the casse travels with the letter.
   const [epreuve, setEpreuve] = useState("");
-  useEffect(() => { try { setEpreuve(sessionStorage.getItem(EPREUVE) || ""); } catch { /* private mode */ } }, []);
   const [draft, setDraft] = useState<Draft>();
   const [copyStatus, setCopyStatus] = useState<"copied" | "manual">();
 
   useEffect(() => {
+    let attached = "";
+    try { attached = sessionStorage.getItem(EPREUVE) || ""; } catch { /* private mode */ }
+    setEpreuve(attached);
     const saved = keepInCarnet ? openLetters.get(document) : undefined;
     const requested = defaultWorkshop || saved?.workshop || new URLSearchParams(location.search).get("atelier");
     if (message.current && saved) {
       message.current.value = saved.message;
       setSignature(saved.signature);
-      if (saved.workshop === (requested || "")) setDraft(saved.prepared);
+      // A newly printed or removed proof must be reflected before the letter is sealed again.
+      setDraft(saved.workshop === (requested || "") && saved.epreuve === attached ? saved.prepared : undefined);
     }
     if (workshop.current && !workshop.current.value && requested &&
         ateliers.some(item => item.slug === requested)) {
@@ -61,9 +64,9 @@ export function DraftLetter({ defaultWorkshop, idPrefix = "", keepInCarnet = fal
     }
   }, [copyStatus]);
 
-  function keep(prepared?: Draft, signed = signature) {
+  function keep(prepared?: Draft, signed = signature, attached = epreuve) {
     if (keepInCarnet && message.current && workshop.current) {
-      openLetters.set(document, { workshop: workshop.current.value, message: message.current.value, signature: signed, prepared });
+      openLetters.set(document, { workshop: workshop.current.value, message: message.current.value, signature: signed, epreuve: attached, prepared });
     }
   }
 
@@ -72,6 +75,14 @@ export function DraftLetter({ defaultWorkshop, idPrefix = "", keepInCarnet = fal
     setDraft(undefined);
     setCopyStatus(undefined);
     keep();
+  }
+
+  function removeProof() {
+    try { sessionStorage.removeItem(EPREUVE); } catch { /* private mode */ }
+    setEpreuve("");
+    setDraft(undefined);
+    setCopyStatus(undefined);
+    keep(undefined, signature, "");
   }
 
   function prepareDraft(event: FormEvent<HTMLFormElement>) {
@@ -120,7 +131,7 @@ export function DraftLetter({ defaultWorkshop, idPrefix = "", keepInCarnet = fal
       <textarea id={idPrefix + "message"} name="Message" rows={4} maxLength={4000} ref={message}
         required placeholder="Qu’aimeriez-vous réaliser ?" onInput={updateDraft} />
       {epreuve ? <p className="lettre-epreuve">Épreuve jointe · « <b>{epreuve}</b> »
-        <button type="button" onClick={() => { try { sessionStorage.removeItem(EPREUVE); } catch { /* private mode */ } setEpreuve(""); setDraft(undefined); }}>Retirer</button></p>
+        <button type="button" onClick={removeProof}>Retirer</button></p>
         : <p className="lettre-epreuve"><CarnetLink view="casse">Joindre une épreuve composée en plomb</CarnetLink></p>}
       <div className="lettre-pied">
         <div className="lettre-signature">

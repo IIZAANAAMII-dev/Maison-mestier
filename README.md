@@ -1,40 +1,52 @@
-# Maison Mestier · Le plan-séquence
+# Maison Mestier · La Galerie vivante
 
-**[Ouvrir l’invitation](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/#cachet)** · [Voir la traversée sur téléphone](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/traversee/visite-mobile.mp4)
+**[Voir le site en ligne](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/)** · **[Lire le storyboard détaillé](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/galerie/storyboard.pdf)** · [Schéma du parcours](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/galerie/schema-du-parcours.png)
 
-La première page est une lettre scellée. Un toucher sur la cire soulève le rabat. La caméra passe entre les feuilles, rejoint la presse, franchit le portique d’un stand et traverse le rideau d’une scène. Le même filet de laiton la guide dans une trame numérique jusqu’à la table de correspondance.
+Une refonte de la Maison autour de la matière, d’une typographie éditoriale et de huit savoir-faire. Le parcours s’ouvre immédiatement sur « Faire impression. » et une sculpture de papier au revers de laiton. La galerie mène des études de création aux ateliers, puis à une invitation à parler du projet.
 
-[![Le portique en vue de scène, capture du site](docs/captures-traversee/portique-bureau.webp)](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/#portique)
+## L’expérience
 
-## Parcourir la Maison
+- **Le pli monumental** : une sculpture 3D originale, son socle et sa lumière. Le pointeur et le défilement font évoluer le cadrage. Papier, laiton et encre sont trois matières sélectionnables. Le mouvement peut être mis en pause.
+- **Le manifeste** : une respiration typographique, « Du sens. De la matière. De l’émotion. ».
+- **Trois regards de création** : un pavillon de papier, une étude de papeterie et une scénographie nocturne. Un cadrage qui s’ouvre au défilement et une mise en page asymétrique relient les études.
+- **Huit ateliers** : un index accompagné d’un aperçu sensible au survol et au focus, puis huit pages complètes qui reprennent les contenus validés de `lib/ateliers.json`.
+- **La manière** : écouter, donner forme, faire vivre. Trois gestes consultables dans un accordéon.
+- **Une invitation finale** : un footer monumental et un panneau de contact qui conserve le contexte de l’atelier sélectionné.
 
-- Le défilement, les six repères et les commandes du clavier avancent ou remontent le même trajet. « Lire le parcours » lance une traversée continue qui ralentit aux haltes. Une intervention du visiteur rend la main. [Entrer sous le portique](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/#portique)
-- Le carnet ouvre les huit ateliers, les trois études et la méthode par-dessus la scène. Fermer le dossier restitue la position de caméra. Les onze fiches et l’établi ont aussi leur propre page. [Ouvrir Stands & Salons](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/?carnet=atelier%3Astands-salons#portique) · [Établi des matières](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/laboratoire/)
-- Deux jeux prolongent la visite. **La chasse aux poinçons** : huit poinçons d’atelier sont cachés dans l’air de la scène, et seule la lampe du visiteur (le pointeur, le doigt posé ou l’inclinaison du téléphone) rassemble la poussière d’or qui les dessine ; le huitième dore le cachet de la lettre. **La casse** : composer un mot en caractères de plomb, l’encrer, tirer le levier de la presse, puis garder l’épreuve ou la joindre à la lettre. [Composer en plomb](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/?carnet=casse#impression)
-- « Écrire à la Maison » prépare un brouillon à copier ou à ouvrir dans la messagerie. Il se conserve pendant la visite dans l’onglet. Le destinataire et le monogramme définitif attendent la validation de la Maison.
+Le menu plein écran, le laboratoire, les trois pages d’études et le carnet de repérages reprennent la même direction. Les images de recherche sont identifiées comme études de création ; elles ne représentent pas des réalisations clientes.
 
-## Modèles, lumière et direction artistique
+## Le dessin du parcours
 
-Les deux fichiers Blender natifs contiennent le cachet en noyer et laiton et la presse à volant. L’estampe du carton réapparaît sur le stand. Les veines du travertin, le brossage du métal, le grain du papier et du noyer et le poil du velours proviennent de relevés sous CC0. Un panorama de studio HDR éclaire les surfaces. [Fichiers Blender modifiables](art/blender) · [Storyboard, Awwwards, Adobe Substance et matières](docs/plan-sequence.md)
+Le [carnet de repérages](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/reperages/#storyboard) donne accès à un schéma d’ensemble et à un storyboard de six pages : transitions entre les sections, menu, fiches et contact mobile. Les dessins décrivent l’intention de mise en scène ; les réglages sont adaptés aux appareils et aux essais.
 
-Le carnet de réalisation rassemble six expériences sur Awwwards. Chaque extrait est relié à un geste précis pour la Maison. Trois études de cadrage et un essai de lumière sur la cire rendu dans Blender prolongent le repérage. [Voir les expériences et le film de la cire](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/reperages/) · [Ouvrir le carnet PDF](public/reperages/carnet-de-realisation.pdf)
+Les références de création consultées sont Moooi — Paper Play, Lusion v3, Cartier Watches & Wonders 2024 par Immersive Garden, et Studio Freight. Les liens et les principes retenus figurent dans le carnet. Aucune récompense n’est revendiquée pour ce projet.
 
-## Développer
+## Développer et exporter
 
-Avec Node.js 22 ou ultérieur, installer les dépendances puis ouvrir le serveur local.
+Node.js 22 ou ultérieur est requis. Les polices sont auto-hébergées.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Le serveur s’ouvre sur <http://localhost:3000>. La visite emploie une caméra Three.js, des annotations HTML et une partition GSAP. La préférence de mouvement réduit, l’économie de données, le mode photo ou la perte de WebGL donnent accès aux images calculées depuis les mêmes positions de caméra. Les six chapitres et les liens restent lisibles avec JavaScript désactivé.
-
 ```sh
 npm run typecheck
 NEXT_PUBLIC_BASE_PATH=/Maison-mestier/atelier-en-lumiere npm run build
 ```
 
-Le build statique se trouve dans `out/`. La branche de prévisualisation sert le dossier `atelier-en-lumiere/`. [Révision publiée](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/version.json) · [Recette et captures](docs/recette-plan-sequence.md)
+Le build statique est écrit dans `out/`. Le dossier est publié sur la branche `gh-pages`, dans `atelier-en-lumiere/`. La [révision publiée](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/version.json) indique le commit source associé au déploiement.
 
-Les textes des huit métiers sont dans [le répertoire éditorial](lib/ateliers.json). Les six légendes, le trajet de la caméra et les sources reproductibles se trouvent dans [la traversée](components/traversee) et [l’atelier de production](art). Définir `NEXT_PUBLIC_CONTACT_EMAIL` au build quand l’adresse de réception est validée.
+## Repères de réalisation
+
+- `components/galerie/GalleryHome.tsx` : parcours et partition GSAP.
+- `components/galerie/MonumentScene.tsx` et `monument-geometry.ts` : scène Three.js et géométrie du ruban.
+- `components/galerie/MaisonChrome.tsx` : navigation, footer et contact.
+- `app/ateliers/[slug]/page.tsx` et `app/recherches/[slug]/page.tsx` : pages internes.
+- `public/galerie/` : trois visuels de création générés pour cette direction et storyboard.
+
+Le défilement reste natif. La préférence de mouvement réduit supprime les animations de parcours et fige la caméra. La scène cesse de dessiner hors du viewport ou lorsque l’onglet est masqué. En économie de données, le poster est présenté avec une commande d’activation 3D ; en cas d’indisponibilité WebGL, le poster assure la continuité. Le menu et le contact utilisent des dialogues natifs, avec Échap et restitution du focus.
+
+Le contact prépare un **brouillon** à copier, conservé dans la session de l’onglet. Il n’envoie aucun message. Définir `NEXT_PUBLIC_CONTACT_EMAIL` au build lorsque l’adresse de réception est validée pour proposer l’ouverture de la messagerie du visiteur.
+
+Les fichiers de l’ancienne traversée sont conservés dans l’historique et les répertoires de recherche. La nouvelle page d’accueil ne les charge pas.

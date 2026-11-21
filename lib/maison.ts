@@ -8,25 +8,25 @@ export const atelierPath = (slug: string) => path("/ateliers/" + slug + "/");
 
 export const studies = [
   {
-    slug: "le-portique", name: "Le portique", image: "atelier", material: "Papier vergé & laiton",
-    intro: "Deux plis suffisent à transformer une surface en lieu. Cette maquette de stand part d’une seule feuille.",
-    gesture: "Une feuille se soulève du socle de pierre. Son revers accroche la lumière avant que les deux lignes de pli ne dessinent un seuil.",
-    use: "Depuis l’allée, le portique encadre la démonstration. Une table basse dégage la vue tandis qu’un fond plein ménage un espace de conversation.",
-    alt: "Maquette de stand en papier ivoire avec un comptoir rond sur un socle de pierre.", workshop: "stands-salons", scene: "pli",
+    slug: "le-portique", name: "Le portique", image: "atelier", material: "Papier, laiton & pierre",
+    intro: "Une feuille devient architecture. Dans cette étude de création, deux courbes ivoire dessinent un passage et révèlent un revers de laiton.",
+    gesture: "La lumière de la verrière glisse sur le papier, puis fait briller son revers. Les courbes s’élèvent au-dessus d’un sol de pierre : le pli donne une échelle et une direction à l’espace.",
+    use: "Le portique donne une présence à la marque depuis l’allée. Le socle présente un objet, le passage invite à entrer et l’assise suggère un temps de conversation. Une recherche sur les usages d’un stand, avant tout projet de fabrication.",
+    alt: "Deux courbes de papier ivoire au revers doré forment un pavillon sur un sol de pierre, dans une galerie éclairée par une verrière.", workshop: "stands-salons", scene: "pli",
   },
   {
-    slug: "lempreinte", name: "L’empreinte", image: "empreinte", material: "Cire cachet & papier",
-    intro: "Un cachet, une feuille, une lumière rasante. L’étude cherche la profondeur nécessaire pour qu’une marque se lise au toucher.",
-    gesture: "Le poids du cachet déplace la cire. Sous une lumière latérale, le bord irrégulier et le creux des lettres font apparaître le dessin.",
-    use: "Sur un carton d’invitation ou à l’écran, la même empreinte peut changer d’échelle. Le dessin du sceau est ici une étude de monogramme.",
-    alt: "Matrice en laiton posée sur un papier marqué d’une empreinte.", workshop: "identite", scene: "sceau",
+    slug: "lempreinte", name: "L’empreinte", image: "empreinte", material: "Papier ivoire, gaufrage & rouge cachet",
+    intro: "Des lignes gaufrées, une enveloppe rouge, un éclat de laiton. L’étude de création compose une identité qui se découvre autant par la matière que par le dessin.",
+    gesture: "Le relief creuse doucement le papier ivoire. La lumière rasante révèle les lignes, le cercle et le grain de la feuille. L’enveloppe rouge et la règle de laiton donnent à cet ensemble ses deux accents.",
+    use: "Un carton d’invitation prépare la rencontre avant le premier échange. Cette recherche de papeterie explore la façon dont une couleur, un relief et un choix de papier peuvent porter la même identité.",
+    alt: "Papeterie ivoire gaufrée de lignes et d’un cercle, enveloppe rouge et règle de laiton sur une surface de pierre.", workshop: "identite", scene: "sceau",
   },
   {
-    slug: "lentracte", name: "L’entracte", image: "entracte", material: "Textile nuit & lumière",
-    intro: "Un rideau s’écarte, une arête de laiton s’allume. La lumière dessine le parcours avant l’arrivée des invités.",
-    gesture: "L’éclairage rasant révèle d’abord le seuil, puis l’espace de rencontre. Le textile sombre absorbe les reflets autour de la scène.",
-    use: "Une entrée, un point de démonstration et une assise suffisent à éprouver l’accueil, les lignes de vue et la circulation d’une soirée.",
-    alt: "Étude de scénographie nocturne avec tenture verte, portique ivoire et arête de laiton.", workshop: "evenement", scene: "scene",
+    slug: "lentracte", name: "L’entracte", image: "entracte", material: "Velours rouge, pierre & lumière",
+    intro: "Un velours rouge traverse l’espace et découvre un portique de pierre. Cette étude de création imagine le moment où un lieu devient un rendez-vous.",
+    gesture: "Le drapé suspendu forme une grande diagonale. Au sol, la lumière chaude révèle les plis du velours et souligne le portique ivoire. La scène circulaire rassemble ces matières dans un même espace.",
+    use: "Le seuil guide l’arrivée, la scène donne un point d’attention et l’assise propose une pause. Cette recherche de scénographie explore les premières impressions d’une soirée, avant la présence des invités.",
+    alt: "Une ample tenture de velours rouge traverse un portique ivoire éclairé, au-dessus d’une scène circulaire en pierre et d’une assise rouge.", workshop: "evenement", scene: "scene",
   },
 ] as const;
 
