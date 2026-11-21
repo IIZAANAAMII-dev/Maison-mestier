@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type FormEvent, type MouseEvent, type SyntheticEvent } from "react";
 import { ateliers, atelierPath, path } from "../../lib/maison";
+import { ArrowIcon, MaisonMark, CopyIcon, CheckIcon } from "./Icons";
 import "./chrome.css";
 
 type ContactDetail = { atelier?: string };
@@ -131,7 +132,7 @@ export function MaisonNav() {
       <nav className="g-nav" aria-label="Navigation principale">
         <a href={path("/#maison")}>La Maison</a>
         <a href={path("/#ateliers")}>Les ateliers</a>
-        <a className="g-nav-contact" href={path("/#contact")} onClick={(event) => requestContact(event)}>Écrire à la Maison <span aria-hidden="true">↗</span></a>
+        <a className="g-nav-contact" href={path("/#contact")} onClick={(event) => requestContact(event)}>Écrire à la Maison <span aria-hidden="true"><ArrowIcon /></span></a>
       </nav>
       <button className="g-menu-toggle" type="button" aria-expanded={menu.isOpen} aria-controls="g-navigation-dialog" aria-haspopup="dialog" onClick={menu.show}>
         <span>Menu</span><span className="g-menu-lines" aria-hidden="true"><i /><i /></span>
@@ -175,11 +176,11 @@ export function MaisonFooter() {
     </div>
     <div className="g-footer-directory">
       <div className="g-footer-note"><span className="g-caption">Une maison, huit ateliers</span><p>De la première idée<br />à sa dernière finition.</p><span className="g-footer-location">Sud de la France</span></div>
-      <nav className="g-footer-pages" aria-label="La Maison"><span className="g-caption">La Maison</span><a href={path("/#maison")}>Notre regard</a><a href={path("/#regards")}>Études de création</a><a href={path("/laboratoire/")}>Le laboratoire</a><a href={path("/reperages/")}>Repérages &amp; storyboard</a><a href={path("/#contact")} onClick={(event) => requestContact(event)}>Écrivez-nous <span aria-hidden="true">↗</span></a></nav>
+      <nav className="g-footer-pages" aria-label="La Maison"><span className="g-caption">La Maison</span><a href={path("/#maison")}>Notre regard</a><a href={path("/#regards")}>Études de création</a><a href={path("/laboratoire/")}>Le laboratoire</a><a href={path("/reperages/")}>Repérages &amp; storyboard</a><a href={path("/#contact")} onClick={(event) => requestContact(event)}>Écrivez-nous <span aria-hidden="true"><ArrowIcon /></span></a></nav>
       <nav className="g-footer-workshops" aria-label="Les huit ateliers"><span className="g-caption">Les ateliers</span><div>{ateliers.map((atelier) => <a key={atelier.slug} href={atelierPath(atelier.slug)}>{atelier.name}</a>)}</div></nav>
     </div>
-    <a className="g-footer-wordmark" href={path("/")} aria-label="Maison Mestier, accueil"><span>Maison</span><em>Mestier</em><span className="g-footer-asterisk" aria-hidden="true">✳</span></a>
-    <div className="g-footer-bottom"><span>© {new Date().getFullYear()} Maison Mestier</span><span>La matière prend vie.</span><a href={path("/#haut")}>Retour en haut <span aria-hidden="true">↑</span></a></div>
+    <a className="g-footer-wordmark" href={path("/")} aria-label="Maison Mestier, accueil"><span>Maison</span><em>Mestier</em><span className="g-footer-asterisk" aria-hidden="true"><MaisonMark /></span></a>
+    <div className="g-footer-bottom"><span>© {new Date().getFullYear()} Maison Mestier</span><span>La matière prend vie.</span><a href="#haut">Retour en haut <span aria-hidden="true"><ArrowIcon direction="up" /></span></a></div>
   </footer>;
 }
 
@@ -302,7 +303,7 @@ export function ContactDialog() {
   return <dialog ref={dialog.ref} id="g-contact-dialog" className="g-contact-dialog" aria-labelledby="g-contact-title" aria-describedby="g-contact-description" onCancel={dialog.cancel} onClose={finishClose} onClick={dismissBackdrop}>
     <div className="g-contact-top"><span className="g-caption">Maison Mestier · Votre projet</span><button className="g-close" type="button" onClick={() => dialog.dismiss()}><span>Fermer</span><span className="g-close-cross" aria-hidden="true" /></button></div>
     <div className="g-contact-layout">
-      <div className="g-contact-intro"><span className="g-contact-symbol" aria-hidden="true">✳</span><h2 id="g-contact-title" tabIndex={-1} data-dialog-focus>Faisons<br /><em>connaissance.</em></h2><p id="g-contact-description">Un lieu à imaginer, une marque à faire vivre, une idée à partager.</p><p className="g-contact-mode">Préparez votre message pour le copier dans votre messagerie. Ce formulaire n’envoie pas de message.</p><span className="g-contact-signature">À bientôt,<br /><em>la Maison.</em></span></div>
+      <div className="g-contact-intro"><span className="g-contact-symbol" aria-hidden="true"><MaisonMark /></span><h2 id="g-contact-title" tabIndex={-1} data-dialog-focus>Faisons<br /><em>connaissance.</em></h2><p id="g-contact-description">Un lieu à imaginer, une marque à faire vivre, une idée à partager.</p><p className="g-contact-mode">Préparez votre message pour le copier dans votre messagerie. Ce formulaire n’envoie pas de message.</p><span className="g-contact-signature">À bientôt,<br /><em>la Maison.</em></span></div>
       <div className="g-contact-form-wrap">
         <form className="g-contact-form" onSubmit={prepare}>
           <div className="g-form-row">
@@ -314,7 +315,7 @@ export function ContactDialog() {
           {error && <p className="g-form-error" role="alert">{error}</p>}
           <div className="g-form-action"><p>Vos notes restent dans cet onglet jusqu’à sa fermeture.</p><button className="g-prepare" type="submit"><span>Préparer mon message</span><Arrow /></button></div>
         </form>
-        {prepared && <div className="g-message-ready" ref={readyRef} tabIndex={-1} aria-labelledby="g-message-title"><span className="g-caption">C’est prêt</span><h3 id="g-message-title">Votre message est prêt à copier.</h3><label className="g-visually-hidden" htmlFor="g-message-draft">Votre message préparé</label><textarea id="g-message-draft" className="g-draft-preview" ref={draftRef} value={message} readOnly rows={7} /><div className="g-copy-actions"><button className="g-prepare" type="button" onClick={copy}><span>{copied ? "Message copié" : "Copier le message"}</span><span aria-hidden="true">{copied ? "✓" : "↗"}</span></button>{hasContactEmail && <a className="g-open-mail" href={`mailto:${contactEmail}?subject=${encodeURIComponent(`Un projet avec la Maison — ${atelierName}`)}&body=${encodeURIComponent(message)}`}>Ouvrir ma messagerie ↗</a>}</div><p className="g-copy-notice" role="status" aria-live="polite">{notice}</p></div>}
+        {prepared && <div className="g-message-ready" ref={readyRef} tabIndex={-1} aria-labelledby="g-message-title"><span className="g-caption">C’est prêt</span><h3 id="g-message-title">Votre message est prêt à copier.</h3><label className="g-visually-hidden" htmlFor="g-message-draft">Votre message préparé</label><textarea id="g-message-draft" className="g-draft-preview" ref={draftRef} value={message} readOnly rows={7} /><div className="g-copy-actions"><button className="g-prepare" type="button" onClick={copy}><span>{copied ? "Message copié" : "Copier le message"}</span><span aria-hidden="true">{copied ? <CheckIcon /> : <CopyIcon />}</span></button>{hasContactEmail && <a className="g-open-mail" href={`mailto:${contactEmail}?subject=${encodeURIComponent(`Un projet avec la Maison — ${atelierName}`)}&body=${encodeURIComponent(message)}`}>Ouvrir ma messagerie <ArrowIcon /></a>}</div><p className="g-copy-notice" role="status" aria-live="polite">{notice}</p></div>}
       </div>
     </div>
   </dialog>;

@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { ateliers, atelierPath, path } from "../../lib/maison";
 import type { MonumentMaterial } from "./MonumentScene";
+import { ArrowIcon, MaisonMark, PlayPauseIcon } from "./Icons";
 
 const Monument = dynamic(() => import("./MonumentScene"), { ssr: false });
 const visualFor = (slug: string) => ["identite", "contenu"].includes(slug) ? "editorial" : ["evenement", "ephemere"].includes(slug) ? "night" : "pavilion";
@@ -74,7 +75,7 @@ export function GalleryHome({ studyOnly = false }: { studyOnly?: boolean }) {
         <p><span className="v2-live-dot" />Le pli monumental<span className="v2-object-kind"> — étude de matière</span></p>
         <div className="v2-material-controls" aria-label="Matière de la sculpture">
           {unavailable ? <span className="v2-static-view">Vue photographique</span> : enabled ? <>{(["papier", "laiton", "encre"] as const).map(value => <button key={value} type="button" disabled={!ready} aria-pressed={material === value} onClick={() => setMaterial(value)}>{value}</button>)}
-            <button className="v2-pause" type="button" disabled={!ready} onClick={() => setPaused(!paused)} aria-label={paused ? "Reprendre le mouvement" : "Mettre le mouvement en pause"} aria-pressed={paused}>{paused ? "▷" : "Ⅱ"}</button></> : <button type="button" onClick={() => setEnabled(true)}>Explorer en 3D ↗</button>}
+            <button className="v2-pause" type="button" disabled={!ready} onClick={() => setPaused(!paused)} aria-label={paused ? "Reprendre le mouvement" : "Mettre le mouvement en pause"} aria-pressed={paused}><PlayPauseIcon paused={paused} /></button></> : <button type="button" onClick={() => setEnabled(true)}>Explorer en 3D <ArrowIcon style={{ marginLeft: ".5em" }} /></button>}
         </div>
       </div>
     </section>
@@ -83,7 +84,7 @@ export function GalleryHome({ studyOnly = false }: { studyOnly?: boolean }) {
       <div className="v2-section-marker" data-reveal><span>01 / La Maison</span><span>Une idée, du début à la fin.</span></div>
       <div className="v2-manifesto-grid">
         <h2 id="v2-manifesto-title" data-reveal>Du sens.<br />De la matière.<br /><i>De l’émotion.</i></h2>
-        <div className="v2-manifesto-aside" data-reveal><span className="v2-sun" aria-hidden="true">✳</span><p>Nous croyons aux marques que l’on ressent autant qu’on les reconnaît.</p><p>Maison Mestier réunit stratégie, création et production. Du site au salon, du papier à l’espace, nous imaginons une présence qui vous ressemble.</p><a className="v2-inline-link" href="#ateliers">Huit ateliers, une même exigence <Arrow diagonal /></a></div>
+        <div className="v2-manifesto-aside" data-reveal><span className="v2-sun" aria-hidden="true"><MaisonMark /></span><p>Nous croyons aux marques que l’on ressent autant qu’on les reconnaît.</p><p>Maison Mestier réunit stratégie, création et production. Du site au salon, du papier à l’espace, nous imaginons une présence qui vous ressemble.</p><a className="v2-inline-link" href="#ateliers">Huit ateliers, une même exigence <Arrow diagonal /></a></div>
       </div>
       <div className="v2-marquee" aria-hidden="true"><span style={{ animationPlayState: paused ? "paused" : undefined }}>UNE IDÉE. MILLE FAÇONS DE PRENDRE VIE. </span><span style={{ animationPlayState: paused ? "paused" : undefined }}>UNE IDÉE. MILLE FAÇONS DE PRENDRE VIE. </span></div>
     </section>

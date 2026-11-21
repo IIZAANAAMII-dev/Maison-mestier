@@ -171,13 +171,8 @@ export default function MonumentScene({ material = "papier", paused = false, pro
         RectAreaLightUniformsLib.init();
         gl.toneMapping = T.ACESFilmicToneMapping; gl.toneMappingExposure = 1.08;
         gl.domElement.addEventListener("webglcontextlost", () => setFailed(true), { once: true });
-      }} fallback={<Unavailable onUnavailable={() => setFailed(true)} />}>
+      }} fallback={<span />}>
       <Atelier material={material} still={still} paused={paused} progress={progress} onReady={() => { setHasFrame(true); onReady?.(); }} />
     </Canvas></QuietFallback>}
   </div>;
-}
-
-function Unavailable({ onUnavailable }: { onUnavailable: () => void }) {
-  useEffect(() => { onUnavailable(); }, [onUnavailable]);
-  return null;
 }

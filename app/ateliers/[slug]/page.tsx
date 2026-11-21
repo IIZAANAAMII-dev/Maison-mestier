@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ateliers, atelierPath, path } from "../../../lib/maison";
+import { MaisonMark } from "../../../components/galerie/Icons";
 import "../../../components/galerie/atelier.css";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -61,7 +62,7 @@ export default async function AtelierPage({ params }: Props) {
         <div className="a2-folio"><p className="a2-eyebrow">Un savoir-faire de la Maison</p><span className="a2-folio-count">{number}<span> / 08</span></span></div>
         <div className="a2-hero-grid">
           <div className="a2-hero-name"><span className="a2-number" aria-hidden="true">{number}</span><h1 className="a2-title" data-long={atelier.slug === "intendance" || undefined}>{atelier.slug === "stands-salons" ? <>Stands &amp;<br /><i>Salons.</i></> : <>{atelier.name}<i className="a2-period">.</i></>}</h1></div>
-          <div className="a2-hero-note"><span className="a2-note-mark" aria-hidden="true">✳</span><p>{atelier.headline}</p><a className="a2-line-link" href={contactHref}>Parlons de votre projet<Arrow diagonal /></a></div>
+          <div className="a2-hero-note"><span className="a2-note-mark" aria-hidden="true"><MaisonMark /></span><p>{atelier.headline}</p><a className="a2-line-link" href={contactHref}>Parlons de votre projet<Arrow diagonal /></a></div>
         </div>
       </header>
       <figure className="a2-plate"><div className="a2-plate-window"><img src={path(`/galerie/${visual.file}.webp`)} alt={visual.alt} width="1536" height="1024" fetchPriority="high" decoding="async" /><span className="a2-plate-mark" aria-hidden="true">M<i>m.</i></span></div><figcaption><span>Étude de création · {visual.name}</span><span>{visual.material}</span></figcaption></figure>
