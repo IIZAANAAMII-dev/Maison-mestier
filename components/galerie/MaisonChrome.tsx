@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type FormEvent, type MouseEvent, type SyntheticEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type FormEvent, type MouseEvent, type SyntheticEvent } from "react";
+import { usePathname } from "next/navigation";
 import { ateliers, atelierPath, path } from "../../lib/maison";
 import { ArrowIcon, MaisonMark, CopyIcon, CheckIcon } from "./Icons";
 import "./chrome.css";
@@ -110,12 +111,26 @@ function requestContact(event?: MouseEvent<HTMLAnchorElement>, detail: ContactDe
 
 export function MaisonNav() {
   const menu = useMaisonDialog();
+  const pathname = usePathname();
+  const immersive = pathname === "/" || pathname === path("/") || pathname === path("");
+  const [dark, setDark] = useState(false);
+  const [preview, setPreview] = useState(0);
   const menuItems = [
-    { number: "01", label: "La Maison", description: "Une idée commune", href: path("/#maison") },
-    { number: "02", label: "Les ateliers", description: "Huit savoir-faire", href: path("/#ateliers") },
-    { number: "03", label: "Regards", description: "Nos études de création", href: path("/#regards") },
-    { number: "04", label: "Écrivons-nous", description: "Votre prochain projet", href: path("/#contact"), contact: true },
+    { number: "01", label: "Le seuil", description: "Déployer l’imaginaire", href: path("/#seuil") },
+    { number: "02", label: "L’empreinte", description: "Faire naître un signe", href: path("/#empreinte") },
+    { number: "03", label: "L’entracte", description: "Ouvrir une autre scène", href: path("/#entracte") },
+    { number: "04", label: "La traversée", description: "Du tangible au numérique", href: path("/#traversee") },
+    { number: "05", label: "Les ateliers", description: "Huit façons de faire impression", href: path("/#constellation") },
   ];
+
+  useEffect(() => {
+    const update = (event: Event) => {
+      const detail = (event as CustomEvent<{ index: number; dark: boolean }>).detail;
+      if (detail) setDark(detail.dark);
+    };
+    window.addEventListener("mestier:scene", update);
+    return () => window.removeEventListener("mestier:scene", update);
+  }, []);
 
   function navigate(event: MouseEvent<HTMLAnchorElement>, href: string, contact?: boolean) {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -127,11 +142,12 @@ export function MaisonNav() {
   }
 
   return <>
-    <header className="g-header">
+    <header className="g-header" data-immersive={immersive} data-dark={immersive && dark}>
       <a className="g-brand" href={path("/")} aria-label="Maison Mestier, accueil"><Wordmark /></a>
+      {immersive && <span className="g-nav-edition"><span />La Maison en mouvement</span>}
       <nav className="g-nav" aria-label="Navigation principale">
-        <a href={path("/#maison")}>La Maison</a>
-        <a href={path("/#ateliers")}>Les ateliers</a>
+        <a href={path("/#seuil")}>La visite</a>
+        <a href={path("/#constellation")}>Les ateliers</a>
         <a className="g-nav-contact" href={path("/#contact")} onClick={(event) => requestContact(event)}>Écrire à la Maison <span aria-hidden="true"><ArrowIcon /></span></a>
       </nav>
       <button className="g-menu-toggle" type="button" aria-expanded={menu.isOpen} aria-controls="g-navigation-dialog" aria-haspopup="dialog" onClick={menu.show}>
@@ -145,22 +161,24 @@ export function MaisonNav() {
         <h2 className="g-visually-hidden" id="g-menu-title">Explorer Maison Mestier</h2>
         <button className="g-close" type="button" data-dialog-focus onClick={() => menu.dismiss()}><span>Fermer</span><span className="g-close-cross" aria-hidden="true" /></button>
       </div>
-      <div className="g-menu-content">
+      <div className="g-menu-content g-menu-spatial">
         <nav className="g-menu-index" aria-label="Toutes les rubriques">
-          {menuItems.map((item) => <a className="g-menu-item" key={item.number} href={item.href} onClick={(event) => navigate(event, item.href, item.contact)}>
+          {menuItems.map((item, index) => <a className="g-menu-item" data-selected={preview === index} key={item.number} href={item.href} onMouseEnter={() => setPreview(index)} onFocus={() => setPreview(index)} onClick={(event) => navigate(event, item.href)}>
             <span className="g-menu-number" aria-hidden="true">{item.number}</span>
             <span className="g-menu-item-copy"><span>{item.label}</span><small>{item.description}</small></span>
             <Arrow diagonal />
           </a>)}
         </nav>
-        <figure className="g-menu-figure">
-          <img src={path("/galerie/editorial.webp")} alt="Étude de matière et de volumes pour Maison Mestier." width={900} height={1100} loading="lazy" onError={(event) => {
-            if (!event.currentTarget.dataset.fallback) {
-              event.currentTarget.dataset.fallback = "true";
-              event.currentTarget.src = path("/images/atelier.webp");
-            }
-          }} />
-          <figcaption><span>Une idée prend forme.</span><span aria-hidden="true">M.</span></figcaption>
+        <figure className="g-menu-figure g-menu-maquette" data-room={preview}>
+          <div className="g-map-stage" aria-hidden="true">
+            <span className="g-map-orbit" /><span className="g-map-orbit g-map-orbit-second" />
+            <div className="g-map-building" style={{ "--room": preview } as CSSProperties}>
+              <div className="g-map-ground"><span>MAISON MESTIER</span></div>
+              {menuItems.map((item, index) => <div key={item.number} className="g-map-portal" data-current={preview === index} style={{ "--portal": index } as CSSProperties}><span className="g-map-portal-edge" /><span className="g-map-portal-face"><i>{item.number}</i></span></div>)}
+            </div>
+          </div>
+          <figcaption><span><small>Plan de la visite / {menuItems[preview].number}</small>{menuItems[preview].label}</span><span aria-hidden="true">M.</span></figcaption>
+          <a className="g-menu-project" href={path("/#contact")} onClick={(event) => navigate(event, path("/#contact"), true)}>Et votre prochaine idée ? <Arrow diagonal /></a>
         </figure>
       </div>
       <div className="g-menu-bottom"><span>Maison de communication</span><span>Sud de la France</span><span>Huit ateliers. Une même exigence.</span></div>
@@ -169,14 +187,23 @@ export function MaisonNav() {
 }
 
 export function MaisonFooter() {
-  return <footer className="g-footer" aria-labelledby="g-footer-title">
+  const footer = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const element = footer.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(([entry]) => { element.dataset.visible = String(entry.isIntersecting); }, { threshold: .08 });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+  return <footer ref={footer} className="g-footer" aria-labelledby="g-footer-title">
+    <div className="g-footer-horizon" aria-hidden="true"><i /><i /><i /></div>
     <div className="g-footer-invitation">
-      <div><span className="g-caption g-footer-kicker">La suite s’écrit ensemble</span><h2 id="g-footer-title">Et si l’on faisait<br /><em>impression&nbsp;?</em></h2></div>
-      <a className="g-footer-contact" href={path("/#contact")} onClick={(event) => requestContact(event)}><span className="g-footer-contact-circle"><Arrow diagonal /></span><span>Parlons de votre projet</span></a>
+      <div><span className="g-caption g-footer-kicker">Le prochain passage, c’est le vôtre</span><h2 id="g-footer-title">Ouvrons<br /><em>les possibles.</em></h2></div>
+      <a className="g-footer-contact g-footer-door" href={path("/#contact")} onClick={(event) => requestContact(event)}><span className="g-door-space" aria-hidden="true"><span className="g-door-glow" /><span className="g-door-back"><MaisonMark /></span><span className="g-door-wing g-door-left" /><span className="g-door-wing g-door-right" /><span className="g-door-arrow"><Arrow diagonal /></span></span><span>Parlons de votre projet</span></a>
     </div>
     <div className="g-footer-directory">
       <div className="g-footer-note"><span className="g-caption">Une maison, huit ateliers</span><p>De la première idée<br />à sa dernière finition.</p><span className="g-footer-location">Sud de la France</span></div>
-      <nav className="g-footer-pages" aria-label="La Maison"><span className="g-caption">La Maison</span><a href={path("/#maison")}>Notre regard</a><a href={path("/#regards")}>Études de création</a><a href={path("/laboratoire/")}>Le laboratoire</a><a href={path("/reperages/")}>Repérages &amp; storyboard</a><a href={path("/#contact")} onClick={(event) => requestContact(event)}>Écrivez-nous <span aria-hidden="true"><ArrowIcon /></span></a></nav>
+      <nav className="g-footer-pages" aria-label="La Maison"><span className="g-caption">La Maison</span><a href={path("/#seuil")}>Rejouer la visite</a><a href={path("/#maison")}>Notre regard</a><a href={path("/laboratoire/")}>Le laboratoire</a><a href={path("/reperages/")}>Repérages &amp; storyboard</a><a href={path("/#contact")} onClick={(event) => requestContact(event)}>Écrivez-nous <span aria-hidden="true"><ArrowIcon /></span></a></nav>
       <nav className="g-footer-workshops" aria-label="Les huit ateliers"><span className="g-caption">Les ateliers</span><div>{ateliers.map((atelier) => <a key={atelier.slug} href={atelierPath(atelier.slug)}>{atelier.name}</a>)}</div></nav>
     </div>
     <a className="g-footer-wordmark" href={path("/")} aria-label="Maison Mestier, accueil"><span>Maison</span><em>Mestier</em><span className="g-footer-asterisk" aria-hidden="true"><MaisonMark /></span></a>

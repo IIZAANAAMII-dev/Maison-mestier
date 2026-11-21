@@ -1,3 +1,3 @@
-import { GalleryHome } from "../components/galerie/GalleryHome";
+import ExperienceHome from "../components/experience/ExperienceHome";
 
-export default function Home() { return <GalleryHome />; }
+export default function Home() { return <ExperienceHome />; }

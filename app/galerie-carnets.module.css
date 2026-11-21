@@ -43,6 +43,10 @@
 .note p { max-width:60ch; font:400 13px/1.9 var(--sans); color:#5f584b; }
 .note p+p { margin-top:14px; }
 .sources { padding-bottom:clamp(75px,9vw,145px); }
+.spatialStoryboard { margin: -40px 0 100px; }
+.spatialStoryboard>a { display:block; border:1px solid var(--line); }
+.spatialStoryboard img { width:100%; height:auto; }
+.spatialStoryboard figcaption { margin-top:15px; font:400 11px/1.7 var(--sans); color:var(--quiet); }
 .reference { display:grid; grid-template-columns:80px minmax(0,1fr) minmax(0,1fr); gap:5vw; padding-block:clamp(36px,4.7vw,76px); border-top:1px solid var(--line); }
 .reference:last-child { border-bottom:1px solid var(--line); }
 .reference .number { margin-top:5px; margin-bottom:0; }

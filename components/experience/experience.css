@@ -1,0 +1,329 @@
+.exp-home {
+  --exp-paper: #f2ede3;
+  --exp-ink: #27261f;
+  --exp-red: #9d302a;
+  --exp-pad: clamp(24px, 4.1vw, 76px);
+  background: var(--exp-paper);
+}
+.exp-home button, .exp-home a { -webkit-tap-highlight-color: transparent; }
+.exp-home a { text-decoration: none; }
+.exp-home button { border-radius: 0; }
+.exp-home :focus-visible { outline: 2px solid currentColor; outline-offset: 6px; }
+.exp-journey { height: 628svh; position: relative; }
+.exp-anchor { position: absolute; top: calc(var(--chapter) * 132svh); width: 1px; height: 1px; pointer-events: none; scroll-margin-top: 0; }
+.exp-viewport {
+  --exp-color: #27261f;
+  --exp-soft: #655f54;
+  --exp-rule: #27261f30;
+  --exp-wash: #f2ede3;
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+  isolation: isolate;
+  color: var(--exp-color);
+  background: #eee6d8;
+  transition: color .6s ease;
+}
+.exp-viewport[data-scene="2"], .exp-viewport[data-scene="3"] { --exp-color: #f2ede3; --exp-soft: #d0c5b6; --exp-rule: #f2ede345; --exp-wash: #211b1b; }
+.exp-world { position: absolute; z-index: -3; inset: 0; width: 100%; height: 100%; }
+.exp-world > div { position: absolute; inset: 0; }
+.exp-world canvas { display: block; width: 100%; height: 100%; }
+.exp-atmosphere { position: absolute; z-index: -1; inset: 0; pointer-events: none; background: linear-gradient(90deg, color-mix(in srgb, var(--exp-wash) 52%, transparent), transparent 55%), linear-gradient(0deg, color-mix(in srgb, var(--exp-wash) 72%, transparent), transparent 20%); transition: background .65s ease; }
+.exp-topline { position: absolute; top: 116px; left: var(--exp-pad); right: var(--exp-pad); display: flex; align-items: flex-start; justify-content: space-between; gap: 30px; color: var(--exp-soft); font-size: 11px; line-height: 1.6; letter-spacing: .015em; }
+.exp-topline > p { font-size: 10px; text-transform: uppercase; letter-spacing: .13em; }
+.exp-topline > span { text-align: right; }
+.exp-spatial-note { position: absolute; top: 50%; right: 24px; display: flex; align-items: center; gap: 15px; writing-mode: vertical-rl; font: 400 9px/1.4 var(--mono); letter-spacing: .02em; transform: translateY(-50%); color: var(--exp-soft); }
+.exp-spatial-note > span:last-child { margin-top: 15px; }
+.exp-live-dot { width: 5px; height: 5px; display: block; border-radius: 50%; background: #9d302a; box-shadow: 0 0 0 4px #9d302a10; }
+.exp-viewport[data-scene="2"] .exp-live-dot, .exp-viewport[data-scene="3"] .exp-live-dot { background: #e2bd8d; box-shadow: 0 0 0 4px #e2bd8d18; }
+.exp-panels { position: absolute; inset: 0; pointer-events: none; }
+.exp-panel { position: absolute; left: var(--exp-pad); top: 27%; width: min(53vw, 800px); opacity: 0; visibility: hidden; transform: translateY(26px); transition: opacity .4s ease, transform .65s cubic-bezier(.2,.7,.2,1), visibility .4s; pointer-events: none; }
+.exp-panel.is-current { opacity: 1; transform: translateY(0); visibility: visible; }
+.exp-panel.is-current a, .exp-panel.is-current button { pointer-events: auto; }
+.exp-eyebrow { display: flex; align-items: center; gap: 18px; margin-bottom: 25px; font: 400 10px/1.5 var(--mono); letter-spacing: .025em; }
+.exp-eyebrow > span:first-child { font-size: 11px; opacity: .55; }
+.exp-eyebrow > span:last-child { display: flex; align-items: center; gap: 18px; }
+.exp-eyebrow > span:last-child::before { content: ""; width: 34px; height: 1px; background: currentColor; opacity: .5; }
+.exp-panel h1, .exp-panel h2 { font: 400 clamp(80px, 8.1vw, 145px)/.94 var(--display); letter-spacing: -.065em; margin-left: -.035em; }
+.exp-panel h1 em, .exp-panel h2 em { font-weight: 400; }
+.exp-panel h1 { font-size: clamp(90px, 9.7vw, 174px); }
+.exp-description { max-width: 32ch; margin-top: clamp(20px, 2.8vh, 36px); font-size: clamp(13px, 1.02vw, 16px); line-height: 1.65; color: var(--exp-soft); }
+.exp-enter { display: inline-flex; align-items: center; gap: 24px; margin-top: 27px; font-size: 12px; }
+.exp-enter-arrow { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--exp-rule); border-radius: 50%; font-size: 23px; transition: transform .3s, background .3s; }
+.exp-enter:hover .exp-enter-arrow { transform: translateY(4px); background: #27261f09; }
+.exp-workshop-link { display: inline-flex; align-items: center; gap: 35px; padding: 10px 0; margin-top: 22px; border-bottom: 1px solid var(--exp-rule); font-size: 12px; }
+.exp-workshop-link svg { font-size: 20px; transition: transform .25s; }
+.exp-workshop-link:hover svg { transform: translate(3px,-3px); }
+.exp-panel-ateliers { top: 23%; width: min(44vw, 680px); }
+.exp-panel-ateliers h2 { font-size: clamp(56px, 5.4vw, 94px); }
+.exp-panel-ateliers .exp-description { max-width: 39ch; font-size: 13px; margin-top: 22px; }
+.exp-atelier-picker { max-width: 440px; margin-top: 20px; }
+.exp-atelier-options { display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px; }
+.exp-atelier-options button { display: flex; align-items: center; gap: 14px; min-height: 34px; padding: 5px 0; color: var(--exp-soft); background: none; border: 0; text-align: left; font-size: 12px; transition: color .2s, transform .2s; }
+.exp-atelier-options button > span { font: 400 9px/1 var(--mono); opacity: .55; }
+.exp-atelier-options button[aria-pressed="true"] { color: var(--exp-red); transform: translateX(5px); }
+.exp-selected-atelier { margin-top: 18px; border-top: 1px solid var(--exp-rule); padding-top: 15px; display: flex; align-items: center; justify-content: space-between; gap: 25px; }
+.exp-selected-atelier > span { font-size: 10px; color: var(--exp-soft); line-height: 1.8; }
+.exp-selected-atelier strong { font-size: 15px; font-weight: 500; color: var(--exp-color); }
+.exp-selected-atelier > svg { font-size: 28px; transition: transform .25s; }
+.exp-selected-atelier:hover > svg { transform: translate(4px,-4px); }
+.exp-gesture { position: absolute; right: 12%; bottom: 21%; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; max-width: 350px; }
+.exp-gesture-line { display: block; height: 45px; width: 1px; margin-left: 18px; background: linear-gradient(transparent, var(--exp-color)); opacity: .45; transform: rotate(-30deg); transform-origin: bottom; }
+.exp-gesture > p { padding-left: 17px; font-size: 11px; color: var(--exp-soft); }
+.exp-action { display: flex; align-items: center; gap: 14px; min-height: 50px; padding: 6px 18px 6px 7px; border: 1px solid var(--exp-rule); border-radius: 30px !important; background: color-mix(in srgb, var(--exp-wash) 72%, transparent); color: var(--exp-color); backdrop-filter: blur(16px); font-size: 12px; line-height: 1.4; transition: background .25s, border-color .25s, transform .25s; text-align: left; }
+.exp-action-symbol { display: grid; place-items: center; flex: none; width: 35px; height: 35px; background: var(--exp-color); color: var(--exp-wash); border-radius: 50%; font-size: 20px; }
+.exp-action-symbol svg { transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+.exp-action > svg { font-size: 18px; margin-left: 10px; }
+.exp-action:hover { border-color: var(--exp-color); transform: translateY(-2px); }
+.exp-action:hover .exp-action-symbol svg { transform: rotate(90deg); }
+.exp-action:active { transform: scale(.98); }
+.exp-dock { position: absolute; bottom: 0; left: var(--exp-pad); right: var(--exp-pad); }
+.exp-dock-upper { display: flex; align-items: center; justify-content: space-between; gap: 22px; min-height: 61px; }
+.exp-scroll-cue { display: flex; align-items: center; gap: 14px; font-size: 10px; color: var(--exp-soft); }
+.exp-scroll-line { display: block; width: 1px; height: 25px; background: var(--exp-rule); overflow: hidden; position: relative; }
+.exp-scroll-line::after { content: ""; position: absolute; width: 1px; height: 10px; background: var(--exp-color); animation: exp-scroll 2.4s cubic-bezier(.45,0,.55,1) infinite; }
+.exp-matieres { display: flex; align-items: center; gap: 18px; margin-left: auto; }
+.exp-material-label { font-size: 9px; color: var(--exp-soft); margin-right: 8px; }
+.exp-matieres button { display: inline-flex; align-items: center; gap: 6px; position: relative; min-height: 36px; padding: 0; border: 0; background: transparent; font-size: 10px; color: var(--exp-soft); }
+.exp-matieres button::after { content: ""; position: absolute; left: 0; right: 0; bottom: 2px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform .25s; }
+.exp-matieres button[aria-pressed="true"] { color: var(--exp-color); }
+.exp-matieres button[aria-pressed="true"]::after { transform: scaleX(1); }
+.exp-swatch { display: inline-block; width: 8px; height: 8px; border-radius: 50%; box-shadow: inset 0 0 0 1px #27261f25; }
+.exp-swatch-0 { background: #e8dfcd; }
+.exp-swatch-1 { background: linear-gradient(110deg, #755325, #dec690, #8d652b); }
+.exp-swatch-2 { background: #36352e; }
+.exp-pause { display: flex; flex: none; align-items: center; gap: 7px; min-width: 76px; min-height: 36px; margin-left: 15px; padding: 0 0 0 20px; border: 0; border-left: 1px solid var(--exp-rule); background: none; font-size: 10px; color: var(--exp-color); }
+.exp-pause > svg { font-size: 13px; }
+.exp-chapters { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); min-height: 69px; border-top: 1px solid var(--exp-rule); }
+.exp-chapters::before { position: absolute; content: ""; left: 0; top: -1px; width: 100%; height: 1px; transform: scaleX(var(--journey-progress,0)); transform-origin: left; background: var(--exp-color); }
+.exp-chapters a { display: flex; align-items: center; gap: 14px; padding: 9px 12px 11px 0; position: relative; color: var(--exp-soft); font-size: 11px; }
+.exp-chapter-number { font: 400 9px/1.4 var(--mono); opacity: .5; }
+.exp-chapter-point { display: block; position: absolute; left: 0; top: -3px; width: 5px; height: 5px; background: var(--exp-color); border-radius: 50%; opacity: 0; transform: scale(.3); transition: opacity .3s, transform .3s; }
+.exp-chapters a[aria-current="step"] { color: var(--exp-color); }
+.exp-chapters a[aria-current="step"] .exp-chapter-number { opacity: 1; }
+.exp-chapters a[aria-current="step"] .exp-chapter-point { opacity: 1; transform: scale(1); }
+.exp-chapters a:hover .exp-chapter-name { text-decoration: underline; text-underline-offset: 5px; }
+.exp-maison { position: relative; padding: clamp(65px, 7vw, 120px) var(--exp-pad) 32px; color: var(--exp-ink); background: var(--exp-paper); }
+.exp-maison-top { display: flex; align-items: center; justify-content: space-between; gap: 25px; font-size: 11px; padding-bottom: 48px; border-bottom: 1px solid #27261f30; }
+.exp-maison-top > svg { font-size: 32px; color: var(--exp-red); }
+.exp-maison-top > span { text-align: right; }
+.exp-maison-intro { display: grid; grid-template-columns: 1.5fr 1fr; gap: clamp(30px, 7vw, 100px); padding: clamp(50px, 6vw, 100px) 0; align-items: center; }
+.exp-maison-intro h2 { font: 400 clamp(42px, 4.9vw, 85px)/1.03 var(--display); letter-spacing: -.055em; }
+.exp-maison-intro h2 em { font-weight: 400; }
+.exp-maison-intro > div { max-width: 420px; }
+.exp-maison-intro p { font-size: 14px; line-height: 1.8; color: #655f54; }
+.exp-maison-intro p + p { margin-top: 18px; }
+.exp-maison-intro button { display: inline-flex; align-items: center; gap: 40px; background: none; padding: 12px 0; margin-top: 25px; border: 0; border-bottom: 1px solid #27261f70; font-size: 12px; }
+.exp-maison-intro button > svg { font-size: 22px; }
+.exp-directory { border-top: 1px solid #27261f30; padding-top: 25px; display: grid; grid-template-columns: .5fr 2.5fr; gap: 30px; }
+.exp-directory-label { font: 400 10px/1.6 var(--mono); padding-top: 14px; }
+.exp-directory > div { display: grid; grid-template-columns: 1fr 1fr; column-gap: 55px; }
+.exp-directory a { display: flex; align-items: center; gap: 18px; min-height: 75px; border-bottom: 1px solid #27261f25; }
+.exp-directory a > span { font: 400 9px/1 var(--mono); color: #857b6d; }
+.exp-directory a > h3 { flex: 1; font: 400 clamp(20px, 2vw, 32px)/1.2 var(--display); letter-spacing: -.02em; }
+.exp-directory a > svg { font-size: 21px; transition: transform .25s; }
+.exp-directory a:hover { color: var(--exp-red); }
+.exp-directory a:hover > svg { transform: translate(4px,-4px); }
+.exp-colophon { display: flex; align-items: center; justify-content: space-between; gap: 25px; margin-top: clamp(55px, 7vw, 110px); padding-top: 25px; border-top: 1px solid #27261f30; color: #746b5e; font-size: 10px; }
+.exp-colophon > p { max-width: 45ch; }
+.exp-colophon > a { display: inline-flex; align-items: center; gap: 18px; min-height: 44px; }
+.exp-colophon > a > svg { font-size: 18px; }
+.exp-no-script { padding: 30px var(--exp-pad); }
+.exp-viewport[data-paused="true"] *, .exp-viewport[data-paused="true"] *::before, .exp-viewport[data-paused="true"] *::after { animation-play-state: paused !important; }
+@keyframes exp-scroll { 0% { transform: translateY(-13px); } 70%,100% { transform: translateY(29px); } }
+
+@media (min-width: 1600px) { .exp-panel { top: 26%; } .exp-gesture { right: 15%; bottom: 23%; } }
+@media (max-height: 790px) and (min-width: 901px) {
+  .exp-panel { top: 25%; }
+  .exp-panel h1 { font-size: min(9vw, 127px); }
+  .exp-panel h2 { font-size: min(7.4vw, 105px); }
+  .exp-panel-ateliers { top: 23%; }
+  .exp-panel-ateliers h2 { font-size: min(4.8vw, 72px); }
+  .exp-description { margin-top: 20px; }
+  .exp-eyebrow { margin-bottom: 18px; }
+  .exp-enter { margin-top: 16px; }
+  .exp-panel-ateliers .exp-description { margin-top: 14px; }
+  .exp-atelier-picker { margin-top: 12px; }
+  .exp-atelier-options button { min-height: 29px; }
+  .exp-selected-atelier { margin-top: 12px; padding-top: 10px; }
+  .exp-gesture { bottom: 21%; right: 9%; }
+  .exp-gesture-line { height: 28px; }
+}
+@media (max-width: 1100px) {
+  .exp-topline { top: 111px; }
+  .exp-panel { width: 58vw; }
+  .exp-panel h1 { font-size: 10.2vw; }
+  .exp-panel h2 { font-size: 9vw; }
+  .exp-panel-ateliers { width: 47vw; }
+  .exp-panel-ateliers h2 { font-size: 6vw; }
+  .exp-gesture { right: 6%; }
+  .exp-spatial-note { right: 13px; font-size: 8px; }
+  .exp-description { max-width: 30ch; }
+  .exp-material-label { display: none; }
+  .exp-atelier-options { column-gap: 12px; }
+  .exp-atelier-options button { font-size: 11px; gap: 9px; }
+  .exp-atelier-picker { max-width: 380px; }
+}
+@media (max-width: 760px) {
+  .exp-home { --exp-pad: 24px; }
+  .exp-journey { height: max(628svh, 4200px); }
+  .exp-topline { top: 101px; font-size: 9px; }
+  .exp-topline > p { font-size: 8px; letter-spacing: .08em; }
+  .exp-topline > span { display: none; }
+  .exp-spatial-note { top: 104px; right: var(--exp-pad); transform: none; writing-mode: horizontal-tb; gap: 8px; font-size: 8px; }
+  .exp-spatial-note > span:nth-child(2) { display: none; }
+  .exp-spatial-note > span:last-child { margin: 0; }
+  .exp-live-dot { width: 4px; height: 4px; }
+  .exp-panel, .exp-panel-ateliers { top: 155px; left: var(--exp-pad); width: calc(100% - var(--exp-pad) * 2); }
+  .exp-eyebrow { font-size: 8px; gap: 10px; margin-bottom: 14px; }
+  .exp-eyebrow > span:first-child { font-size: 9px; }
+  .exp-eyebrow > span:last-child { gap: 10px; }
+  .exp-eyebrow > span:last-child::before { width: 25px; }
+  .exp-panel h1 { font-size: clamp(60px, 13.5vw, 97px); line-height: .94; }
+  .exp-panel h2 { font-size: clamp(52px, 11vw, 80px); line-height: .96; }
+  .exp-description { font-size: 11px; line-height: 1.6; max-width: 27ch; margin-top: 17px; }
+  .exp-enter { margin-top: 17px; font-size: 10px; gap: 15px; }
+  .exp-enter-arrow { width: 30px; height: 30px; font-size: 17px; }
+  .exp-workshop-link { font-size: 10px; padding: 7px 0; margin-top: 13px; gap: 24px; }
+  .exp-workshop-link svg { font-size: 17px; }
+  .exp-atmosphere { background: linear-gradient(180deg, color-mix(in srgb, var(--exp-wash) 35%, transparent), transparent 60%), linear-gradient(0deg, color-mix(in srgb, var(--exp-wash) 85%, transparent), transparent 23%); }
+  .exp-gesture { left: var(--exp-pad); right: auto; bottom: 151px; gap: 10px; max-width: calc(100% - 48px); }
+  .exp-gesture-line { display: none; }
+  .exp-gesture > p { font-size: 9px; padding-left: 0; }
+  .exp-action { min-height: 43px; gap: 10px; padding: 5px 12px 5px 5px; font-size: 10px; }
+  .exp-action-symbol { width: 30px; height: 30px; font-size: 17px; }
+  .exp-action > svg { margin-left: 8px; font-size: 16px; }
+  .exp-dock-upper { min-height: 54px; gap: 8px; }
+  .exp-scroll-cue { font-size: 8px; gap: 8px; max-width: 103px; line-height: 1.5; }
+  .exp-scroll-line { flex: none; height: 19px; }
+  .exp-matieres { gap: 10px; }
+  .exp-matieres button { font-size: 8px; min-height: 36px; }
+  .exp-swatch { width: 7px; height: 7px; }
+  .exp-pause { min-width: 25px; margin-left: 3px; padding-left: 10px; }
+  .exp-pause > span { display: none; }
+  .exp-pause > svg { font-size: 14px; }
+  .exp-chapters { min-height: 58px; gap: 8px; }
+  .exp-chapters a { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 4px; padding: 10px 0; font-size: 8px; line-height: 1.25; }
+  .exp-chapter-number { font-size: 8px; }
+  .exp-chapter-name { white-space: nowrap; }
+  .exp-panel-ateliers h2 { font-size: clamp(42px, 9.8vw, 67px); }
+  .exp-panel-ateliers .exp-description { max-width: 32ch; margin-top: 14px; font-size: 10px; }
+  .exp-atelier-picker { width: 58%; min-width: 250px; margin-top: 15px; }
+  .exp-atelier-options { gap: 1px 12px; }
+  .exp-atelier-options button { min-height: 27px; font-size: 10px; gap: 8px; }
+  .exp-atelier-options button > span { font-size: 7px; }
+  .exp-selected-atelier { padding-top: 10px; margin-top: 10px; }
+  .exp-selected-atelier > span { font-size: 8px; }
+  .exp-selected-atelier strong { font-size: 12px; }
+  .exp-selected-atelier > svg { font-size: 22px; }
+  .exp-viewport[data-scene="4"] .exp-gesture { left: auto; right: var(--exp-pad); bottom: 145px; }
+  .exp-viewport[data-scene="4"] .exp-gesture > p { display: none; }
+  .exp-viewport[data-scene="4"] .exp-action { font-size: 9px; }
+  .exp-maison { padding-top: 60px; }
+  .exp-maison-top { padding-bottom: 25px; font-size: 9px; gap: 20px; }
+  .exp-maison-top > svg { font-size: 24px; }
+  .exp-maison-top > span { max-width: 14ch; }
+  .exp-maison-intro { grid-template-columns: 1fr; gap: 30px; padding: 40px 0 48px; }
+  .exp-maison-intro h2 { font-size: clamp(38px, 8vw, 62px); }
+  .exp-maison-intro p { font-size: 13px; }
+  .exp-directory { grid-template-columns: 1fr; gap: 17px; padding-top: 20px; }
+  .exp-directory-label { padding: 0; font-size: 9px; }
+  .exp-directory > div { column-gap: 25px; }
+  .exp-directory a { gap: 10px; min-height: 59px; }
+  .exp-directory a > span { font-size: 8px; }
+  .exp-directory a > h3 { font-size: clamp(16px, 3.7vw, 26px); }
+  .exp-directory a > svg { font-size: 16px; }
+  .exp-colophon { flex-wrap: wrap; gap: 8px 30px; padding-top: 20px; font-size: 9px; margin-top: 45px; }
+  .exp-colophon > p { flex: 1 0 100%; max-width: 43ch; margin-bottom: 10px; }
+}
+@media (max-width: 400px) {
+  .exp-home { --exp-pad: 20px; }
+  .exp-chapters { gap: 5px; }
+  .exp-chapters a { font-size: 7px; }
+  .exp-matieres { gap: 8px; }
+  .exp-matieres button { gap: 4px; font-size: 7px; }
+  .exp-scroll-cue { max-width: 83px; font-size: 7px; }
+  .exp-panel { top: 146px; }
+  .exp-panel h1 { font-size: 13.5vw; }
+  .exp-atelier-picker { min-width: 235px; }
+  .exp-gesture { bottom: 140px; }
+  .exp-panel-ateliers h2 { font-size: 9.5vw; }
+}
+@media (max-height: 650px) and (min-width: 761px) {
+  .exp-topline { top: 105px; }
+  .exp-panel { top: 145px; }
+  .exp-eyebrow { margin-bottom: 12px; }
+  .exp-panel h1 { font-size: clamp(60px, 15vh, 96px); }
+  .exp-panel h2 { font-size: clamp(55px, 14vh, 86px); }
+  .exp-description { margin-top: 14px; font-size: 11px; max-width: 37ch; }
+  .exp-enter, .exp-workshop-link { margin-top: 10px; }
+  .exp-panel-ateliers { top: 133px; }
+  .exp-panel-ateliers h2 { font-size: 48px; }
+  .exp-panel-ateliers .exp-description { font-size: 10px; margin-top: 10px; }
+  .exp-atelier-picker { margin-top: 9px; }
+  .exp-atelier-options button { min-height: 25px; font-size: 10px; }
+  .exp-selected-atelier { margin-top: 8px; padding-top: 8px; }
+  .exp-selected-atelier > span { font-size: 8px; }
+  .exp-selected-atelier strong { font-size: 12px; }
+  .exp-gesture { bottom: 126px; }
+  .exp-gesture-line { display: none; }
+  .exp-dock-upper { min-height: 48px; }
+  .exp-chapters { min-height: 54px; }
+}
+@media (max-height: 620px) and (max-width: 760px) {
+  .exp-topline, .exp-spatial-note { display: none; }
+  .exp-panel, .exp-panel-ateliers { top: 104px; }
+  .exp-panel h1 { font-size: clamp(47px, 11.5vw, 70px); }
+  .exp-panel h2 { font-size: clamp(42px, 10vw, 62px); }
+  .exp-panel-ateliers h2 { font-size: 38px; }
+  .exp-description { max-width: 33ch; font-size: 10px; margin-top: 12px; }
+  .exp-enter { margin-top: 12px; }
+  .exp-eyebrow { margin-bottom: 10px; }
+  .exp-gesture { bottom: 128px; }
+  .exp-gesture > p { display: none; }
+  .exp-panel-ateliers .exp-description { display: none; }
+  .exp-atelier-picker { margin-top: 12px; }
+  .exp-atelier-options button { min-height: 25px; }
+  .exp-viewport[data-scene="4"] .exp-gesture { bottom: 128px; }
+}
+@media (max-height: 480px) {
+  .exp-topline, .exp-spatial-note, .exp-eyebrow, .exp-description, .exp-scroll-cue, .exp-gesture-line, .exp-gesture > p { display: none; }
+  .exp-panel, .exp-panel-ateliers { top: 105px; width: 55%; }
+  .exp-panel h1, .exp-panel h2 { font-size: clamp(34px, 12vh, 56px); }
+  .exp-panel-ateliers h2 { font-size: 30px; }
+  .exp-enter, .exp-workshop-link { margin-top: 12px; }
+  .exp-enter-arrow { height: 27px; width: 27px; font-size: 16px; }
+  .exp-gesture, .exp-viewport[data-scene="4"] .exp-gesture { left: auto; right: var(--exp-pad); bottom: 96px; }
+  .exp-action { min-height: 38px; font-size: 9px; }
+  .exp-action-symbol { width: 26px; height: 26px; font-size: 15px; }
+  .exp-dock-upper { min-height: 37px; }
+  .exp-chapters { min-height: 47px; }
+  .exp-chapters a { font-size: 8px; }
+  .exp-atelier-picker { min-width: 210px; max-width: 340px; width: 100%; margin-top: 8px; }
+  .exp-atelier-options { max-height: 65px; overflow-y: auto; padding: 3px; }
+  .exp-atelier-options button { min-height: 27px; font-size: 9px; }
+  .exp-selected-atelier { margin-top: 7px; padding-top: 6px; }
+  .exp-selected-atelier > span { font-size: 7px; }
+  .exp-selected-atelier strong { font-size: 10px; }
+  .exp-selected-atelier > svg { font-size: 18px; }
+}
+@media (max-height: 360px) {
+  .exp-panel, .exp-panel-ateliers { top: 87px; }
+  .exp-panel h1, .exp-panel h2 { font-size: 10.5vh; }
+  .exp-panel-ateliers h2 { font-size: 8vh; }
+  .exp-enter, .exp-workshop-link, .exp-atelier-options { display: none; }
+  .exp-action > span:nth-child(2) { display: none; }
+  .exp-action > svg { margin-left: 0; }
+  .exp-action { gap: 7px; }
+  .exp-atelier-picker { min-width: 0; margin-top: 4px; }
+  .exp-selected-atelier { margin-top: 0; padding-top: 5px; }
+  .exp-selected-atelier > span { line-height: 1.4; }
+  .exp-selected-atelier > span > br { display: none; }
+  .exp-selected-atelier strong { display: block; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .exp-home *, .exp-home *::before, .exp-home *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
