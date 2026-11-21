@@ -1,8 +1,7 @@
 {
-  "project": "Maison Mestier",
-  "experience": "La Galerie vivante",
-  "sourceCommit": "43f6ad27113a786a16c52b94d0cda1543d07560a",
-  "sourceBranch": "feat/maison-mestier-galerie-vivante",
-  "publishedAt": "2026-11-21T01:38:47.915845+00:00",
+  "name": "La Maison en mouvement",
+  "sourceCommit": "b849dfd86b4caa5d3a801953a3e0775314699db7",
+  "branch": "feat/maison-mestier-galerie-vivante",
+  "publishedAt": "2026-11-21T09:38:35.812049+00:00",
   "basePath": "/Maison-mestier/atelier-en-lumiere"
 }
