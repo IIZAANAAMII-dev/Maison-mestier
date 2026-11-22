@@ -1,6 +1,6 @@
 /* Maison Mestier — Le pli monumental. */
-:root { --paper: #f2ede3; --ink: #27261f; --cachet: #9d302a; --night: #27261f; --line: #c9c3b7; --muted: #6c675b; --head-height: 86px; --v2-gutter: clamp(22px, 4.1vw, 76px); }
-html { scroll-behavior: smooth; scroll-padding-top: 106px; }
+:root { --paper: #f2ede3; --ink: #27261f; --cachet: #9d302a; --night: #27261f; --line: #c9c3b7; --muted: #6c675b; --v2-gutter: clamp(22px, 4.1vw, 76px); }
+html { scroll-behavior: smooth; }
 body { background: var(--paper); color: var(--ink); }
 .v2-home { width: 100%; max-width: 100%; outline: none; background: var(--paper); color: var(--ink); }
 .v2-home *, .v2-home *::before, .v2-home *::after { box-sizing: border-box; }
@@ -185,8 +185,7 @@ body { background: var(--paper); color: var(--ink); }
 }
 
 @media (max-width: 760px) {
-  :root { --head-height: 72px; --v2-gutter: 22px; }
-  html { scroll-padding-top: 88px; }
+  :root { --v2-gutter: 22px; }
   .v2-label { font-size: 10px; letter-spacing: .1em; }
   .v2-section-marker { padding-bottom: 15px; font-size: 9px; gap: 18px; letter-spacing: .045em; }
   .v2-section-marker > span:last-child { max-width: 44%; }

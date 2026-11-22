@@ -10,6 +10,8 @@ type Props = { score: MutableRefObject<FabricationScore>; onReady?: (mode: "webg
 const keyFrames = [0, 8, 16, 24, 32, 40, 48];
 // The local sequence contract; Three is downloaded only after a successful WebGL preflight.
 const FABRICATION_FRAMES = 49;
+// Bump with regenerated frames so returning visitors receive the same edition as the scene code.
+const FRAME_REVISION = "2026-11-22b";
 const clamp = (n: number, low: number, high: number) => Math.min(high, Math.max(low, n));
 const ease = (n: number) => { const t = clamp(n, 0, 1); return t * t * (3 - 2 * t); };
 const chapterWeight = (progress: number, center: number) => 1 - ease((Math.abs(progress - center) - .06) / .04);
@@ -114,7 +116,7 @@ export default function FabricationScene({ score, onReady }: Props) {
             pump(); wake();
           };
           image.onerror = () => { requests.delete(key); failed.add(key); pump(); };
-          image.src = path(`/fabrication/frames/${key}.webp`);
+          image.src = path(`/fabrication/frames/${key}.webp?v=${FRAME_REVISION}`);
         }
       };
       const load = (key: string) => { if (!cache.has(key) && !requests.has(key) && !failed.has(key)) queue.add(key); };

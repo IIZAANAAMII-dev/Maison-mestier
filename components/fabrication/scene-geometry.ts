@@ -201,7 +201,8 @@ export function createFabricationWorld(): FabricationWorld {
       { p: [-.75 + i * .21, .82 + i * .008, .12], r: [-half, 0, -.08 + i * .022], s: [.65, .65, 1] },
       { p: [-.75 + i * .21, .82 + i * .008, .12], r: [-half, 0, -.08 + i * .022], s: [.65, .65, 1] },
       { p: [Math.sin(a) * 3.1, .69 + (i % 2) * .22, Math.cos(a) * 2.25], r: [-.12, a * -.16, (i % 2 ? 1 : -1) * .06], s: [.95, .95, 1] },
-      { p: [-.6 + (i % 4) * .44, .25 + Math.floor(i / 4) * .06, .78 + Math.floor(i / 4) * .3], r: [-half, 0, -.14 + i * .065], s: [1.15, 1.15, 1] },
+      // Each printed face has its own level; the .065 rise clears the .055 book thickness.
+      { p: [-.6 + (i % 4) * .44, .27 + i * .065, 1.1 + Math.floor(i / 4) * .25], r: [-half, 0, -.14 + i * .065], s: [1.15, 1.15, 1] },
     ]);
   }
 

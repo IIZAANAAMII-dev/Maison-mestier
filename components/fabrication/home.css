@@ -223,7 +223,7 @@
  .fab-scene-loading,.fab-story-scene .fabrication-scene-poster{inset:0;width:100%;height:100%;object-fit:contain;object-position:center}
 }
 @media(max-height:420px) and (orientation:landscape){
- .fab-story-topline{top:86px}
+ .fab-story-topline{display:none}
  .fab-story-copies{top:112px}
  .fab-story-controls{bottom:62px}
  .fab-chapter-rail{top:80px}
