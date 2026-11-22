@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ateliers, atelierPath, path } from "../../../lib/maison";
 import { MaisonMark } from "../../../components/galerie/Icons";
+import { InteriorMotion } from "../../../components/matiere/InteriorMotion";
 import "../../../components/galerie/atelier.css";
+import "../../../components/matiere/interiors.css";
 
 type Props = { params: Promise<{ slug: string }> };
 export const dynamicParams = false;
@@ -55,13 +57,13 @@ export default async function AtelierPage({ params }: Props) {
   const related = atelier.related.flatMap((name) => ateliers.filter((item) => item.name === name));
   const contactHref = path(`/?atelier=${atelier.slug}#contact`);
 
-  return <main id="contenu" tabIndex={-1} className="a2-page">
+  return <InteriorMotion>
     <div className="a2-shell">
       <nav className="a2-breadcrumb" aria-label="Fil d’Ariane"><a href={path("/")}>La Maison</a><span aria-hidden="true">/</span><a href={path("/#ateliers")}>Les ateliers</a><span aria-hidden="true">/</span><span aria-current="page">{atelier.name}</span></nav>
       <header className="a2-hero">
         <div className="a2-folio"><p className="a2-eyebrow">Un savoir-faire de la Maison</p><span className="a2-folio-count">{number}<span> / 08</span></span></div>
         <div className="a2-hero-grid">
-          <div className="a2-hero-name"><span className="a2-number" aria-hidden="true">{number}</span><h1 className="a2-title" data-long={atelier.slug === "intendance" || undefined}>{atelier.slug === "stands-salons" ? <>Stands &amp;<br /><i>Salons.</i></> : <>{atelier.name}<i className="a2-period">.</i></>}</h1></div>
+          <div className="a2-hero-name"><span className="a2-number" aria-hidden="true">{number}</span><div className="mi-title-window"><h1 className="a2-title" data-long={atelier.slug === "intendance" || undefined}>{atelier.slug === "stands-salons" ? <>Stands &amp;<br /><i>Salons.</i></> : <>{atelier.name}<i className="a2-period">.</i></>}</h1></div></div>
           <div className="a2-hero-note"><span className="a2-note-mark" aria-hidden="true"><MaisonMark /></span><p>{atelier.headline}</p><a className="a2-line-link" href={contactHref}>Parlons de votre projet<Arrow diagonal /></a></div>
         </div>
       </header>
@@ -77,5 +79,5 @@ export default async function AtelierPage({ params }: Props) {
       {related.length > 0 && <nav aria-labelledby="ateliers-lies" className="a2-related"><div className="a2-related-heading"><p className="a2-eyebrow">Faire dialoguer les métiers</p><h2 id="ateliers-lies">En <i>résonance.</i></h2></div><ul>{related.map((item) => <li key={item.slug}><a href={atelierPath(item.slug)}><span className="a2-related-number">{String(ateliers.indexOf(item) + 1).padStart(2, "0")}</span><span className="a2-related-name">{item.name}</span><Arrow diagonal /></a></li>)}</ul></nav>}
       <nav className="a2-next" aria-label="Poursuivre la visite des ateliers"><a className="a2-next-link" href={atelierPath(next.slug)}><span className="a2-eyebrow">Atelier suivant · {String((position + 1) % ateliers.length + 1).padStart(2, "0")}</span><span className="a2-next-name">{next.name}<Arrow /></span></a><a className="a2-back" href={path("/#ateliers")}>Retrouver les huit ateliers</a></nav>
     </div>
-  </main>;
+  </InteriorMotion>;
 }

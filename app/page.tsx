@@ -1,3 +1,3 @@
-import ExperienceHome from "../components/experience/ExperienceHome";
+import MaisonHome from "../components/matiere/MaisonHome";
 
-export default function Home() { return <ExperienceHome />; }
+export default function Home() { return <MaisonHome />; }

@@ -1,0 +1,161 @@
+/* The editorial dossiers share the palette and proportions of La matière. */
+.a2-page {
+  --a2-paper: #f3f0ea;
+  --a2-ink: #1c2333;
+  --a2-night: #141a17;
+  --a2-brass: #b08d57;
+  --a2-red: #705834;
+  --a2-line: #c9c9bf;
+  --a2-muted: #5a625d;
+  --a2-pad: clamp(24px, 5.55vw, 96px);
+  padding-top: 86px;
+  background: var(--a2-paper);
+  color: var(--a2-ink);
+}
+
+.a2-page .a2-shell { max-width: 1800px; }
+.a2-page section[id] { scroll-margin-top: 116px; }
+.a2-page .a2-breadcrumb {
+  min-height: 90px;
+  gap: 8px 16px;
+  font-size: 11px;
+  color: var(--a2-muted);
+}
+.a2-page .a2-breadcrumb > a { min-height: 34px; }
+.a2-page .a2-breadcrumb > span[aria-hidden] { color: #81877f; }
+.a2-page .a2-hero { padding-top: 10px; padding-bottom: clamp(58px, 6.6vw, 112px); }
+.a2-page .a2-folio { padding-top: 20px; }
+.a2-page .a2-eyebrow { font-size: 10px; font-weight: 500; letter-spacing: .12em; }
+.a2-page .a2-folio-count { color: var(--a2-ink); }
+.a2-page .a2-folio-count > span { color: var(--a2-muted); }
+.a2-page .a2-hero-grid {
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, .7fr);
+  gap: 6vw;
+  padding-top: clamp(42px, 4.8vw, 80px);
+}
+.a2-page .a2-number { font-size: clamp(22px, 2.3vw, 36px); margin-bottom: 23px; color: var(--a2-red); }
+.mi-title-window { overflow: clip; padding: 12px 10px 24px; margin: -12px -10px -24px; }
+.a2-page .a2-title { font-size: clamp(72px, 9.5vw, 164px); line-height: 1.01; letter-spacing: -.058em; }
+.a2-page .a2-title[data-long] { font-size: clamp(65px, 8.1vw, 142px); }
+.a2-page.a2-research .a2-title { font-size: clamp(72px, 9.6vw, 164px); }
+.a2-page .a2-period { color: var(--a2-red); }
+.a2-page .a2-hero-note { max-width: 370px; padding-bottom: 10px; }
+.a2-page .a2-note-mark { margin-bottom: 25px; color: var(--a2-red); }
+.a2-page .a2-hero-note > p { max-width: 28ch; font-size: clamp(19px, 1.6vw, 25px); line-height: 1.55; letter-spacing: -.025em; }
+.a2-page.a2-research .a2-hero-note > p { font-size: clamp(18px, 1.5vw, 23px); }
+.a2-page .a2-line-link { gap: 32px; min-height: 48px; font-size: 12px; margin-top: 26px; }
+.a2-page .a2-plate-window { aspect-ratio: 1.85; background: #dfdacf; }
+.a2-page .a2-plate-window > img { transform-origin: center; }
+.a2-page .a2-plate-mark { display: none; }
+.a2-page .a2-plate > figcaption { padding-block: 19px; color: var(--a2-muted); font-size: 11px; }
+.a2-page .a2-introduction { gap: 9vw; padding-block: clamp(88px, 10vw, 160px); }
+.a2-page .a2-introduction h2 { font-size: clamp(46px, 4.4vw, 74px); line-height: 1.09; }
+.a2-page .a2-introduction > p { max-width: 37ch; font-size: clamp(19px, 1.7vw, 26px); line-height: 1.7; }
+.a2-page .a2-reading { grid-template-columns: minmax(0, .65fr) minmax(0, 1.35fr); gap: 9vw; padding-bottom: clamp(90px, 10vw, 160px); }
+.a2-page .a2-index > nav { top: 118px; padding-top: 24px; }
+.a2-page .a2-index a { min-height: 48px; font-size: 12px; }
+.a2-page .a2-chapter { padding-block: clamp(34px, 3.6vw, 60px); }
+.a2-page .a2-chapter-number { font-size: 24px; }
+.a2-page .a2-chapter h2 { margin-bottom: 23px; font-size: clamp(29px, 2.7vw, 45px); line-height: 1.2; }
+.a2-page .a2-chapter p { max-width: 55ch; font-size: 16px; line-height: 1.85; color: #4f5856; }
+.a2-page .a2-invitation { color: var(--a2-paper); background: var(--a2-night); }
+.a2-page .a2-invitation-inner { padding-top: clamp(62px, 7vw, 110px); padding-bottom: 28px; }
+.a2-page .a2-invitation .a2-eyebrow { color: #d0c6b5; }
+.a2-page .a2-invitation-grid { padding-block: 42px 76px; }
+.a2-page .a2-invitation h2 { font-size: clamp(48px, 5.1vw, 84px); line-height: 1.13; }
+.a2-page .a2-contact-circle { border-color: #b08d578a; color: var(--a2-paper); transition: background .22s, color .22s; }
+.a2-page .a2-contact-circle:hover { background: var(--a2-paper); color: var(--a2-night); }
+.a2-page .a2-invitation-foot { border-color: #b08d574d; color: #c6c9bf; }
+.a2-page .a2-invitation :focus-visible { outline-color: var(--a2-paper); }
+.a2-page .a2-related { padding-block: clamp(88px, 10vw, 160px); }
+.a2-page .a2-related-heading h2 { font-size: clamp(46px, 4.6vw, 76px); line-height: 1.1; }
+.a2-page .a2-related li > a { min-height: 100px; }
+.a2-page .a2-related-name { font-size: clamp(30px, 3.05vw, 48px); }
+.a2-page .a2-next { padding-top: 44px; padding-bottom: clamp(80px, 9vw, 140px); }
+.a2-page .a2-next-name { font-size: clamp(46px, 6.7vw, 108px); line-height: 1.15; }
+.a2-page .a2-next-link:hover .a2-next-name { color: var(--a2-red); }
+.a2-page .a2-back { min-height: 48px; margin-top: 32px; }
+.a2-page .a2-study-notes { gap: 9vw; padding-block: clamp(88px, 10vw, 160px); }
+.a2-page .a2-study-copy h2 { font-size: clamp(43px, 4vw, 66px); line-height: 1.12; }
+.a2-page .a2-study-copy section > p:not(.a2-eyebrow) { font-size: 16px; line-height: 1.85; color: #4f5856; }
+.a2-page .a2-study-detail { top: 118px; }
+.a2-page .a2-study-detail figcaption { color: var(--a2-muted); font-size: 11px; }
+
+@media (max-width: 1000px) {
+  .a2-page .a2-hero-grid { grid-template-columns: minmax(0, 1.35fr) minmax(0, .85fr); gap: 32px; }
+  .a2-page .a2-title { font-size: clamp(65px, 9.1vw, 95px); }
+  .a2-page .a2-title[data-long] { font-size: 7.8vw; }
+  .a2-page.a2-research .a2-title { font-size: clamp(65px, 9.1vw, 95px); }
+  .a2-page .a2-hero-note > p { font-size: 18px; }
+  .a2-page .a2-reading { gap: 6vw; }
+  .a2-page .a2-introduction { gap: 6vw; }
+  .a2-page .a2-introduction > p { font-size: 20px; }
+  .a2-page .a2-study-notes { gap: 6vw; }
+}
+
+@media (max-width: 700px) {
+  .a2-page { --a2-pad: 24px; }
+  .a2-page .mi-title-window { padding: 8px 6px 12px; margin: -8px -6px -12px; }
+  .a2-page .a2-breadcrumb { min-height: 76px; padding-block: 16px; gap: 5px 10px; font-size: 10px; }
+  .a2-page .a2-breadcrumb > a { min-height: 28px; }
+  .a2-page .a2-hero { padding-top: 6px; padding-bottom: 40px; }
+  .a2-page .a2-folio { padding-top: 17px; gap: 18px; }
+  .a2-page .a2-eyebrow { font-size: 9px; letter-spacing: .1em; }
+  .a2-page .a2-folio-count { font-size: 11px; }
+  .a2-page .a2-hero-grid,
+  .a2-page.a2-research .a2-hero-grid { grid-template-columns: minmax(0, 1fr); gap: 30px; padding-top: 34px; }
+  .a2-page .a2-number { font-size: 24px; margin-bottom: 18px; }
+  .a2-page .a2-title { font-size: clamp(58px, 13.6vw, 94px); line-height: 1.03; }
+  .a2-page .a2-title[data-long] { font-size: clamp(47px, 11.4vw, 78px); }
+  .a2-page.a2-research .a2-title { font-size: clamp(54px, 12.6vw, 87px); }
+  .a2-page .a2-hero-note { max-width: 480px; grid-template-columns: 24px minmax(0, 1fr); gap: 0 16px; padding: 0; }
+  .a2-page .a2-note-mark { margin: 2px 0 0; }
+  .a2-page .a2-hero-note > p,
+  .a2-page.a2-research .a2-hero-note > p { max-width: 35ch; font-size: 17px; line-height: 1.7; }
+  .a2-page .a2-hero-note .a2-line-link { font-size: 11px; margin-top: 15px; }
+  .a2-page .a2-plate-window { aspect-ratio: 1.12; }
+  .a2-page .a2-plate > figcaption { padding-block: 14px; gap: 5px; font-size: 10px; }
+  .a2-page .a2-introduction { grid-template-columns: minmax(0, 1fr); gap: 27px; padding-block: 68px; }
+  .a2-page .a2-introduction h2 { font-size: clamp(42px, 10.2vw, 60px); }
+  .a2-page .a2-introduction > p { max-width: 39ch; font-size: 18px; line-height: 1.8; }
+  .a2-page .a2-reading { display: block; padding-bottom: 68px; }
+  .a2-page .a2-index > nav { position: static; padding-top: 19px; padding-bottom: 30px; }
+  .a2-page .a2-index a { min-height: 44px; font-size: 11px; }
+  .a2-page .a2-chapter { padding-block: 31px 37px; }
+  .a2-page .a2-chapter-number { font-size: 21px; }
+  .a2-page .a2-chapter h2 { font-size: clamp(28px, 7.4vw, 39px); margin-bottom: 18px; }
+  .a2-page .a2-chapter p { font-size: 15px; line-height: 1.85; }
+  .a2-page .a2-invitation-inner { padding-top: 46px; padding-bottom: 25px; }
+  .a2-page .a2-invitation-grid { grid-template-columns: minmax(0, 1fr); gap: 30px; padding-block: 30px 40px; }
+  .a2-page .a2-invitation h2 { font-size: clamp(37px, 9.9vw, 60px); line-height: 1.2; }
+  .a2-page .a2-contact-circle { width: 116px; }
+  .a2-page .a2-invitation-foot { font-size: 10px; }
+  .a2-page .a2-related { padding-block: 68px; }
+  .a2-page .a2-related-heading h2 { font-size: 45px; }
+  .a2-page .a2-related li > a { min-height: 84px; }
+  .a2-page .a2-related-name { font-size: clamp(28px, 7.7vw, 39px); }
+  .a2-page .a2-next { padding-top: 32px; padding-bottom: 72px; }
+  .a2-page .a2-next-name { font-size: clamp(35px, 9.6vw, 56px); }
+  .a2-page .a2-back { margin-top: 25px; font-size: 11px; }
+  .a2-page .a2-study-notes { grid-template-columns: minmax(0, 1fr); gap: 42px; padding-block: 68px; }
+  .a2-page .a2-study-copy h2 { font-size: 42px; }
+  .a2-page .a2-study-copy section > p:not(.a2-eyebrow) { font-size: 15px; }
+  .a2-page .a2-study-detail { position: static; }
+}
+
+@media (max-width: 370px) {
+  .a2-page { --a2-pad: 20px; }
+  .a2-page .a2-title { font-size: 14.6vw; }
+  .a2-page .a2-title[data-long] { font-size: 11.8vw; }
+  .a2-page.a2-research .a2-title { font-size: 12.8vw; }
+  .a2-page .a2-related-name { font-size: 26px; }
+  .a2-page .a2-next-name { font-size: 9.3vw; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a2-page .mi-title-window { overflow: visible; }
+  .a2-page .a2-title,
+  .a2-page .a2-hero-note,
+  .a2-page .a2-plate-window,
+  .a2-page .a2-plate-window > img { transform: none !important; clip-path: none !important; opacity: 1 !important; visibility: visible !important; }
+}

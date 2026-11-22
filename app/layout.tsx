@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { path } from "../lib/maison";
-import { MaisonNav, MaisonFooter, ContactDialog } from "../components/galerie/MaisonChrome";
+import { MaisonNav, MaisonFooter, ContactDialog, Pointer } from "../components/matiere/MaisonShell";
 import "./globals.css";
 import "./galerie.css";
 
@@ -44,6 +44,7 @@ export default function Layout({ children }: Readonly<{children: React.ReactNode
         {children}
         <MaisonFooter />
         <ContactDialog />
+        <Pointer />
       </body>
     </html>
   );

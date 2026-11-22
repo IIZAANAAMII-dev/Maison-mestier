@@ -1,4 +1,4 @@
-.page { --pad:clamp(22px,4.1vw,76px); --red:#9d302a; --line:#c9c3b7; --quiet:#6c675b; background:#f2ede3; color:#27261f; overflow:clip; }
+.page { --pad:clamp(22px,4.1vw,76px); --red:#9d302a; --line:#c9c3b7; --quiet:#6c675b; padding-top:var(--head-height,86px); background:#f2ede3; color:#27261f; overflow:clip; }
 .page h1,.page h2,.page h3,.page i { font-weight:400; }
 .page a { color:inherit; text-decoration:none; }
 .page a:focus-visible { outline:2px solid var(--red); outline-offset:6px; }
