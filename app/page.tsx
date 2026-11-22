@@ -1,3 +1,3 @@
-import MaisonHome from "../components/matiere/MaisonHome";
+import FabricationHome from "../components/fabrication/FabricationHome";
 
-export default function Home() { return <MaisonHome />; }
+export default function Home() { return <FabricationHome />; }

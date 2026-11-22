@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { path } from "../lib/maison";
-import { MaisonNav, MaisonFooter, ContactDialog, Pointer } from "../components/matiere/MaisonShell";
+import { FabricationNav, FabricationFooter, FabricationContact, FabricationPointer } from "../components/fabrication/FabricationShell";
 import "./globals.css";
 import "./galerie.css";
 
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", title: "Maison Mestier — L’art de faire impression", images: [path("/galerie/pavilion.webp")] },
 };
-export const viewport: Viewport = { themeColor: "#f2ede3", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#e9e6de", width: "device-width", initialScale: 1 };
 
 export default function Layout({ children }: Readonly<{children: React.ReactNode}>) {
   return (
@@ -40,11 +40,11 @@ export default function Layout({ children }: Readonly<{children: React.ReactNode
       </head>
       <body id="haut">
         <a className="skip" href="#contenu">Aller au contenu</a>
-        <MaisonNav />
+        <FabricationNav />
         {children}
-        <MaisonFooter />
-        <ContactDialog />
-        <Pointer />
+        <FabricationFooter />
+        <FabricationContact />
+        <FabricationPointer />
       </body>
     </html>
   );

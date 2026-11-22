@@ -1,85 +1,72 @@
-# Maison Mestier · La matière en mouvement
+# Maison Mestier · La Maison en fabrication
 
-**[Voir le site en ligne](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/)** · [Références et direction de mouvement](docs/refonte-matiere-reference.md) · [Recette de la refonte](docs/recette-matiere.md)
+[Voir le site](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/) · [Carnet de repérages](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/reperages/)
 
-Une expérience éditoriale pour une maison de communication 360 : une même direction de création relie l’identité, le site, le stand et l’événement. La refonte associe architecture imaginaire, grandes compositions typographiques et sculpture de papier au revers de laiton. Les textes, la matière et les transitions partagent une progression commune, sur un défilement natif.
+La refonte fait suivre une même identité à travers ses formats et ses échelles : une composition imprimée se relève en pavillon, révèle son assemblage, s’éclaire et devient un ensemble de supports. Le parcours associe une scène réellement modélisée en Three.js, une partition GSAP et des contenus HTML lisibles.
 
 ## Le parcours
 
-- **« Vos idées, en grand. »** L’accueil s’ouvre sur une architecture en plein écran. L’image, les deux lignes du titre et l’invitation à entrer composent une même ouverture GSAP.
-- **Le manifeste.** « Une même idée. Toutes ses dimensions. » Une respiration ivoire présente la Maison avant l’expérience de matière.
-- **La feuille devient espace.** Une sculpture originale évolue en trois mouvements : L’intuition, La transformation, La rencontre. La progression du volume et celle des textes suivent le même défilement. Les trois commandes permettent de rejoindre directement une étape.
-- **Les huit ateliers.** Stands & Salons, Événement, Identité, Digital, Visibilité, Éphémère, Contenu et L’Intendance. Chaque entrée possède un aperçu au survol et au focus, un dossier en modale et une page complète avec son URL propre. Les descriptions viennent de `lib/ateliers.json`.
-- **Les études de création.** Le portique, L’empreinte et L’entracte se parcourent dans un rail horizontal, au toucher, par glissement à la souris ou avec les boutons précédent et suivant. Chaque étude ouvre son dossier et conserve une page détaillée.
-- **La méthode.** Écouter, Donner forme, Faire vivre : trois gestes reliés par une ligne, du premier échange au suivi du projet.
-- **La correspondance.** Le footer « La suite commence par une idée. » conduit au contact et conserve un accès direct aux huit métiers.
+1. **Le signe** : une affiche, du papier et une première intention.
+2. **Les formats** : Affiche, Écran et Panorama transforment la composition.
+3. **Le volume** : le plan se relève et construit un pavillon.
+4. **Les coulisses** : le visiteur peut décomposer l’assemblage.
+5. **L’ouverture** : un geste ajuste la lumière de la scène.
+6. **La Maison** : les pièces se distribuent entre huit savoir-faire.
+7. **Le lendemain** : l’espace devient édition, contenu et présence numérique.
 
-La navigation fixe, le menu plein écran Nuit, les dossiers et le contact partagent le même vocabulaire de mouvement. Les dialogues natifs gèrent le focus, Échap et le retour au déclencheur ; leur fermeture inverse la timeline d’ouverture. Le curseur accompagne discrètement la souris, nomme certaines actions et anime légèrement les boutons magnétiques. Il laisse le pointeur système visible et se désactive sur écran tactile, dans les formulaires, dans les modales et en mouvement réduit.
+Une navigation directe par chapitre et un accès aux ateliers restent disponibles. Le défilement est natif. La préférence de réduction des mouvements remplace le long parcours défilant par des chapitres sélectionnables.
 
-Les images d’architecture et les trois dossiers sont des **études de création**. Ils ne représentent pas des réalisations clientes. Les références clients restent présentées en rendez-vous.
+Les ateliers se consultent dans un répertoire interactif et se conservent dans une sélection de projet. Trois exemples de parcours réunissent plusieurs métiers. Les études ont trois compositions — Galerie, Table et Catalogue — animées avec GSAP Flip. L’image choisie rejoint le dossier, puis retourne à sa carte. Deux lectures séparent l’intention et les annotations de fabrication.
 
-## La sculpture et ses modes de rendu
+Le menu prend la forme d’un plan de huit ateliers. Le footer contient une correspondance animée. Le contact rassemble les ateliers retenus, conserve un brouillon de session et permet de préparer puis copier un message.
 
-La géométrie est définie dans `components/matiere/paper-geometry.ts`. La scène Three.js et les rendus de secours utilisent cette même géométrie et la même progression.
+## Scène et rendu de secours
+
+`components/fabrication/scene-geometry.ts` contient la géométrie et les poses. Les mêmes objets sont exportés vers Blender pour produire la séquence de secours : 49 images principales et 11 états de contrôle, dont sept positions intermédiaires pour l’assemblage. Il ne s’agit pas d’une image plate déformée pour simuler le volume.
 
 | Situation | Comportement |
-| --- | --- |
-| WebGL disponible | Scène chargée dynamiquement à proximité de la section. La caméra et les feuilles suivent la progression ; le pointeur apporte une variation légère. Les commandes Papier, Laiton, Encre et Pause sont disponibles. |
-| WebGL indisponible ou contexte perdu | Séquence Canvas 2D de 25 images WebP rendues à l’avance avec Blender, en 1 280 × 900. Les images voisines sont interpolées ; une image déjà chargée reste affichée pendant les chargements. |
-| Préférence de mouvement réduit | Trois poses fixes de la séquence, choisies par les commandes d’étape. Les mouvements de parcours sont supprimés. |
-| Économie de données (`saveData`) | Le poster reste affiché. La commande « Explorer la matière » permet d’activer explicitement l’expérience. |
+|---|---|
+| WebGL2 disponible | Géométrie réelle, caméra et lumière liées au score ; légère réponse au pointeur. |
+| WebGL indisponible ou perdu | Séquence issue de la même scène, avec interpolation entre images et variantes correspondant aux commandes. |
+| Mobile | Recadrage vertical, commandes tactiles, densité de pixels et cache limités. |
+| Mouvement réduit | Chapitres directs, transitions immédiates, pointeur décoratif désactivé. |
+| Page hors écran ou masquée | Rendu suspendu, reprise à la prochaine interaction ou intersection. |
 
-La séquence charge d’abord sa première image, puis au maximum trois images en parallèle lorsque la section approche. Le rendu s’interrompt hors champ et lorsque l’onglet est masqué. Le cadrage mobile est recomposé autour de la sculpture ; le cyclorama se prolonge dans les espaces du cadre vertical. Les variantes de matière et l’animation libre appartiennent à la scène WebGL ; la séquence montre le papier ivoire au revers de laiton.
+Le cache total du secours, variantes comprises, est limité à 14 images sur petit écran et 22 sur grand écran, avec trois chargements simultanés. Le poster reste visible jusqu’à la disponibilité du premier rendu. Les images transparentes conservent la continuité du papier et de la nuit avec la page.
 
 ## Développer et exporter
 
-**Node.js 22 ou ultérieur** est requis. Le site utilise Next.js, React, TypeScript, GSAP avec ScrollTrigger et Three.js. Les polices Bodoni Moda, Instrument Sans et IBM Plex Mono sont auto-hébergées. Les contenus et les liens restent en HTML ; la 3D est chargée côté client.
-
-```sh
-npm ci
+```bash
+npm install
 npm run dev
-```
-
-`npm run dev` passe par `scripts/dev.mjs`, qui lance Next.js avec Webpack par défaut. Ce wrapper accepte aussi les arguments de prévisualisation `--host` et `--strictPort`, en les adaptant aux arguments de Next.js. Le défilement du site reste natif.
-
-```sh
 npm run typecheck
 NEXT_PUBLIC_BASE_PATH=/Maison-mestier/atelier-en-lumiere npm run build -- --webpack
 ```
 
-L’export statique est écrit dans `out/`. Pour GitHub Pages, ce dossier est publié sur la branche `gh-pages`, dans `atelier-en-lumiere/`. L’adresse publique reste inchangée. La [révision publiée](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/version.json) identifie le commit source associé au déploiement.
+Next.js produit un export statique dans `out/`. Le contenu est publié dans `atelier-en-lumiere/` sur `gh-pages`. Les routes utilisent `path()` et `atelierPath()` pour respecter le préfixe. Les huit pages ateliers et les trois pages d’études conservent leurs URLs. `version.json` associe une publication à son commit source.
 
-Les liens et les chemins d’assets passent par les helpers `path()` et `atelierPath()` de `lib/maison.ts` afin de respecter `NEXT_PUBLIC_BASE_PATH`. Les pages ateliers et recherches conservent leurs slugs et leurs liens directs.
+## Principaux fichiers
 
-## Repères dans le code
+| Fichier | Rôle |
+|---|---|
+| `components/fabrication/FabricationHome.tsx` | Score partagé, chapitres, ateliers et composition de parcours. |
+| `components/fabrication/FabricationScene.tsx` | Rendu Three.js et lecteur de séquence, chargement et cycle de vie. |
+| `components/fabrication/scene-geometry.ts` | Géométrie, matériaux, lumières et poses. |
+| `components/fabrication/FabricationProjects.tsx` | Galerie Flip, transferts d’image et dossiers annotés. |
+| `components/fabrication/FabricationShell.tsx` | Navigation, plan, contact, footer et pointeur. |
+| `components/fabrication/useFabricationDialog.ts` | Dialogues natifs, focus et verrou de défilement partagé. |
+| `components/fabrication/fabrication-data.ts` | Chapitres et sélection de projet. |
+| `art/fabrication-README.md` | Reproduction des textures et des rendus de la scène. |
+| `lib/ateliers.json` | Source éditoriale des huit métiers. |
 
-| Fichier ou dossier | Responsabilité |
-| --- | --- |
-| `components/matiere/MaisonHome.tsx` et `home.css` | Accueil, partition GSAP, progression de la sculpture, index des ateliers, rail et dossiers. |
-| `components/matiere/PaperScene.tsx` | Rendu Three.js, lumière, matériaux, caméra et gestion du contexte WebGL. |
-| `components/matiere/paper-geometry.ts` | Géométrie des feuilles et positions partagées avec les rendus de secours. |
-| `components/matiere/PaperSequence.tsx` | Chargement progressif, interpolation Canvas 2D et cadrage des images de secours. |
-| `components/matiere/MaisonShell.tsx` et `shell.css` | Navigation, menu, footer, contact et curseur. |
-| `components/matiere/usePaperDialog.ts` | Dialogues natifs, timeline réversible, focus et verrou de défilement partagé. |
-| `components/matiere/InteriorMotion.tsx` et `interiors.css` | Mise en mouvement et raccord visuel des pages intérieures. |
-| `app/ateliers/[slug]/page.tsx` et `app/recherches/[slug]/page.tsx` | Pages détaillées, métadonnées, chapitres et liens entre dossiers. |
-| `lib/ateliers.json` et `lib/maison.ts` | Contenus des huit métiers, études de création et helpers de chemins. |
-| `art/render-paper-export.mjs` | Export de la géométrie et des poses Three.js vers les données de rendu. |
-| `art/render-paper-fallback.py` | Reconstruction et rendu de la séquence dans Blender. |
-| `public/matiere/poster.webp` et `public/matiere/frames/` | Poster et 25 images de secours. |
+## Contenus et contact
 
-## Le contact
+Le Portique, L’empreinte et L’entracte sont explicitement des **études de création**, pas des références clients. Les descriptions et annotations correspondent aux images utilisées. L’atelier Visibilité traite le SEO, le GEO et les campagnes, conformément au contenu métier.
 
-Le contact prépare un **brouillon à copier**, conservé dans la session de l’onglet. Il n’envoie aucun message et n’affiche pas de confirmation d’envoi. Un dossier atelier transmet son contexte au formulaire via l’événement `mestier:contact` ; une arrivée directe avec `?atelier=<slug>#contact` ouvre aussi le bon atelier.
+Aucun envoi de formulaire n’est simulé. Sans `NEXT_PUBLIC_CONTACT_EMAIL`, le visiteur prépare et copie son message. Avec une adresse configurée au build, il peut ouvrir sa messagerie pour relire et envoyer lui-même le message. Le brouillon reste dans la session du navigateur.
 
-Lorsque l’adresse de réception est validée, définir `NEXT_PUBLIC_CONTACT_EMAIL` au moment du build pour ajouter l’action « Ouvrir ma messagerie ». L’utilisateur relit et envoie lui-même le message depuis son application de messagerie.
+## Vérification et limites
 
-## Vérification et références
+Le projet fait l’objet d’une compilation de production et d’un contrôle des parcours sur la version publiée. L’environnement de contrôle disponible ne dispose pas de WebGL utilisable : les captures visuelles y concernent le rendu de secours. Le rendu Three.js et sa fluidité doivent aussi être vérifiés sur des appareils disposant d’un GPU compatible avant une ouverture commerciale.
 
-Le build de production a réussi. Le rendu de secours, notamment son cadrage et les raccords de couleur sur mobile, a été contrôlé dans le navigateur. **Le rendu WebGL temps réel n’a pas été vérifié visuellement dans cet environnement : aucun GPU/WebGL utilisable n’était disponible pour ce contrôle.** Ses matières, sa réponse au pointeur et sa fluidité doivent encore être examinées sur un appareil compatible.
-
-Le [compte rendu de recette](docs/recette-matiere.md) précise les parcours contrôlés et les limites de validation. Les références Awwwards, les skills GitHub consultés et leur traduction dans la refonte sont documentés dans [Références et direction de mouvement](docs/refonte-matiere-reference.md). Le projet ne revendique aucune récompense Awwwards.
-
-## Archives de création
-
-Le [carnet de repérages](https://iizaanaamii-dev.github.io/Maison-mestier/atelier-en-lumiere/reperages/) présente la partition actuelle et ses références. Il conserve aussi un ancien storyboard, explicitement identifié comme archive. Les autres documents de traversée décrivent des éditions précédentes et ne constituent pas la spécification de ce parcours. Les anciens composants restent disponibles dans l’historique et les répertoires de recherche ; l’accueil actuel utilise `components/matiere/`.
+Les anciens composants et carnets restent dans le dépôt comme archives de recherche. L’accueil courant utilise exclusivement `components/fabrication/`. Les pages de laboratoire ne constituent pas la spécification du parcours courant.

@@ -5,6 +5,7 @@ import { MaisonMark } from "../../../components/galerie/Icons";
 import { InteriorMotion } from "../../../components/matiere/InteriorMotion";
 import "../../../components/galerie/atelier.css";
 import "../../../components/matiere/interiors.css";
+import "../../../components/fabrication/interiors.css";
 
 type Props = { params: Promise<{ slug: string }> };
 export const dynamicParams = false;
