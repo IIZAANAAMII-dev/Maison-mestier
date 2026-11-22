@@ -1,7 +1,1 @@
-{
-  "name": "La matière en mouvement",
-  "sourceCommit": "60dcf7f579ba67516803fe14c3062a3644ffcde8",
-  "branch": "feat/maison-mestier-choregraphie",
-  "publishedAt": "2026-11-22T00:57:15.554976+00:00",
-  "basePath": "/Maison-mestier/atelier-en-lumiere"
-}
+{"edition": "maison-en-fabrication", "source": "16b38a76a2fa749cac95e8cd629087a00912fcb0", "chapters": 7}
