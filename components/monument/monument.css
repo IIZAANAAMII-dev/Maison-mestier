@@ -211,3 +211,14 @@
 html[data-stage="night"] .fab-nav:not(.is-open) { background: linear-gradient(to bottom, rgba(20, 26, 23, .55), rgba(20, 26, 23, 0)); border-bottom-color: transparent; color: #efeadf; --fab-ink: #efeadf; --fab-paper: #141a17; }
 
 .mo-loader-logo { display: block; width: clamp(15rem, 34vw, 34rem); aspect-ratio: 1046 / 466; background: currentColor; mask: center / contain no-repeat; -webkit-mask: center / contain no-repeat; }
+
+/* Sections after the journey */
+.mo-band { transform-origin: 50% 50%; will-change: transform; padding-bottom: calc(clamp(4rem, 10vh, 7rem) + clamp(2rem, 5vw, 5rem)); }
+.mo-studies { position: relative; z-index: 1; margin-top: calc(clamp(2rem, 5vw, 5rem) * -1); border-radius: clamp(2rem, 5vw, 5rem) clamp(2rem, 5vw, 5rem) 0 0; background: var(--mo-paper); }
+.mo-study-picture { will-change: clip-path; }
+.mo-call { overflow: hidden; isolation: isolate; background: var(--mo-paper); border-top: 0; }
+.mo-call-flood { position: absolute; inset: 0; z-index: -1; background: #24241f; clip-path: circle(0% at 86% 78%); }
+.mo-call > .mo-label, .mo-call > h2, .mo-call > .mo-call-copy { color: #efeadf; mix-blend-mode: difference; }
+.mo-call > .mo-call-copy { color: #a39d93; }
+.mo-call-button { position: relative; z-index: 1; }
+.mo-call-button:hover, .mo-call-button:focus-visible { background: #efeadf; color: #141a17; }

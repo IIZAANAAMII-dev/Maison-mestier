@@ -183,6 +183,21 @@ export default function MonumentHome() {
           scrollTrigger: { trigger: select(".mo-band")[0], start: "top bottom", end: "bottom top", scrub: .5 } });
       });
 
+      // Band: fast scrolling slants the names, then they settle.
+      const band = select(".mo-band")[0] as HTMLElement | undefined;
+      const slant = band ? gsap.quickTo(band, "skewX", { duration: .5, ease: "power3.out" }) : null;
+      const onScroll = ({ velocity }: { velocity: number }) => slant?.(gsap.utils.clamp(-9, 9, velocity * -.22));
+      lenis.on("scroll", onScroll);
+
+      // Call: the night floods out of the button while the sentence is inked word by word.
+      const call = select(".mo-call")[0];
+      if (call) {
+        gsap.fromTo(select(".mo-call-flood"), { clipPath: "circle(0% at 86% 78%)" }, { clipPath: "circle(150% at 86% 78%)", ease: "none",
+          scrollTrigger: { trigger: call, start: "top 55%", end: "center 45%", scrub: .6 } });
+        gsap.fromTo(select(".mo-call h2 [data-word]"), { opacity: .14 }, { opacity: 1, ease: "none", stagger: .1,
+          scrollTrigger: { trigger: call, start: "top 80%", end: "center 55%", scrub: .4 } });
+      }
+
       // Call: the button leans toward a fine pointer.
       const button = select(".mo-call-button")[0] as HTMLElement | undefined;
       const lean = (event: PointerEvent) => {
@@ -223,7 +238,9 @@ export default function MonumentHome() {
       const cards = gsap.utils.toArray<HTMLElement>(select(".mo-study"));
       cards.forEach((card, index) => {
         const next = cards[index + 1];
-        gsap.fromTo(card.querySelector("img"), { scale: 1.14 }, { scale: 1, ease: "none", scrollTrigger: { trigger: card, start: "top bottom", end: "top top", scrub: true } });
+        gsap.fromTo(card.querySelector("img"), { scale: 1.3 }, { scale: 1, ease: "none", scrollTrigger: { trigger: card, start: "top bottom", end: "top top", scrub: true } });
+        gsap.fromTo(card.querySelector(".mo-study-picture"), { clipPath: "inset(22% 14% 22% 14%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "none", scrollTrigger: { trigger: card, start: "top 95%", end: "top 25%", scrub: .5 } });
+        gsap.from(card.querySelectorAll(".mo-study-copy > *"), { y: 46, autoAlpha: 0, duration: 1.1, ease: "power4.out", stagger: .07, scrollTrigger: { trigger: card, start: "top 62%", once: true } });
         if (next) gsap.to(card.querySelector(".mo-study-sheet"), { scale: .93, opacity: .55, ease: "none",
           scrollTrigger: { trigger: next, start: "top 85%", end: "top 12%", scrub: true } });
       });
@@ -233,6 +250,7 @@ export default function MonumentHome() {
 
       return () => {
         window.removeEventListener("load", settle);
+        lenis.off("scroll", onScroll);
         button?.removeEventListener("pointermove", lean);
         button?.removeEventListener("pointerleave", rest);
         staticHero?.();
@@ -350,8 +368,9 @@ export default function MonumentHome() {
       </section>
 
       <section className="mo-call" aria-labelledby="mo-call-title">
+        <span className="mo-call-flood" aria-hidden="true" />
         <p className="mo-label">(04) Votre projet</p>
-        <h2 id="mo-call-title" data-split aria-label="Un seul interlocuteur, du premier trait au dernier détail."><Words text="Un seul interlocuteur, du premier trait au dernier détail." /></h2>
+        <h2 id="mo-call-title" aria-label="Un seul interlocuteur, du premier trait au dernier détail."><Words text="Un seul interlocuteur, du premier trait au dernier détail." /></h2>
         <p className="mo-call-copy" data-rise>Décrivez votre intention : la Maison compose l’équipe, le calendrier et le budget autour d’elle.</p>
         <button className="mo-call-button" type="button" onClick={() => contact()}><span>Composer votre projet</span><Arrow /></button>
       </section>
