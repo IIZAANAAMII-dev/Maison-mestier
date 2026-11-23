@@ -28,7 +28,8 @@ function Cross({ plus = false }: { plus?: boolean }) {
 }
 
 function Wordmark() {
-  return <span className="fab-wordmark">Maison <em>Mestier.</em></span>;
+  const logo = `url(${path("/logo-maison-mestier.png")})`;
+  return <span className="fab-logo" role="img" aria-label="Maison Mestier" style={{ maskImage: logo, WebkitMaskImage: logo }} />;
 }
 
 function contactLink(event: MouseEvent<HTMLAnchorElement>, detail: ContactDetail = {}) {

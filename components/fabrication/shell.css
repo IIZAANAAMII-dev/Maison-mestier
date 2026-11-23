@@ -8,6 +8,8 @@
 .fab-shell-cross{display:block;width:25px;height:25px;flex:none}
 .fab-wordmark{display:block;font:400 2rem/.95 var(--display);letter-spacing:-.055em;white-space:nowrap}
 .fab-wordmark em{font-weight:400}
+.fab-logo{display:block;height:50px;aspect-ratio:1046/466;background:currentColor;mask:center/contain no-repeat;-webkit-mask:center/contain no-repeat}
+@media(max-width:700px){.fab-logo{height:42px}}
 .fab-nav a,.fab-menu a,.fab-footer a,.fab-contact a{text-decoration:none}
 .fab-shell-close{display:flex;align-items:center;gap:18px;padding:10px 0 10px 16px;border:0;background:none;font-size:.75rem;cursor:pointer}
 .fab-shell-close .fab-shell-cross{transition:transform .4s cubic-bezier(.2,.7,.1,1)}
