@@ -1,3 +1,3 @@
-import FabricationHome from "../components/fabrication/FabricationHome";
+import MonumentHome from "../components/monument/MonumentHome";
 
-export default function Home() { return <FabricationHome />; }
+export default function Home() { return <MonumentHome />; }

@@ -128,13 +128,13 @@ export function FabricationNav() {
     <header ref={header} className={`fab-nav${scrolled || !home ? " is-scrolled" : ""}`} data-mood={home ? chapters[chapter].mood : "paper"}>
       <a className="fab-nav-brand" href={path("/")} aria-label="Maison Mestier, accueil"><Wordmark /></a>
       <nav className="fab-nav-links" aria-label="Navigation principale">
-        <a className="fab-nav-fabrication" href={path("/#maison")} onClick={(event) => navigate(event, path("/#maison"), 0)}><span className="fab-nav-live" aria-hidden="true" /><span>La Maison en fabrication</span></a>
+        <a className="fab-nav-fabrication" href={path("/#ateliers")}><span className="fab-nav-live" aria-hidden="true" /><span>Les ateliers</span></a>
         <a href={path("/#etudes")}>Les études <Arrow diagonal className="fab-inline-arrow" /></a>
       </nav>
       <div className="fab-nav-actions"><a className="fab-nav-contact" href={path("/#contact")} onClick={(event) => contactLink(event)}><span>Votre projet</span><span className="fab-nav-count" aria-label={`${selected.length} atelier${selected.length > 1 ? "s" : ""} sélectionné${selected.length > 1 ? "s" : ""}`}>{selected.length ? String(selected.length).padStart(2, "0") : <Arrow diagonal />}</span></a>
         <button className="fab-nav-toggle" type="button" aria-label="Ouvrir le plan de la Maison" aria-expanded={menu.isOpen} aria-controls="fab-navigation" aria-haspopup="dialog" onClick={menu.show}><span>Menu</span><span className="fab-nav-plan" aria-hidden="true"><i /><i /><i /><i /></span></button>
       </div>
-      {home && <span className="fab-nav-progress" aria-hidden="true" />}
+      
     </header>
 
     <dialog ref={menu.ref} id="fab-navigation" className="fab-menu" aria-labelledby="fab-menu-title" onCancel={menu.cancel} onClose={menu.finish} data-lenis-prevent>
@@ -144,7 +144,7 @@ export function FabricationNav() {
           <p className="fab-shell-label" data-dialog-enter>Une direction. Huit ateliers.</p>
           <h2 id="fab-menu-title" data-dialog-enter>Entrez par<br /><em>votre idée.</em></h2>
           <MenuPreview active={activeRoom} />
-          <div className="fab-menu-routes" data-dialog-enter><a href={path("/#maison")} onClick={(event) => navigate(event, path("/#maison"), 0)}>Traverser la fabrication <Arrow /></a><a href={path("/#etudes")} onClick={(event) => navigate(event, path("/#etudes"))}>Ouvrir les études <Arrow /></a></div>
+          <div className="fab-menu-routes" data-dialog-enter><a href={path("/#ateliers")} onClick={(event) => navigate(event, path("/#ateliers"))}>Parcourir les ateliers <Arrow /></a><a href={path("/#etudes")} onClick={(event) => navigate(event, path("/#etudes"))}>Ouvrir les études <Arrow /></a></div>
         </div>
         <div className="fab-menu-plan-wrap">
           <div className="fab-menu-plan-caption" data-dialog-enter><span>Plan libre / 01 — 08</span><span>Choisissez votre entrée <Arrow className="fab-inline-arrow fab-arrow-down" /></span></div>
