@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ateliers, atelierPath, image, path, studies } from "../../lib/maison";
 import { contact } from "../fabrication/fabrication-data";
 import { createHeroCanvas, type HeroCanvas } from "./hero-canvas";
+import Journey from "./Journey";
 import "./monument.css";
 
 const letters = "MESTIER".split("");
@@ -39,10 +40,21 @@ export default function MonumentHome() {
   const [scene, setScene] = useState(0);
   const [webgl, setWebgl] = useState(false);
   const goToRoom = useRef<(index: number) => void>(() => {});
+  const [mode, setMode] = useState<"static" | "world" | null>(null);
+  const lenisRef = useRef<Lenis | null>(null);
+  const fail = useCallback(() => setMode("static"), []);
+
+  // The immersive scene needs motion and WebGL 2; everything else keeps the printed page.
+  useEffect(() => {
+    let capable = false;
+    try { capable = window.matchMedia("(prefers-reduced-motion: no-preference)").matches && !!document.createElement("canvas").getContext("webgl2"); } catch {}
+    setMode(capable ? "world" : "static");
+  }, []);
 
   useEffect(() => {
     const element = root.current;
-    if (!element) return;
+    if (!element || !mode) return;
+    const world = mode === "world";
     gsap.registerPlugin(ScrollTrigger);
     const media = gsap.matchMedia();
     const select = gsap.utils.selector(element);
@@ -65,6 +77,7 @@ export default function MonumentHome() {
       element.classList.add("is-live");
 
       const lenis = new Lenis({ lerp: .09, wheelMultiplier: .9, anchors: true });
+      lenisRef.current = lenis;
       lenis.on("scroll", ScrollTrigger.update);
       const raf = (time: number) => lenis.raf(time * 1000);
       gsap.ticker.add(raf);
@@ -72,6 +85,7 @@ export default function MonumentHome() {
       const locked = new MutationObserver(() => { if (document.documentElement.style.overflow === "hidden") lenis.stop(); else lenis.start(); });
       locked.observe(document.documentElement, { attributes: true, attributeFilter: ["style"] });
 
+      const staticHero = world ? null : (() => {
       // Hero: the canvas is the only owner of the photographs, GSAP owns layout and type.
       const hero = element.querySelector<HTMLElement>(".mo-hero")!;
       let stage: HeroCanvas | null = null;
@@ -152,6 +166,17 @@ export default function MonumentHome() {
       gsap.fromTo(select(".mo-manifesto [data-word]"), { opacity: .14 }, { opacity: 1, ease: "none", stagger: .1,
         scrollTrigger: { trigger: select(".mo-manifesto")[0], start: "top 72%", end: "bottom 62%", scrub: .6 } });
 
+        return () => {
+          window.removeEventListener("resize", resize);
+          window.removeEventListener("blur", leave);
+          document.removeEventListener("visibilitychange", hidden);
+          hero.removeEventListener("pointermove", move);
+          hero.removeEventListener("pointerleave", leave);
+          visible.disconnect();
+          stage?.dispose(); setWebgl(false);
+        };
+      })();
+
       // Band: the eight names slide against the scroll.
       gsap.utils.toArray<HTMLElement>(select(".mo-band-row")).forEach((row, index) => {
         gsap.fromTo(row, { xPercent: index ? -28 : 0 }, { xPercent: index ? 0 : -28, ease: "none",
@@ -179,7 +204,7 @@ export default function MonumentHome() {
       });
 
       // Ring of the eight ateliers: scroll turns it, the index follows.
-      if (wide) {
+      if (wide && !world) {
         const section = element.querySelector<HTMLElement>(".mo-ateliers")!;
         section.classList.add("is-ring");
         const ring = select(".mo-ring")[0];
@@ -210,14 +235,9 @@ export default function MonumentHome() {
         window.removeEventListener("load", settle);
         button?.removeEventListener("pointermove", lean);
         button?.removeEventListener("pointerleave", rest);
-        window.removeEventListener("resize", resize);
-        window.removeEventListener("blur", leave);
-        document.removeEventListener("visibilitychange", hidden);
-        hero.removeEventListener("pointermove", move);
-        hero.removeEventListener("pointerleave", leave);
-        visible.disconnect(); locked.disconnect();
-        stage?.dispose(); setWebgl(false);
-        gsap.ticker.remove(raf); lenis.destroy();
+        staticHero?.();
+        locked.disconnect();
+        gsap.ticker.remove(raf); lenis.destroy(); lenisRef.current = null;
         element.classList.remove("is-live");
         element.querySelector(".mo-ateliers")?.classList.remove("is-ring");
         goToRoom.current = () => {};
@@ -225,12 +245,12 @@ export default function MonumentHome() {
     });
 
     return () => { window.removeEventListener("resize", fit); media.revert(); };
-  }, []);
+  }, [mode]);
 
   const active = ateliers[room];
 
   return (
-    <main id="contenu" className="mo" ref={root} tabIndex={-1}>
+    <main id="contenu" className={mode === "world" ? "mo is-world" : "mo"} ref={root} tabIndex={-1}>
       <noscript><style>{".mo-loader{display:none!important}"}</style></noscript>
       <div className="mo-loader" aria-hidden="true">
         <p className="mo-loader-name"><span className="mo-mask"><span className="mo-loader-word">Maison</span></span> <span className="mo-mask"><em className="mo-loader-word">Mestier</em></span></p>
@@ -238,6 +258,7 @@ export default function MonumentHome() {
         <span className="mo-loader-bar" />
       </div>
       <div className="mo-grain" aria-hidden="true" />
+      {mode === "world" ? <Journey scenes={scenes} ringImages={ringImages} manifesto={manifesto} lenis={lenisRef} onFail={fail} /> : <>
       <section className="mo-hero" aria-labelledby="mo-title">
         <div className="mo-hero-pin">
           <div className="mo-hero-meta">
@@ -269,11 +290,12 @@ export default function MonumentHome() {
         <p className="mo-manifesto-text" aria-label={manifesto}><Words text={manifesto} /></p>
       </section>
 
+      </>}
       <div className="mo-band" aria-hidden="true">
         {[0, 1].map((row) => <p className="mo-band-row" key={row}>{[...ateliers, ...ateliers].map((atelier, index) => <span key={index}>{row ? <em>{atelier.name}</em> : atelier.name}<i /></span>)}</p>)}
       </div>
 
-      <section className="mo-ateliers" id="ateliers" aria-labelledby="mo-ateliers-title">
+      {mode !== "world" &&       <section className="mo-ateliers" id="ateliers" aria-labelledby="mo-ateliers-title">
         <div className="mo-ateliers-pin">
           <header className="mo-ateliers-head">
             <p className="mo-label">(02) Les ateliers</p>
@@ -303,7 +325,7 @@ export default function MonumentHome() {
             <a className="mo-link" href={atelierPath(active.slug)}><span>Ouvrir l’atelier</span><Arrow /></a>
           </div>
         </div>
-      </section>
+      </section>}
 
       <section className="mo-studies" id="etudes" aria-labelledby="mo-studies-title">
         <header className="mo-studies-head">

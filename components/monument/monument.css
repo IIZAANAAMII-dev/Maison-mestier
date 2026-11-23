@@ -146,3 +146,66 @@
   .mo-cue::after, .mo-room h3, .mo-room p { animation: none; }
   .mo-study { position: static; }
 }
+
+/* Journey: the immersive scene and its score */
+.jo { position: relative; height: 1150vh; background: #141a17; color: #efeadf; }
+.jo-anchor { position: absolute; left: 0; width: 1px; height: 1px; }
+.jo-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+.jo-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.jo-hero, .jo-manifesto, .jo-ateliers { position: absolute; inset: 0; padding: calc(var(--head-height) + 1.1rem) var(--gutter) 2rem; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 1.5rem; pointer-events: none; }
+.jo-hero > *, .jo-ateliers > * { pointer-events: auto; }
+.jo-hero { grid-template-rows: auto auto 1fr auto; }
+.jo-hero-meta { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; padding-bottom: .9rem; border-bottom: 1px solid rgba(239, 234, 223, .22); color: #cfc8b6; }
+.jo-hero-meta span:last-child { text-align: right; }
+.jo-wordmark { grid-column: 1 / -1; margin: .04em 0 0; font: 400 20vw/.86 var(--display); letter-spacing: -.035em; white-space: nowrap; pointer-events: none; mix-blend-mode: difference; color: #efeadf; }
+.jo-wordmark > span { display: inline-flex; }
+.jo-wordmark .mo-mask { padding-bottom: .04em; }
+.jo-letter { display: inline-block; will-change: transform; }
+.jo-lead { grid-column: 1 / span 5; grid-row: 3; align-self: end; display: grid; gap: 1.1rem; justify-items: start; max-width: 30rem; }
+.jo-claim { font: 400 clamp(2rem, 3.6vw, 3.6rem)/1 var(--display); letter-spacing: -.03em; }
+.jo-copy { color: #cfc8b6; max-width: 24rem; }
+.jo-cue { grid-column: 1 / -1; grid-row: 4; margin-top: 1.4rem; color: #cfc8b6; }
+.jo-cue::after { content: ""; display: inline-block; width: 2.6rem; height: 1px; margin-left: .8rem; vertical-align: middle; background: currentColor; transform-origin: left; animation: mo-cue 2.4s cubic-bezier(.7, 0, .2, 1) infinite; }
+.jo-caption { position: absolute; bottom: clamp(2.5rem, 12vh, 7rem); left: var(--gutter); width: min(34vw, 30rem); display: grid; gap: 1rem; visibility: hidden; }
+.jo-caption[data-side="left"] { left: var(--gutter); }
+.jo-caption[data-side="right"] { left: auto; right: var(--gutter); }
+.jo-caption .mo-label { color: #d9b98a; }
+.jo-caption strong { font: 400 clamp(2.6rem, 5.4vw, 5.8rem)/.95 var(--display); letter-spacing: -.035em; }
+.jo-alt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.jo-manifesto { align-content: center; row-gap: 1.6rem; visibility: hidden; background: radial-gradient(ellipse at 50% 50%, rgba(20, 26, 23, .72), rgba(20, 26, 23, .15) 75%); }
+.jo-manifesto .mo-label { grid-column: 2 / -1; color: #d9b98a; }
+.jo-manifesto-text { grid-column: 2 / span 10; font: 400 clamp(1.9rem, 4.5vw, 5rem)/1.05 var(--display); letter-spacing: -.03em; text-wrap: balance; }
+.jo-ateliers { grid-template-rows: auto 1fr auto; visibility: hidden; }
+.jo-ateliers-head { grid-column: 1 / span 9; display: grid; gap: 1rem; padding-top: .8rem; }
+.jo-ateliers-head h2 { font: 400 clamp(2.2rem, 4.2vw, 4.6rem)/.96 var(--display); letter-spacing: -.035em; }
+.jo-index { grid-column: 1 / span 2; grid-row: 2; align-self: center; min-width: 11.5rem; list-style: none; margin: 0; padding: 0; }
+.jo-index button { display: flex; align-items: baseline; gap: 1rem; width: 100%; padding: .44rem 0; border: 0; border-top: 1px solid rgba(239, 234, 223, .2); background: none; text-align: left; font-size: .92rem; color: rgba(239, 234, 223, .55); transition: color .35s, padding-left .45s cubic-bezier(.2, .7, .2, 1); }
+.jo-index li:last-child button { border-bottom: 1px solid rgba(239, 234, 223, .2); }
+.jo-index button span { font: 400 .64rem/1 var(--mono); }
+.jo-index button:hover, .jo-index button[aria-current="true"] { color: #efeadf; }
+.jo-index button[aria-current="true"] { padding-left: .9rem; }
+.jo-index button[aria-current="true"] span { color: #d5584e; }
+.jo-room { grid-column: 10 / -1; grid-row: 2; align-self: center; display: grid; gap: .7rem; justify-items: start; }
+.jo-room-number { font: 400 .72rem/1 var(--mono); color: #d5584e; }
+.jo-room-number span { color: rgba(239, 234, 223, .55); }
+.jo-room h3 { font: 400 clamp(1.9rem, 2.9vw, 3.2rem)/1 var(--display); letter-spacing: -.03em; animation: mo-in .7s cubic-bezier(.2, .7, .2, 1) both; }
+.jo-room p:not(.jo-room-number) { max-width: 22rem; min-height: 3.1em; color: #cfc8b6; animation: mo-in .7s .06s cubic-bezier(.2, .7, .2, 1) both; }
+.jo-turn { grid-column: 1 / span 5; grid-row: 3; display: flex; align-items: center; gap: 1rem; color: #cfc8b6; }
+.jo-turn i { flex: 1; height: 1px; background: linear-gradient(to right, #efeadf calc(var(--turn, 0) * 100%), rgba(239, 234, 223, .22) 0); }
+.jo-links { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); margin: 0; padding: 0; list-style: none; }
+.mo.is-world .mo-band { padding-top: clamp(3rem, 8vh, 6rem); background: #141a17; }
+.mo.is-world .mo-grain { mix-blend-mode: normal; opacity: .05; }
+@media (max-width: 860px) {
+  .jo { height: 1000vh; }
+  .jo-hero-meta { grid-template-columns: 1fr 1fr; gap: .2rem 1rem; }
+  .jo-hero-meta span:nth-child(even) { text-align: right; }
+  .jo-lead { grid-column: 1 / -1; }
+  .jo-caption, .jo-caption[data-side="right"] { left: var(--gutter); right: var(--gutter); width: auto; bottom: 2.4rem; }
+  .jo-manifesto .mo-label, .jo-manifesto-text, .jo-ateliers-head { grid-column: 1 / -1; }
+  .jo-index { display: none; }
+  .jo-room { grid-column: 1 / -1; grid-row: 2; align-self: end; padding-bottom: 1.2rem; }
+  .jo-turn { grid-column: 1 / -1; }
+}
+
+.jo-ateliers { background: linear-gradient(to right, rgba(20, 26, 23, .78), rgba(20, 26, 23, 0) 30%, rgba(20, 26, 23, 0) 66%, rgba(20, 26, 23, .82)), linear-gradient(to bottom, rgba(20, 26, 23, .7), rgba(20, 26, 23, 0) 30%); }
+html[data-stage="night"] .fab-nav:not(.is-open) { background: linear-gradient(to bottom, rgba(20, 26, 23, .55), rgba(20, 26, 23, 0)); border-bottom-color: transparent; color: #efeadf; --fab-ink: #efeadf; --fab-paper: #141a17; }
