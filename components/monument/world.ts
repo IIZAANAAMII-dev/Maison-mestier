@@ -139,7 +139,7 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
   const coarse = window.matchMedia("(pointer: coarse)").matches;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, coarse ? 1.5 : 1.75));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = .82;
+  renderer.toneMappingExposure = .7;
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(NIGHT);
@@ -167,7 +167,7 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
     };
     return material;
   };
-  const paper = keep(breathe(new THREE.MeshPhysicalMaterial({ color: 0xd8cfbb, roughness: .86, metalness: 0, sheen: 1, sheenRoughness: .6, sheenColor: new THREE.Color(0xfff3dc),
+  const paper = keep(breathe(new THREE.MeshPhysicalMaterial({ color: 0xb9ae98, roughness: .9, metalness: 0, sheen: .45, sheenRoughness: .6, sheenColor: new THREE.Color(0xfff3dc),
     bumpMap: tile(options.textures.paper, 46, 1), bumpScale: 1.4, side: THREE.FrontSide, envMapIntensity: .3 })));
   const brass = keep(breathe(new THREE.MeshPhysicalMaterial({ color: 0xc19a55, roughness: .24, metalness: 1, clearcoat: .6, clearcoatRoughness: .2,
     normalMap: tile(options.textures.brass, 46, 1), normalScale: new THREE.Vector2(.35, .35), side: THREE.BackSide, envMapIntensity: 1.5 })));
@@ -246,9 +246,9 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
   scene.add(dust);
 
   // Light: one high warm key, and a lamp that follows the hand.
-  const key = new THREE.DirectionalLight(0xffe2b8, 1.25); key.position.set(4, 9, 6); scene.add(key);
+  const key = new THREE.DirectionalLight(0xffe2b8, .85); key.position.set(4, 9, 6); scene.add(key);
   const rim = new THREE.DirectionalLight(0x9fb4c8, .5); rim.position.set(-6, 2, -8); scene.add(rim);
-  const lamp = new THREE.PointLight(0xffb675, 14, 16, 1.7); scene.add(lamp);
+  const lamp = new THREE.PointLight(0xffb675, 5, 16, 1.7); scene.add(lamp);
 
   const pmrem = new THREE.PMREMGenerator(renderer);
   let environment: THREE.Texture | null = null;
@@ -260,7 +260,7 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
 
   const composer = new EffectComposer(renderer);
   composer.addPass(new RenderPass(scene, camera));
-  const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), coarse ? .2 : .3, .6, .92);
+  const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), coarse ? .16 : .22, .6, .95);
   composer.addPass(bloom);
   const finish = new ShaderPass(finishShader);
   composer.addPass(finish);
@@ -277,7 +277,7 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
     const positions: [number, number, number][] = [
       [.4, .15, 12.5 + far], [.6, .1, 9 + far * .6], [1, .5, -2.5],
       [-cam, .05, -5.6 + away], [cam, 0, -13.6 + away], [-cam, 0, -21.6 + away],
-      [.4, .3, -29.5], [0, 1.5, -35.5], [0, .3, -37.6 + far * .55], [0, .25, -38.1 + far * .55],
+      [.4, .3, -29.5], [0, 1.5, -35.5], [0, .3, -37.6], [0, .25, -38.1],
     ];
     const looks: [number, number, number][] = [
       [1, .2, 0], [1, .3, 0], [1.4, .2, -12],
@@ -305,6 +305,7 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
     camera.aspect = width / height; camera.fov = portrait ? 52 : 35; camera.updateProjectionMatrix();
     renderer.setSize(width, height, false); composer.setSize(width, height);
     dustMaterial.uniforms.uScale.value = renderer.getPixelRatio() * height / 900;
+    bloom.strength = portrait ? 0 : coarse ? .16 : .22;
     layout();
   };
 
@@ -327,9 +328,10 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
     camera.lookAt(lookNow);
     camera.rotation.z += eased.x * -.012 + bend * .02;
     lamp.position.set(position.x + eased.x * 4.5, position.y + eased.y * 3 + .6, position.z - 5);
+    lamp.intensity = 5 * (1 - .85 * THREE.MathUtils.smoothstep(progress, .5, .66));
 
     const near = 1 - THREE.MathUtils.smoothstep(progress, .07, .2);
-    (beam.material as THREE.ShaderMaterial).uniforms.uReveal.value = reveal * near; beam.visible = near > 0; oculus.intensity = 70 * reveal;
+    (beam.material as THREE.ShaderMaterial).uniforms.uReveal.value = reveal * near; beam.visible = near > 0; oculus.intensity = 30 * reveal;
     const count = Math.round(reveal * LENGTH) * ACROSS * 6;
     if (count !== shown) { ribbon.setDrawRange(0, count); shown = count; }
 

@@ -222,3 +222,25 @@ html[data-stage="night"] .fab-nav:not(.is-open) { background: linear-gradient(to
 .mo-call > .mo-call-copy { color: #a39d93; }
 .mo-call-button { position: relative; z-index: 1; }
 .mo-call-button:hover, .mo-call-button:focus-visible { background: #efeadf; color: #141a17; }
+
+/* Legibility over the lit scene */
+.jo-hero { background: radial-gradient(ellipse 60% 70% at 0% 100%, rgba(20, 26, 23, .88), rgba(20, 26, 23, 0) 70%); }
+.jo-caption::before { content: ""; position: absolute; inset: -45% -40%; z-index: -1; background: radial-gradient(closest-side, rgba(20, 26, 23, .82), rgba(20, 26, 23, 0)); pointer-events: none; }
+.jo-manifesto { background: radial-gradient(ellipse at 50% 50%, rgba(20, 26, 23, .9), rgba(20, 26, 23, .35) 80%); }
+.jo-ateliers { background: linear-gradient(to right, rgba(20, 26, 23, .9), rgba(20, 26, 23, 0) 34%, rgba(20, 26, 23, 0) 62%, rgba(20, 26, 23, .92) 80%), linear-gradient(to bottom, rgba(20, 26, 23, .7), rgba(20, 26, 23, 0) 30%); }
+@media (min-width: 761px) {
+  .jo-ateliers-head { grid-column: 1 / span 3; }
+  .jo-ateliers-head h2 { font-size: clamp(1.8rem, 2.7vw, 3rem); max-width: 9ch; }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .fab-footer-signature { animation: mo-sign linear both; animation-timeline: view(); animation-range: entry 0% entry 100%; }
+    @keyframes mo-sign { from { transform: translateY(55%); clip-path: inset(0 0 100% 0); } to { transform: none; clip-path: inset(-10% 0 -10% 0); } }
+  }
+}
+
+@media (max-width: 760px) {
+  .jo-hero { background: linear-gradient(to top, rgba(20, 26, 23, .94) 8%, rgba(20, 26, 23, .7) 34%, rgba(20, 26, 23, 0) 62%); }
+  .jo-manifesto { background: rgba(20, 26, 23, .84); }
+  .jo-ateliers { background: linear-gradient(to top, rgba(20, 26, 23, .95) 6%, rgba(20, 26, 23, .8) 28%, rgba(20, 26, 23, 0) 52%), linear-gradient(to bottom, rgba(20, 26, 23, .85), rgba(20, 26, 23, 0) 30%); }
+}
