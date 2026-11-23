@@ -10,6 +10,7 @@ import { createHeroCanvas, type HeroCanvas } from "./hero-canvas";
 import "./monument.css";
 
 const letters = "MESTIER".split("");
+let seenAtLoad: boolean | null = null;
 const number = (index: number) => String(index + 1).padStart(2, "0");
 
 const scenes = [
@@ -94,11 +95,36 @@ export default function MonumentHome() {
       hero.addEventListener("pointerleave", leave);
       window.addEventListener("blur", leave);
 
-      gsap.timeline({ defaults: { ease: "power4.out" } })
-        .from(select(".mo-letter"), { yPercent: 108, duration: 1.25, stagger: .06 }, .1)
-        .from(select(".mo-hero-meta > *"), { y: 14, autoAlpha: 0, duration: .8, stagger: .06 }, .35)
-        .from(select(".mo-aperture"), { clipPath: wide ? "inset(100% 4.6% 8% 52%)" : "inset(100% 5% 6% 5%)", duration: 1.4, ease: "power3.inOut" }, .3)
-        .from(select(".mo-hero-lead > *"), { y: 26, autoAlpha: 0, duration: .9, stagger: .08 }, .7);
+      // Loader: plays once per session, never when the page is restored mid-scroll.
+      const loader = select(".mo-loader")[0] as HTMLElement | undefined;
+      if (seenAtLoad === null) {
+        seenAtLoad = true;
+        try { seenAtLoad = sessionStorage.getItem("mo-seen") === "1"; sessionStorage.setItem("mo-seen", "1"); } catch {}
+      }
+      const seen = seenAtLoad;
+      const skip = seen || window.scrollY > 8 || !loader;
+      const intro = gsap.timeline({ defaults: { ease: "power4.out" } });
+      let t0 = .1;
+      if (skip) { if (loader) gsap.set(loader, { display: "none" }); }
+      else {
+        const count = { value: 0 };
+        const figure = loader!.querySelector<HTMLElement>(".mo-loader-count")!;
+        lenis.stop();
+        intro
+          .from(loader!.querySelectorAll(".mo-loader-word"), { yPercent: 110, duration: .9, stagger: .08 }, 0)
+          .to(count, { value: 100, duration: 1.5, ease: "power2.inOut", onUpdate: () => { figure.textContent = String(Math.round(count.value)).padStart(3, "0"); } }, 0)
+          .to(loader!.querySelector(".mo-loader-bar"), { scaleX: 1, duration: 1.5, ease: "power2.inOut" }, 0)
+          .to(loader!.querySelectorAll(".mo-loader-word"), { yPercent: -110, duration: .6, stagger: .05, ease: "power3.in" }, 1.55)
+          .to(loader!, { clipPath: "inset(0% 0% 100% 0%)", duration: 1, ease: "power4.inOut" }, 1.85)
+          .add(() => { lenis.start(); }, 2.3)
+          .set(loader!, { display: "none" });
+        t0 = 2.15;
+      }
+      intro
+        .from(select(".mo-letter"), { yPercent: 108, duration: 1.25, stagger: .06 }, t0)
+        .from(select(".mo-hero-meta > *"), { y: 14, autoAlpha: 0, duration: .8, stagger: .06 }, t0 + .25)
+        .from(select(".mo-aperture"), { clipPath: wide ? "inset(100% 4.6% 8% 52%)" : "inset(100% 5% 6% 5%)", duration: 1.4, ease: "power3.inOut" }, t0 + .2)
+        .from(select(".mo-hero-lead > *"), { y: 26, autoAlpha: 0, duration: .9, stagger: .08 }, t0 + .6);
 
       const state = { mix: 0 };
       gsap.set(select(".mo-caption"), { autoAlpha: 0, y: 24 });
@@ -126,6 +152,23 @@ export default function MonumentHome() {
       gsap.fromTo(select(".mo-manifesto [data-word]"), { opacity: .14 }, { opacity: 1, ease: "none", stagger: .1,
         scrollTrigger: { trigger: select(".mo-manifesto")[0], start: "top 72%", end: "bottom 62%", scrub: .6 } });
 
+      // Band: the eight names slide against the scroll.
+      gsap.utils.toArray<HTMLElement>(select(".mo-band-row")).forEach((row, index) => {
+        gsap.fromTo(row, { xPercent: index ? -28 : 0 }, { xPercent: index ? 0 : -28, ease: "none",
+          scrollTrigger: { trigger: select(".mo-band")[0], start: "top bottom", end: "bottom top", scrub: .5 } });
+      });
+
+      // Call: the button leans toward a fine pointer.
+      const button = select(".mo-call-button")[0] as HTMLElement | undefined;
+      const lean = (event: PointerEvent) => {
+        if (!button || event.pointerType === "touch") return;
+        const box = button.getBoundingClientRect();
+        gsap.to(button, { x: (event.clientX - box.left - box.width / 2) * .28, y: (event.clientY - box.top - box.height / 2) * .28, duration: .6, ease: "power3.out" });
+      };
+      const rest = () => { if (button) gsap.to(button, { x: 0, y: 0, duration: .9, ease: "elastic.out(1, .5)" }); };
+      button?.addEventListener("pointermove", lean);
+      button?.addEventListener("pointerleave", rest);
+
       // Headings and quiet reveals.
       gsap.utils.toArray<HTMLElement>(select("[data-split]")).forEach((heading) => {
         gsap.from(heading.querySelectorAll("[data-word]"), { yPercent: 110, duration: 1, ease: "power4.out", stagger: .05,
@@ -144,7 +187,7 @@ export default function MonumentHome() {
         const turn = gsap.to(ring, { rotateY: -step * (ateliers.length - 1), ease: "none",
           scrollTrigger: { trigger: section, start: "top top", end: "+=300%", pin: select(".mo-ateliers-pin")[0], scrub: .8, anticipatePin: 1,
             snap: { snapTo: 1 / (ateliers.length - 1), duration: { min: .2, max: .6 }, delay: .08, ease: "power2.inOut" },
-            onUpdate: (self) => setRoom(Math.round(self.progress * (ateliers.length - 1))) } });
+            onUpdate: (self) => { section.style.setProperty("--turn", self.progress.toFixed(4)); setRoom(Math.round(self.progress * (ateliers.length - 1))); } } });
         goToRoom.current = (index) => {
           const trigger = turn.scrollTrigger!;
           lenis.scrollTo(trigger.start + (trigger.end - trigger.start) * index / (ateliers.length - 1), { duration: 1.1 });
@@ -165,6 +208,8 @@ export default function MonumentHome() {
 
       return () => {
         window.removeEventListener("load", settle);
+        button?.removeEventListener("pointermove", lean);
+        button?.removeEventListener("pointerleave", rest);
         window.removeEventListener("resize", resize);
         window.removeEventListener("blur", leave);
         document.removeEventListener("visibilitychange", hidden);
@@ -186,6 +231,13 @@ export default function MonumentHome() {
 
   return (
     <main id="contenu" className="mo" ref={root} tabIndex={-1}>
+      <noscript><style>{".mo-loader{display:none!important}"}</style></noscript>
+      <div className="mo-loader" aria-hidden="true">
+        <p className="mo-loader-name"><span className="mo-mask"><span className="mo-loader-word">Maison</span></span> <span className="mo-mask"><em className="mo-loader-word">Mestier</em></span></p>
+        <p className="mo-loader-foot mo-label"><span>L’art de faire impression</span><span className="mo-loader-count">000</span></p>
+        <span className="mo-loader-bar" />
+      </div>
+      <div className="mo-grain" aria-hidden="true" />
       <section className="mo-hero" aria-labelledby="mo-title">
         <div className="mo-hero-pin">
           <div className="mo-hero-meta">
@@ -217,6 +269,10 @@ export default function MonumentHome() {
         <p className="mo-manifesto-text" aria-label={manifesto}><Words text={manifesto} /></p>
       </section>
 
+      <div className="mo-band" aria-hidden="true">
+        {[0, 1].map((row) => <p className="mo-band-row" key={row}>{[...ateliers, ...ateliers].map((atelier, index) => <span key={index}>{row ? <em>{atelier.name}</em> : atelier.name}<i /></span>)}</p>)}
+      </div>
+
       <section className="mo-ateliers" id="ateliers" aria-labelledby="mo-ateliers-title">
         <div className="mo-ateliers-pin">
           <header className="mo-ateliers-head">
@@ -238,6 +294,8 @@ export default function MonumentHome() {
               </li>)}
             </ul>
           </div>
+          <span className="mo-ghost" aria-hidden="true" key={"ghost-" + room}>{number(room)}</span>
+          <p className="mo-turn mo-label" aria-hidden="true"><span>Faire défiler</span><i /><span>{number(room)} — {number(ateliers.length - 1)}</span></p>
           <div className="mo-room" aria-live="polite">
             <p className="mo-room-number">{number(room)}<span> / {number(ateliers.length - 1)}</span></p>
             <h3 key={active.slug}>{active.name}</h3>
@@ -272,7 +330,8 @@ export default function MonumentHome() {
       <section className="mo-call" aria-labelledby="mo-call-title">
         <p className="mo-label">(04) Votre projet</p>
         <h2 id="mo-call-title" data-split aria-label="Un seul interlocuteur, du premier trait au dernier détail."><Words text="Un seul interlocuteur, du premier trait au dernier détail." /></h2>
-        <button className="mo-call-button" type="button" onClick={() => contact()} data-rise><span>Composer votre projet</span><Arrow /></button>
+        <p className="mo-call-copy" data-rise>Décrivez votre intention : la Maison compose l’équipe, le calendrier et le budget autour d’elle.</p>
+        <button className="mo-call-button" type="button" onClick={() => contact()}><span>Composer votre projet</span><Arrow /></button>
       </section>
     </main>
   );
