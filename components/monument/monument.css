@@ -215,7 +215,8 @@ html[data-stage="night"] .fab-nav:not(.is-open) { background: linear-gradient(to
 /* Sections after the journey */
 .mo-band { transform-origin: 50% 50%; will-change: transform; padding-bottom: calc(clamp(4rem, 10vh, 7rem) + clamp(2rem, 5vw, 5rem)); }
 .mo-studies { position: relative; z-index: 1; margin-top: calc(clamp(2rem, 5vw, 5rem) * -1); border-radius: clamp(2rem, 5vw, 5rem) clamp(2rem, 5vw, 5rem) 0 0; background: var(--mo-paper); }
-.mo-study-picture { will-change: clip-path; }
+.mo-study-picture { position: relative; }
+.mo-tiles { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .mo-call { overflow: hidden; isolation: isolate; background: var(--mo-paper); border-top: 0; }
 .mo-call-flood { position: absolute; inset: 0; z-index: -1; background: #1c2333; clip-path: circle(0% at 86% 78%); }
 .mo-call > .mo-label, .mo-call > h2, .mo-call > .mo-call-copy { color: #f3f0ea; mix-blend-mode: difference; }
@@ -301,7 +302,9 @@ html[data-stage="night"] .fab-nav:not(.is-open) { background: linear-gradient(to
 .mo-list-figure { grid-column: 1 / span 4; position: sticky; top: calc(50vh - 7rem); }
 .mo-list-figure p { display: flex; align-items: flex-start; gap: .6rem; margin: 0; font: 400 clamp(7rem, 15vw, 15rem)/.8 var(--display); letter-spacing: -.05em; }
 .mo-list-figure .mo-mask { display: block; overflow: hidden; padding: .06em .04em .1em 0; }
-.mo-list-figure .mo-mask > span { display: block; animation: mo-list-up .7s cubic-bezier(.16, 1, .3, 1); }
+.mo-list-figure .mo-mask { height: .9em; padding: 0 .04em 0 0; }
+.mo-list-roll { display: block; transition: transform .9s cubic-bezier(.16, 1, .3, 1); }
+.mo-list-roll > span { display: block; height: .9em; line-height: .9em; }
 .mo-list-figure small { font: 400 .68rem/1 var(--mono); letter-spacing: .08em; color: #9a968e; padding-top: .9rem; }
 .mo-list-bar { display: flex; gap: .35rem; margin-top: 1.6rem; max-width: 15rem; }
 .mo-list-bar i { flex: 1; height: 2px; background: rgba(28, 35, 51, .16); transition: background .5s; }
@@ -334,7 +337,7 @@ html[data-stage="night"] .fab-nav:not(.is-open) { background: linear-gradient(to
 }
 @media (prefers-reduced-motion: reduce) {
   .mo-list-list a { opacity: 1; transition: none; }
-  .mo-list-figure .mo-mask > span { animation: none; }
+  .mo-list-roll { transition: none; }
 }
 
 .mo-call-seal { position: absolute; z-index: 0; top: 44%; right: -13vw; width: 52vw; aspect-ratio: 1; transform: translateY(-50%); opacity: 0; pointer-events: none; transition: opacity 1.6s; }
@@ -356,3 +359,9 @@ html[data-stage="night"] .fab-nav:not(.is-open) { background: linear-gradient(to
 @keyframes mo-wax-ring { from { transform: scale(1); opacity: .9; } to { transform: scale(2.6); opacity: 0; } }
 .mo-call-hint { display: none; color: #9a968e; font-style: normal; }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) { .mo-call-hint { display: block; } }
+
+/* Chapter changes tile in triangles; headings split into Cachet and Laiton while they land. */
+.mo-mosaic { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.mo-list, .mo-offer { --split: 0; }
+.mo-list-head h2, .mo-offer h2 { text-shadow: calc(var(--split) * -.11em) 0 rgba(142, 42, 35, calc(var(--split) * .8)), calc(var(--split) * .11em) 0 rgba(176, 141, 87, calc(var(--split) * .9)); }
+@media (prefers-reduced-motion: reduce) { .mo-mosaic, .mo-tiles { display: none; } }

@@ -9,6 +9,7 @@ import { contact } from "../fabrication/fabrication-data";
 import { createHeroCanvas, type HeroCanvas } from "./hero-canvas";
 import Journey from "./Journey";
 import { createSeal } from "./seal";
+import { createMosaic, createTiles } from "./mosaic";
 import "./monument.css";
 
 const letters = "MESTIER".split("");
@@ -68,6 +69,27 @@ function CallButton() {
     <span className="mo-call-hint mo-label" aria-hidden="true">Cliquer pour écrire · Maintenir pour sceller</span>
   </p>;
 }
+
+/** Fixed canvas placed just before a section: triangles of that section's colour tile over the chapter it replaces. */
+function Mosaic({ target, color, tints }: { target: string; color: string; tints: string[] }) {
+  const canvas = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const section = document.querySelector<HTMLElement>(target);
+    if (!canvas.current || !section || !window.matchMedia("(prefers-reduced-motion: no-preference)").matches) return;
+    return createMosaic(canvas.current, section, color, tints);
+  }, [target, color, tints]);
+  return <canvas className="mo-mosaic" ref={canvas} aria-hidden="true" />;
+}
+function Tiles() {
+  const canvas = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    if (!canvas.current || !window.matchMedia("(prefers-reduced-motion: no-preference)").matches) return;
+    return createTiles(canvas.current, "#f3f0e9", paperTints);
+  }, []);
+  return <canvas className="mo-tiles" ref={canvas} aria-hidden="true" />;
+}
+const paperTints = ["#b08d57", "#9a968e", "#ede6d8"];
+const nightTints = ["#1c2333", "#5e6b60", "#b08d57"];
 
 const chapters = ["Le seuil", "La Maison", "Les ateliers", "La commande", "Les études", "Votre projet", "La lettre"];
 const ways = [
@@ -304,7 +326,6 @@ export default function MonumentHome() {
       cards.forEach((card, index) => {
         const next = cards[index + 1];
         gsap.fromTo(card.querySelector("img"), { scale: 1.3 }, { scale: 1, ease: "none", scrollTrigger: { trigger: card, start: "top bottom", end: "top top", scrub: true } });
-        gsap.fromTo(card.querySelector(".mo-study-picture"), { clipPath: "inset(22% 14% 22% 14%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "none", scrollTrigger: { trigger: card, start: "top 95%", end: "top 25%", scrub: .5 } });
         gsap.from(card.querySelectorAll(".mo-study-copy > *"), { y: 46, autoAlpha: 0, duration: 1.1, ease: "power4.out", stagger: .07, scrollTrigger: { trigger: card, start: "top 62%", once: true } });
         if (next) gsap.to(card.querySelector(".mo-study-sheet"), { scale: .93, opacity: .55, ease: "none",
           scrollTrigger: { trigger: next, start: "top 85%", end: "top 12%", scrub: true } });
@@ -448,6 +469,7 @@ export default function MonumentHome() {
         </div>
       </section>}
 
+      <Mosaic target=".mo-list" color="#f3f0ea" tints={paperTints} />
       <section className="mo-list" id="index" aria-labelledby="mo-list-title">
         <header className="mo-list-head">
           <p className="mo-label">(02) Les ateliers · L’index</p>
@@ -456,7 +478,7 @@ export default function MonumentHome() {
         </header>
         <div className="mo-list-body">
           <div className="mo-list-figure" aria-hidden="true">
-            <p><span className="mo-mask"><span key={line}>{number(line)}</span></span><small>/{number(ateliers.length - 1)}</small></p>
+            <p><span className="mo-mask"><span className="mo-list-roll" style={{ transform: `translateY(${-line * .9}em)` }}>{ateliers.map((atelier, index) => <span key={atelier.slug}>{number(index)}</span>)}</span></span><small>/{number(ateliers.length - 1)}</small></p>
             <div className="mo-list-bar">{ateliers.map((atelier, index) => <i className={index <= line ? "is-on" : undefined} key={atelier.slug} />)}</div>
           </div>
           <ol className="mo-list-list">
@@ -475,6 +497,7 @@ export default function MonumentHome() {
         </div>
       </section>
 
+      <Mosaic target=".mo-offer" color="#141a17" tints={nightTints} />
       <section className="mo-offer" id="commande" aria-labelledby="mo-offer-title">
         <div className="mo-offer-pin">
           <header className="mo-offer-head">
@@ -506,6 +529,7 @@ export default function MonumentHome() {
           <div className="mo-study-sheet">
             <a className="mo-study-picture" href={path("/recherches/" + study.slug + "/")} aria-label={"Ouvrir l’étude " + study.name}>
               <img src={image(study.image)} alt={study.alt} loading="lazy" decoding="async" width="1240" height="930" />
+              <Tiles />
             </a>
             <div className="mo-study-copy">
               <p className="mo-label">{number(index)} / {number(studies.length - 1)} · Étude de création</p>
