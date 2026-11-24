@@ -121,7 +121,7 @@ export default function FabricationScene({ score, onReady }: Props) {
       };
       const load = (key: string) => { if (!cache.has(key) && !requests.has(key) && !failed.has(key)) queue.add(key); };
       const background = (night: number) => {
-        const a = [233, 230, 222], b = [26, 21, 19];
+        const a = [243,240,234], b = [26, 21, 19];
         return `rgb(${a.map((v, index) => Math.round(v + (b[index] - v) * night)).join(",")})`;
       };
       const drawImage = (target: CanvasRenderingContext2D, image: HTMLImageElement, x: number, y: number) => {

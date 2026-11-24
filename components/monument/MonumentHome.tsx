@@ -303,7 +303,7 @@ export default function MonumentHome() {
     <main id="contenu" className={mode === "world" ? "mo is-world" : "mo"} ref={root} tabIndex={-1}>
       <noscript><style>{".mo-loader{display:none!important}"}</style></noscript>
       <div className="mo-loader" aria-hidden="true">
-        <p className="mo-loader-name"><span className="mo-mask"><span className="mo-loader-word mo-loader-logo" style={{ maskImage: `url(${path("/logo-maison-mestier.png")})`, WebkitMaskImage: `url(${path("/logo-maison-mestier.png")})` }} /></span></p>
+        <p className="mo-loader-name"><span className="mo-mask"><span className="mo-loader-word mo-loader-logo" style={{ maskImage: `url(${path("/logo-maison-mestier-complet.png")})`, WebkitMaskImage: `url(${path("/logo-maison-mestier-complet.png")})` }} /></span></p>
         <p className="mo-loader-foot mo-label"><span>L’art de faire impression</span><span className="mo-loader-count">000</span></p>
         <span className="mo-loader-bar" />
       </div>
