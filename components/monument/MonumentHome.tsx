@@ -33,6 +33,9 @@ function Words({ text }: { text: string }) {
   return <>{text.split(" ").map((word, index) => <span aria-hidden="true" key={index}><span className="mo-mask"><span className="mo-word-item" data-word>{word}</span></span>{" "}</span>)}</>;
 }
 
+const chapters = ["Le seuil", "La Maison", "Les ateliers", "Les études", "Votre projet", "La lettre"];
+const veil = [.3, .05, .45, .15, 0, .38, .22, .5, .1, .33, .18, .42];
+
 export default function MonumentHome() {
   const root = useRef<HTMLElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -41,6 +44,7 @@ export default function MonumentHome() {
   const [webgl, setWebgl] = useState(false);
   const goToRoom = useRef<(index: number) => void>(() => {});
   const [mode, setMode] = useState<"static" | "world" | null>(null);
+  const [chapter, setChapter] = useState(0);
   const lenisRef = useRef<Lenis | null>(null);
   const fail = useCallback(() => setMode("static"), []);
 
@@ -234,6 +238,13 @@ export default function MonumentHome() {
         };
       }
 
+      // Studies arrive as laid-paper strips rising unevenly over the night.
+      const strips = select(".mo-veil i");
+      if (strips.length) {
+        const rise = gsap.timeline({ defaults: { ease: "power2.out", duration: .5 }, scrollTrigger: { trigger: select(".mo-studies")[0], start: "top bottom", end: "top 30%", scrub: .5 } });
+        strips.forEach((strip, index) => rise.fromTo(strip, { scaleY: 0 }, { scaleY: 1 }, veil[index]));
+      }
+
       // Studies: each sheet recedes as the next one lands.
       const cards = gsap.utils.toArray<HTMLElement>(select(".mo-study"));
       cards.forEach((card, index) => {
@@ -265,6 +276,27 @@ export default function MonumentHome() {
     return () => { window.removeEventListener("resize", fit); media.revert(); };
   }, [mode]);
 
+  // Running title: the frame names the chapter being crossed.
+  useEffect(() => {
+    const element = root.current;
+    if (!element || mode === null) return;
+    const read = () => {
+      const half = window.innerHeight / 2;
+      const journey = element.querySelector(".jo")?.getBoundingClientRect();
+      const top = (name: string) => document.querySelector(name)?.getBoundingClientRect().top ?? Infinity;
+      let next = 0;
+      if (journey && journey.bottom > half) {
+        const progress = -journey.top / Math.max(1, journey.height - window.innerHeight);
+        next = progress < .18 ? 0 : progress < .64 ? 1 : 2;
+      } else next = top(".fab-footer") < half ? 5 : top(".mo-call") < half ? 4 : top(".mo-studies") < half ? 3 : top(".mo-ateliers") < half || journey ? 2 : top(".mo-manifesto") < half ? 1 : 0;
+      setChapter(next);
+      element.style.setProperty("--page", (window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight)).toFixed(4));
+    };
+    read();
+    window.addEventListener("scroll", read, { passive: true });
+    return () => window.removeEventListener("scroll", read);
+  }, [mode]);
+
   const active = ateliers[room];
 
   return (
@@ -276,6 +308,7 @@ export default function MonumentHome() {
         <span className="mo-loader-bar" />
       </div>
       <div className="mo-grain" aria-hidden="true" />
+      <p className="mo-frame mo-label" aria-hidden="true"><span className="mo-frame-number" key={"n" + chapter}>{number(chapter)}</span><span className="mo-frame-name" key={chapter}>{chapters[chapter]}</span><i /></p>
       {mode === "world" ? <Journey scenes={scenes} ringImages={ringImages} manifesto={manifesto} lenis={lenisRef} onFail={fail} /> : <>
       <section className="mo-hero" aria-labelledby="mo-title">
         <div className="mo-hero-pin">
@@ -346,9 +379,10 @@ export default function MonumentHome() {
       </section>}
 
       <section className="mo-studies" id="etudes" aria-labelledby="mo-studies-title">
+        <div className="mo-veil" aria-hidden="true">{veil.map((_, index) => <i key={index} />)}</div>
         <header className="mo-studies-head">
           <p className="mo-label">(03) Les études</p>
-          <h2 id="mo-studies-title" data-split aria-label="Trois recherches, avant tout projet."><Words text="Trois recherches, avant tout projet." /></h2>
+          <h2 id="mo-studies-title" data-split aria-label="Trois recherches, avant tout projet."><Words text="Trois recherches," /> <span className="mo-second" aria-hidden="true"><Words text="avant tout projet." /></span></h2>
           <p data-rise>Le Portique, L’empreinte et L’entracte sont des études de création de la Maison. Ce ne sont pas des références clients.</p>
         </header>
         {studies.map((study, index) => <article className="mo-study" key={study.slug}>
@@ -370,7 +404,7 @@ export default function MonumentHome() {
       <section className="mo-call" aria-labelledby="mo-call-title">
         <span className="mo-call-flood" aria-hidden="true" />
         <p className="mo-label">(04) Votre projet</p>
-        <h2 id="mo-call-title" aria-label="Un seul interlocuteur, du premier trait au dernier détail."><Words text="Un seul interlocuteur, du premier trait au dernier détail." /></h2>
+        <h2 id="mo-call-title" aria-label="Un seul interlocuteur, du premier trait au dernier détail."><Words text="Un seul interlocuteur," /> <span className="mo-second" aria-hidden="true"><Words text="du premier trait au dernier détail." /></span></h2>
         <p className="mo-call-copy" data-rise>Décrivez votre intention : la Maison compose l’équipe, le calendrier et le budget autour d’elle.</p>
         <button className="mo-call-button" type="button" onClick={() => contact()}><span>Composer votre projet</span><Arrow /></button>
       </section>

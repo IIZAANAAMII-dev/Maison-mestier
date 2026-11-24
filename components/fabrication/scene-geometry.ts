@@ -5,7 +5,7 @@ import type { FabricationScore } from "./fabrication-data";
 /** The browser and the photographic sequence share these exact meshes and poses. */
 export const FABRICATION_STOPS = [0, .17, .34, .5, .67, .84, 1] as const;
 export const FABRICATION_FRAMES = 49;
-export const FABRICATION_COLORS = { paper: "#e9e6de", night: "#1a1513", orange: "#bb4626", cream: "#f4ecd8", ink: "#27362f" };
+export const FABRICATION_COLORS = { paper: "#f3f0ea", night: "#1a1513", orange: "#bb4626", cream: "#f4ecd8", ink: "#27362f" };
 
 type XYZ = [number, number, number];
 type Pose = { p: XYZ; r?: XYZ; s?: XYZ };

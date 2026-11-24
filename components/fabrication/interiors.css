@@ -1,5 +1,5 @@
 /* The full dossiers carry the same ink, paper and orange as the fabrication. */
-.a2-page{--a2-paper:#e9e6de;--a2-ink:#24241f;--a2-night:#24241f;--a2-red:#bd4e2c;--a2-line:#c6c2b8;--a2-muted:#645f55;padding-top:76px}
+.a2-page{--a2-paper:#f3f0ea;--a2-ink:#1c2333;--a2-night:#1c2333;--a2-red:#8e2a23;--a2-line:#c6c2b8;--a2-muted:#645f55;padding-top:76px}
 .a2-page .a2-eyebrow{font-family:var(--mono);font-weight:400;font-size:9px;letter-spacing:.05em}
 .a2-page section[id]{scroll-margin-top:24px}
 .a2-page .a2-chapter p,.a2-page .a2-study-copy section>p:not(.a2-eyebrow){color:#59564e}
@@ -12,10 +12,10 @@
 .a2-page .a2-related li>a:hover,.a2-page .a2-related li>a:focus-visible{color:var(--a2-paper)}
 .a2-page .a2-related li>a:hover::before,.a2-page .a2-related li>a:focus-visible::before{transform:scaleY(1)}
 .a2-page .a2-related li>a:hover .a2-related-number{color:inherit}
-.a2-page .a2-invitation{background:#bd4e2c}
+.a2-page .a2-invitation{background:#8e2a23}
 .a2-page .a2-contact-circle{border-color:rgba(233,230,222,.55)}
 .a2-page .a2-invitation-foot{color:#efe3d4;border-color:rgba(233,230,222,.35)}
 .fab-interior-progress{position:fixed;top:75px;left:0;right:0;height:2px;z-index:50;background:none;pointer-events:none}
-.fab-interior-progress>span{display:block;height:100%;width:100%;background:#bd4e2c;transform:scaleX(0);transform-origin:left}
+.fab-interior-progress>span{display:block;height:100%;width:100%;background:#8e2a23;transform:scaleX(0);transform-origin:left}
 @media(max-width:700px){.a2-page{padding-top:64px}.fab-interior-progress{top:63px}.a2-page .a2-eyebrow{font-size:8px}.a2-page .a2-index a[aria-current=location]{transform:none}}
 @media(prefers-reduced-motion:reduce){.a2-page .a2-index a,.a2-page .a2-related li>a,.a2-page .a2-related li>a::before{transition:none}}

@@ -307,7 +307,7 @@ export default function FabricationScene({ score, onReady }: Props) {
     return () => { disposed = true; stop?.(); };
   }, []);
 
-  return <div ref={host} className="fabrication-scene" data-ready="false" aria-hidden="true" style={{ backgroundColor: "#e9e6de" }}>
+  return <div ref={host} className="fabrication-scene" data-ready="false" aria-hidden="true" style={{ backgroundColor: "#f3f0ea" }}>
     {/* An immediate, local first image remains visible while either renderer starts. */}
     {/* eslint-disable-next-line @next/next/no-img-element */}
     <img className="fabrication-scene-poster" src={path("/fabrication/poster.webp")} alt="" decoding="async" fetchPriority="high" />

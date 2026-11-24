@@ -1,4 +1,4 @@
-.fab-nav,.fab-menu,.fab-footer,.fab-contact,.fab-pointer{--fab-paper:#e9e6de;--fab-ink:#24241f;--fab-accent:#bd4e2c;--fab-line:#c9c5ba;--fab-muted:#777469;font-family:var(--sans)}
+.fab-nav,.fab-menu,.fab-footer,.fab-contact,.fab-pointer{--fab-paper:#f3f0ea;--fab-ink:#1c2333;--fab-accent:#8e2a23;--fab-line:#c9c5ba;--fab-muted:#777469;font-family:var(--sans)}
 .fab-shell-label{font:400 .62rem/1.5 var(--mono);letter-spacing:.08em;text-transform:uppercase}
 .fab-shell-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .fab-shell-arrow{display:block;width:28px;height:28px;flex:none}
@@ -122,7 +122,7 @@
 .fab-letter-pocket{position:absolute;inset:48px 0 0;z-index:3;display:flex;align-items:flex-end;justify-content:space-between;padding:0 25px 26px;background:#b14c32;clip-path:polygon(0 0,50% 49%,100% 0,100% 100%,0 100%);box-shadow:0 24px 35px #0003}
 .fab-letter-pocket>span:first-child{font:400 1.4rem/1.05 var(--display);letter-spacing:-.035em}
 .fab-letter-pocket small{display:inline-block;margin-top:7px;font:400 .51rem/1 var(--mono);letter-spacing:.03em;text-transform:uppercase}
-.fab-letter-postmark{display:grid;place-items:center;align-content:center;width:54px;height:54px;border:1px solid #e9e6de66;border-radius:50%;transform:rotate(-12deg);font:400 .59rem/1.6 var(--mono);text-align:center}
+.fab-letter-postmark{display:grid;place-items:center;align-content:center;width:54px;height:54px;border:1px solid #f3f0ea66;border-radius:50%;transform:rotate(-12deg);font:400 .59rem/1.6 var(--mono);text-align:center}
 .fab-letter-flap{position:absolute;inset:0 0 auto;height:143px;z-index:4;background:#bd573a;clip-path:polygon(0 0,100% 0,100% 18%,50% 100%,0 18%);transform-origin:50% 0;backface-visibility:hidden}
 .fab-letter-seal{position:absolute;left:calc(50% - 24px);top:103px;z-index:5;display:grid;place-items:center;width:48px;height:48px;background:#7d2f20;color:#e9d7bd;border:1px solid #c77252;border-radius:50%;box-shadow:0 3px 7px #57241566;font:italic 1.55rem/1 var(--display)}
 .fab-letter-toggle{display:flex;align-items:center;justify-content:space-between;gap:24px;width:100%;padding:18px 0 10px;border:0;border-bottom:1px solid #5c584c;background:none;color:var(--fab-paper);font:400 .62rem/1.5 var(--mono);cursor:pointer}
@@ -209,7 +209,7 @@
 /* The native pointer stays available; this label accompanies deliberate actions. */
 .fab-pointer{position:fixed;top:0;left:0;z-index:110;display:flex;align-items:center;gap:10px;max-width:230px;margin:18px 0 0 18px;padding:11px 13px 10px;background:var(--fab-ink);color:var(--fab-paper);clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,0 100%);font:400 .57rem/1.25 var(--mono);letter-spacing:.025em;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;will-change:transform}
 .fab-pointer[data-visible="true"]{opacity:1}
-.fab-pointer-dot{width:4px;height:4px;flex:none;background:var(--fab-accent);border-radius:50%;box-shadow:0 0 0 calc(1px + var(--fab-pointer-speed,0)*2px) #bd4e2c33}
+.fab-pointer-dot{width:4px;height:4px;flex:none;background:var(--fab-accent);border-radius:50%;box-shadow:0 0 0 calc(1px + var(--fab-pointer-speed,0)*2px) #8e2a2333}
 .fab-pointer .fab-shell-arrow{width:18px;height:18px;margin-left:2px}
 .fab-pointer[data-mode="material"]{background:var(--fab-paper);color:var(--fab-ink)}
 

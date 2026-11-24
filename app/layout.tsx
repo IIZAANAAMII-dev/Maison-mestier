@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", title: "Maison Mestier — L’art de faire impression", images: [path("/galerie/pavilion.webp")] },
 };
-export const viewport: Viewport = { themeColor: "#e9e6de", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#f3f0ea", width: "device-width", initialScale: 1 };
 
 export default function Layout({ children }: Readonly<{children: React.ReactNode}>) {
   return (
