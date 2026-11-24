@@ -45,6 +45,7 @@ export default function MonumentHome() {
   const root = useRef<HTMLElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const [room, setRoom] = useState(0);
+  const [line, setLine] = useState(0);
   const [scene, setScene] = useState(0);
   const [webgl, setWebgl] = useState(false);
   const goToRoom = useRef<(index: number) => void>(() => {});
@@ -306,6 +307,14 @@ export default function MonumentHome() {
         next = progress < .18 ? 0 : progress < .64 ? 1 : 2;
       } else next = top(".fab-footer") < half ? 6 : top(".mo-call") < half ? 5 : top(".mo-studies") < half ? 4 : top(".mo-offer") < half ? 3 : top(".mo-ateliers") < half || journey ? 2 : top(".mo-manifesto") < half ? 1 : 0;
       setChapter(next);
+      const rows = element.querySelectorAll(".mo-list-list > li");
+      let nearest = 0, gap = Infinity;
+      rows.forEach((row, index) => {
+        const box = row.getBoundingClientRect();
+        const away = Math.abs(box.top + box.height / 2 - window.innerHeight * .5);
+        if (away < gap) { gap = away; nearest = index; }
+      });
+      setLine(nearest);
       element.style.setProperty("--page", (window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight)).toFixed(4));
     };
     read();
@@ -393,6 +402,33 @@ export default function MonumentHome() {
           </div>
         </div>
       </section>}
+
+      <section className="mo-list" id="index" aria-labelledby="mo-list-title">
+        <header className="mo-list-head">
+          <p className="mo-label">(02) Les ateliers · L’index</p>
+          <h2 id="mo-list-title">Huit ateliers, <span className="mo-second">ce que chacun fait pour vous.</span></h2>
+          <p data-rise>Chaque atelier se commande seul ou relié aux autres. Tous répondent à la même direction de création.</p>
+        </header>
+        <div className="mo-list-body">
+          <div className="mo-list-figure" aria-hidden="true">
+            <p><span className="mo-mask"><span key={line}>{number(line)}</span></span><small>/{number(ateliers.length - 1)}</small></p>
+            <div className="mo-list-bar">{ateliers.map((atelier, index) => <i className={index <= line ? "is-on" : undefined} key={atelier.slug} />)}</div>
+          </div>
+          <ol className="mo-list-list">
+            {ateliers.map((atelier, index) => <li className={index === line ? "is-on" : undefined} key={atelier.slug}>
+              <a href={atelierPath(atelier.slug)}>
+                <span className="mo-label" aria-hidden="true">{number(index)}</span>
+                <h3>{atelier.name}</h3>
+                <div className="mo-list-more">
+                  <p>{atelier.summary}</p>
+                  <ul className="mo-label">{atelier.chapters.slice(0, 4).map((chapter) => <li key={chapter.title}>{chapter.title}</li>)}</ul>
+                </div>
+                <Arrow />
+              </a>
+            </li>)}
+          </ol>
+        </div>
+      </section>
 
       <section className="mo-offer" id="commande" aria-labelledby="mo-offer-title">
         <div className="mo-offer-pin">
