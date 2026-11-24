@@ -336,3 +336,7 @@ html[data-stage="night"] .fab-nav:not(.is-open) { background: linear-gradient(to
   .mo-list-list a { opacity: 1; transition: none; }
   .mo-list-figure .mo-mask > span { animation: none; }
 }
+
+.mo-call-seal { position: absolute; z-index: 0; top: 44%; right: -13vw; width: 52vw; aspect-ratio: 1; transform: translateY(-50%); opacity: 0; pointer-events: none; transition: opacity 1.6s; }
+.mo-call-seal.is-on { opacity: 1; }
+@media (max-width: 860px) { .mo-call { padding-bottom: 46vw; } .mo-call-seal { top: auto; bottom: -16vw; right: -24vw; width: 78vw; transform: none; } }

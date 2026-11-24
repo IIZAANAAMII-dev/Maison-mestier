@@ -8,6 +8,7 @@ import { ateliers, atelierPath, image, path, studies } from "../../lib/maison";
 import { contact } from "../fabrication/fabrication-data";
 import { createHeroCanvas, type HeroCanvas } from "./hero-canvas";
 import Journey from "./Journey";
+import { createSeal } from "./seal";
 import "./monument.css";
 
 const letters = "MESTIER".split("");
@@ -46,6 +47,7 @@ export default function MonumentHome() {
   const canvas = useRef<HTMLCanvasElement>(null);
   const [room, setRoom] = useState(0);
   const [line, setLine] = useState(0);
+  const seal = useRef<HTMLCanvasElement>(null);
   const [scene, setScene] = useState(0);
   const [webgl, setWebgl] = useState(false);
   const goToRoom = useRef<(index: number) => void>(() => {});
@@ -293,6 +295,14 @@ export default function MonumentHome() {
     return () => { window.removeEventListener("resize", fit); media.revert(); };
   }, [mode]);
 
+  // The ribbon returns as a closed loop beside the final call.
+  useEffect(() => {
+    if (mode === null || !seal.current || !window.matchMedia("(prefers-reduced-motion: no-preference)").matches) return;
+    const dispose = createSeal(seal.current);
+    if (dispose) seal.current.classList.add("is-on");
+    return () => dispose?.();
+  }, [mode]);
+
   // Running title: the frame names the chapter being crossed.
   useEffect(() => {
     const element = root.current;
@@ -475,6 +485,7 @@ export default function MonumentHome() {
 
       <section className="mo-call" aria-labelledby="mo-call-title">
         <span className="mo-call-flood" aria-hidden="true" />
+        <canvas className="mo-call-seal" ref={seal} aria-hidden="true" />
         <p className="mo-label">(05) Votre projet</p>
         <h2 id="mo-call-title" aria-label="Un seul interlocuteur, du premier trait au dernier détail."><Words text="Un seul interlocuteur," /> <span className="mo-second" aria-hidden="true"><Words text="du premier trait au dernier détail." /></span></h2>
         <p className="mo-call-copy" data-rise>Décrivez votre intention : la Maison compose l’équipe, le calendrier et le budget autour d’elle.</p>
