@@ -159,11 +159,13 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
   const LENGTH = 1500, ACROSS = 10;
   const ribbon = keep(ribbonGeometry(curve, LENGTH, ACROSS, 1.55));
   const time = { value: 0 };
+  const rush = { value: 0 }, hand = { value: new THREE.Vector3(0, 0, 99) };
   const breathe = (material: THREE.Material) => {
     material.onBeforeCompile = (shader) => {
-      shader.uniforms.uTime = time;
-      shader.vertexShader = "uniform float uTime;\n" + shader.vertexShader.replace("#include <begin_vertex>",
-        "#include <begin_vertex>\n transformed += normal * (sin(uv.x * 1.9 + uTime * .7) * .09 + sin(uv.x * 5.3 - uTime * .45 + uv.y * 2.) * .035);");
+      shader.uniforms.uTime = time; shader.uniforms.uRush = rush; shader.uniforms.uHand = hand;
+      // The sheet breathes, ripples with the speed of the scroll and hollows under the lamp the pointer carries.
+      shader.vertexShader = "uniform float uTime; uniform float uRush; uniform vec3 uHand;\n" + shader.vertexShader.replace("#include <begin_vertex>",
+        "#include <begin_vertex>\n vec3 toHand = position - uHand; float hollow = exp(-dot(toHand.xy, toHand.xy) / 3.2) * smoothstep(9., 3., abs(toHand.z));\n transformed += normal * (sin(uv.x * 1.9 + uTime * .7) * .09 + sin(uv.x * 5.3 - uTime * .45 + uv.y * 2.) * .035 + sin(uv.x * 7.5 - uTime * 3.2) * .16 * uRush - hollow * .32 * (uv.y - .5) * 2.);");
     };
     return material;
   };
@@ -234,13 +236,21 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
   const dustGeometry = keep(new THREE.BufferGeometry());
   dustGeometry.setAttribute("position", new THREE.BufferAttribute(dustPositions, 3));
   dustGeometry.setAttribute("aSeed", new THREE.BufferAttribute(dustSeeds, 1));
-  const dustMaterial = keep(new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, uniforms: { uTime: time, uScale: { value: 1 } },
-    vertexShader: /* glsl */`attribute float aSeed; uniform float uTime; uniform float uScale; varying float vAlpha;
-      void main() { vec3 p = position; p.y += sin(uTime * .22 + aSeed * 40.) * .5; p.x += cos(uTime * .17 + aSeed * 23.) * .4;
+  const dustMaterial = keep(new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, uniforms: { uTime: time, uScale: { value: 1 }, uRush: rush },
+    vertexShader: /* glsl */`attribute float aSeed; uniform float uTime; uniform float uScale; uniform float uRush; varying float vAlpha; varying float vSeed;
+      void main() { vSeed = aSeed; vec3 p = position; p.y += sin(uTime * .22 + aSeed * 40.) * .5; p.x += cos(uTime * .17 + aSeed * 23.) * .4;
+        float swirl = uRush * (1.2 + aSeed * 2.); p.xy += vec2(cos(aSeed * 60. + p.z), sin(aSeed * 60. + p.z)) * swirl * .7; p.z += swirl * 1.4;
         vec4 mv = modelViewMatrix * vec4(p, 1.); float depth = -mv.z;
         vAlpha = smoothstep(0., 1.5, depth) * (1. - smoothstep(9., 24., depth)) * (.25 + .75 * aSeed);
         gl_PointSize = uScale * (1.5 + aSeed * 5.) * (1. + 9. * smoothstep(3.5, 0., depth)) / max(depth, .6) * 2.2; gl_Position = projectionMatrix * mv; }`,
-    fragmentShader: /* glsl */`varying float vAlpha; void main() { float d = length(gl_PointCoord - .5); gl_FragColor = vec4(1., .86, .62, smoothstep(.5, .08, d) * vAlpha * .5); }` }));
+    // Each mote is a flake of brass leaf: a thin tumbling sliver that glints when it faces the light.
+    fragmentShader: /* glsl */`uniform float uTime; varying float vAlpha; varying float vSeed;
+      void main() { vec2 c = gl_PointCoord - .5; float a = uTime * (vSeed - .5) * 2.4 + vSeed * 40.; c = mat2(cos(a), -sin(a), sin(a), cos(a)) * c;
+        float flip = abs(cos(uTime * (.6 + vSeed * 1.8) + vSeed * 70.));
+        float flake = smoothstep(.46, .3, abs(c.x)) * smoothstep(.05 + .22 * flip, .0, abs(c.y) - .02);
+        float soft = smoothstep(.5, .08, length(c)) * .35;
+        float glint = pow(flip, 10.) * 1.6;
+        gl_FragColor = vec4(mix(vec3(.85, .62, .3), vec3(1., .93, .74), glint), (flake * (.55 + glint) + soft) * vAlpha * .55); }` }));
   const dust = new THREE.Points(dustGeometry, dustMaterial);
   dust.frustumCulled = false;
   scene.add(dust);
@@ -319,6 +329,7 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
     speed += ((progress - before) / Math.max(delta, .001) - speed) * (1 - Math.exp(-delta * 7));
     eased.lerp(pointer, 1 - Math.exp(-delta * 3.2));
     const bend = THREE.MathUtils.clamp(speed * 9, -1, 1);
+    rush.value = bend;
 
     const u = at(progress);
     positionCurve.getPoint(u, position); lookCurve.getPoint(u, look);
@@ -328,6 +339,7 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
     camera.lookAt(lookNow);
     camera.rotation.z += eased.x * -.012 + bend * .02;
     lamp.position.set(position.x + eased.x * 4.5, position.y + eased.y * 3 + .6, position.z - 5);
+    hand.value.copy(lamp.position);
     lamp.intensity = 5 * (1 - .85 * THREE.MathUtils.smoothstep(progress, .5, .66));
 
     const near = 1 - THREE.MathUtils.smoothstep(progress, .07, .2);
@@ -349,7 +361,11 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
     cards.forEach((mesh, index) => {
       mesh.material.uniforms.uFocus.value = arrive * Math.max(0, 1 - Math.abs(turn - index) * 1.25) * .82 + .18 * arrive + .0;
       mesh.material.uniforms.uBend.value = bend * .6;
-      mesh.position.y = Math.sin(time.value * .45 + index) * .06;
+      // The eight plates fly in one after the other and lock into the ring.
+      const land = THREE.MathUtils.smootherstep(THREE.MathUtils.clamp(arrive * 1.7 - index / cards.length * .7, 0, 1), 0, 1), off = 1 - land;
+      const angle = index / cards.length * Math.PI * 2 + off * (index % 2 ? 1.1 : -1.1), radius = RING_RADIUS * (1 + off * 2.4);
+      mesh.position.set(Math.sin(angle) * radius, Math.sin(time.value * .45 + index) * .06 + off * (index % 2 ? 5.5 : -5.5), Math.cos(angle) * radius);
+      mesh.rotation.set(off * 1.3 * (index % 3 - 1), angle + off * 2.2, off * (index % 2 ? .9 : -.9));
     });
 
     finish.uniforms.uTime.value = time.value; finish.uniforms.uSpeed.value = Math.min(1, Math.abs(speed) * 6);

@@ -365,3 +365,4 @@ html[data-stage="night"] .fab-nav:not(.is-open) { background: linear-gradient(to
 .mo-list, .mo-offer { --split: 0; }
 .mo-list-head h2, .mo-offer h2 { text-shadow: calc(var(--split) * -.11em) 0 rgba(142, 42, 35, calc(var(--split) * .8)), calc(var(--split) * .11em) 0 rgba(176, 141, 87, calc(var(--split) * .9)); }
 @media (prefers-reduced-motion: reduce) { .mo-mosaic, .mo-tiles { display: none; } }
+.jo-passage { position: absolute; left: 50%; top: 50%; width: min(86vw, 46rem); margin: 0; translate: -50% -50%; text-align: center; visibility: hidden; font: italic 400 clamp(1.5rem, 2.7vw, 2.9rem)/1.15 var(--display); letter-spacing: -.01em; text-shadow: 0 0 2.4rem rgba(20, 26, 23, .9), 0 0 .6rem rgba(20, 26, 23, .7); pointer-events: none; }

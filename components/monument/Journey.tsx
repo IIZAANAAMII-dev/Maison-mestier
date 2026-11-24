@@ -12,6 +12,7 @@ type Scene = { file: string; label: string; line: string; alt: string };
 type Props = { scenes: Scene[]; ringImages: string[]; manifesto: string; lenis: RefObject<Lenis | null>; onFail: () => void };
 
 const letters = "MESTIER".split("");
+const passage = ["Du site au salon, une seule direction de création.", "Huit ateliers. Un seul interlocuteur."];
 const number = (index: number) => String(index + 1).padStart(2, "0");
 const last = ateliers.length - 1;
 
@@ -75,6 +76,14 @@ export default function Journey({ scenes, ringImages, manifesto, lenis, onFail }
       timeline
         .to(select(".jo-letter"), { yPercent: -112, duration: 5, stagger: .5, ease: "power2.in" }, 2)
         .to(select(".jo-hero-meta, .jo-lead, .jo-cue"), { autoAlpha: 0, y: -24, duration: 4 }, 2);
+      // Threshold: two sentences cross the ribbon, at the centre of the page, while the camera enters it.
+      select(".jo-passage").forEach((sentence, index) => {
+        const at = 7.5 + index * 4.4;
+        timeline
+          .fromTo(sentence, { autoAlpha: 0, scale: .9, letterSpacing: ".12em", filter: "blur(10px)" }, { autoAlpha: 1, scale: 1, letterSpacing: "0em", filter: "blur(0px)", duration: 1.5, ease: "power2.out" }, at)
+          .to(sentence, { scale: 1.07, duration: 2.7 }, at + 1.5)
+          .to(sentence, { autoAlpha: 0, filter: "blur(8px)", duration: 1.1, ease: "power1.in" }, at + 3.1);
+      });
       captions.forEach((caption, index) => {
         const at = score.plates[index] * 100;
         timeline
@@ -169,6 +178,8 @@ export default function Journey({ scenes, ringImages, manifesto, lenis, onFail }
           </div>
           <span className="jo-cue mo-label" aria-hidden="true">Défiler pour traverser</span>
         </div>
+
+        {passage.map((line) => <p className="jo-passage" key={line}>{line}</p>)}
 
         {scenes.map((scene, index) => <p className="jo-caption" data-side={index % 2 ? "right" : "left"} key={scene.file}>
           <span className="mo-label">{number(index)} / {number(scenes.length - 1)} — {scene.label}</span>
