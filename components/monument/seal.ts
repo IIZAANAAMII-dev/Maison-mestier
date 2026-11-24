@@ -59,7 +59,7 @@ export function createSeal(canvas: HTMLCanvasElement): (() => void) | null {
     renderer.setSize(width, height, false);
     camera.aspect = width / height; camera.updateProjectionMatrix();
   };
-  let frame = 0, visible = false, lost = false;
+  let frame = 0, visible = false, lost = false, press = 0;
   const clock = new THREE.Clock();
   const render = () => {
     frame = 0;
@@ -68,7 +68,9 @@ export function createSeal(canvas: HTMLCanvasElement): (() => void) | null {
     const box = canvas.getBoundingClientRect();
     const travel = 1 - (box.top + box.height / 2) / window.innerHeight;
     eased.x += (pointer.x - eased.x) * .05; eased.y += (pointer.y - eased.y) * .05;
-    loop.rotation.set(.5 + eased.y * .5 + travel * .5, time * .16 + travel * 2.4 + eased.x * .8, -.22);
+    press += (parseFloat(canvas.dataset.press || "0") - press) * .12;
+    loop.scale.setScalar(1 - press * .26);
+    loop.rotation.set(.5 + eased.y * .5 + travel * .5, time * .16 + travel * 2.4 + eased.x * .8 + press * 1.6, -.22 - press * .3);
     renderer.render(scene, camera);
     frame = requestAnimationFrame(render);
   };

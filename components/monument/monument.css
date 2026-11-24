@@ -287,7 +287,7 @@ html[data-stage="night"] .fab-nav:not(.is-open) { background: linear-gradient(to
 }
 /* Call: the action is the largest thing on screen */
 .mo-call h2 { font-size: clamp(2.2rem, 4.6vw, 5rem); max-width: 18ch; }
-.mo-call-write { text-align: left; grid-column: 1 / -1; justify-self: start; position: relative; z-index: 1; display: inline-flex; align-items: center; gap: .25em; margin-top: clamp(1rem, 4vh, 3rem); padding: 0 0 .08em; border: 0; border-bottom: 2px solid currentColor; background: none; color: #f3f0ea; mix-blend-mode: difference; font: italic 400 clamp(2.9rem, 10.5vw, 12rem)/1 var(--display); letter-spacing: -.045em; cursor: pointer; }
+.mo-call-write { text-align: left; display: inline-flex; align-items: center; gap: .25em; touch-action: manipulation; user-select: none; -webkit-user-select: none; padding: 0 0 .08em; border: 0; border-bottom: 2px solid currentColor; background: none; color: #f3f0ea; mix-blend-mode: difference; font: italic 400 clamp(2.9rem, 10.5vw, 12rem)/1 var(--display); letter-spacing: -.045em; cursor: pointer; }
 .mo-call-write .mo-arrow { width: .55em; height: .55em; transition: transform .6s cubic-bezier(.2, .7, .2, 1); }
 .mo-call-write:hover .mo-arrow, .mo-call-write:focus-visible .mo-arrow { transform: translate(.08em, -.08em) rotate(45deg); }
 
@@ -340,3 +340,19 @@ html[data-stage="night"] .fab-nav:not(.is-open) { background: linear-gradient(to
 .mo-call-seal { position: absolute; z-index: 0; top: 44%; right: -13vw; width: 52vw; aspect-ratio: 1; transform: translateY(-50%); opacity: 0; pointer-events: none; transition: opacity 1.6s; }
 .mo-call-seal.is-on { opacity: 1; }
 @media (max-width: 860px) { .mo-call { padding-bottom: 46vw; } .mo-call-seal { top: auto; bottom: -16vw; right: -24vw; width: 78vw; transform: none; } }
+
+/* Final call: hold to seal the letter with wax. */
+.mo-call-action { grid-column: 1 / -1; justify-self: start; position: relative; z-index: 1; display: grid; justify-items: start; gap: 1.1rem; margin: clamp(1rem, 4vh, 3rem) 0 0; font: italic 400 clamp(2.9rem, 10.5vw, 12rem)/1 var(--display); }
+.mo-wax { --seal: 0; position: absolute; top: .5em; right: .3em; width: 1.02em; aspect-ratio: 1; translate: 50% -50%; display: grid; place-items: center; pointer-events: none;
+  border-radius: 47% 53% 49% 51% / 53% 47% 54% 46%; background: radial-gradient(circle at 34% 28%, #c5493d, #8e2a23 52%, #5c1813);
+  box-shadow: inset 0 0 0 .075em rgba(60, 12, 9, .38), inset 0 0 0 .1em rgba(255, 220, 205, .12), inset 0 .035em .05em rgba(255, 230, 220, .4), 0 .05em .16em rgba(0, 0, 0, .5);
+  transform: scale(calc(var(--seal) * 1)) rotate(calc(-28deg + var(--seal) * 18deg)); opacity: calc(var(--seal) * 3); }
+.mo-wax::before { content: ""; position: absolute; inset: -9%; border-radius: 52% 48% 55% 45% / 46% 55% 45% 54%; background: #7d231d; z-index: -1; transform: scale(calc(.6 + var(--seal) * .4)); }
+.mo-wax i { font: italic 400 .52em/1 var(--display); color: #5c1813; text-shadow: 0 .02em 0 rgba(255, 215, 200, .35), 0 -.015em 0 rgba(30, 5, 4, .5); opacity: 0; transform: scale(1.5); }
+.mo-wax.is-struck { animation: mo-wax-strike .55s cubic-bezier(.2, 1.6, .4, 1); }
+.mo-wax.is-struck i { opacity: 1; transform: none; transition: opacity .18s, transform .32s cubic-bezier(.2, 1.4, .4, 1); }
+.mo-wax.is-struck::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 1px solid #b08d57; animation: mo-wax-ring .9s ease-out forwards; }
+@keyframes mo-wax-strike { 0% { scale: 1; } 30% { scale: .86; } 100% { scale: 1; } }
+@keyframes mo-wax-ring { from { transform: scale(1); opacity: .9; } to { transform: scale(2.6); opacity: 0; } }
+.mo-call-hint { display: none; color: #9a968e; font-style: normal; }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) { .mo-call-hint { display: block; } }

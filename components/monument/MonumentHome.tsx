@@ -34,6 +34,41 @@ function Words({ text }: { text: string }) {
   return <>{text.split(" ").map((word, index) => <span aria-hidden="true" key={index}><span className="mo-mask"><span className="mo-word-item" data-word>{word}</span></span>{" "}</span>)}</>;
 }
 
+/** Final call. A click writes to the Maison; holding the mouse down seals the letter with wax first. */
+function CallButton() {
+  const wax = useRef<HTMLSpanElement>(null);
+  const level = useRef({ value: 0 });
+  const tween = useRef<gsap.core.Tween | null>(null);
+  const sealed = useRef(false);
+  const apply = () => {
+    const value = level.current.value.toFixed(3);
+    wax.current?.style.setProperty("--seal", value);
+    document.querySelector<HTMLElement>(".mo-call-seal")?.setAttribute("data-press", value);
+  };
+  const lift = () => {
+    tween.current?.kill();
+    tween.current = gsap.to(level.current, { value: 0, duration: .55, ease: "power3.out", onUpdate: apply, onComplete: () => wax.current?.classList.remove("is-struck") });
+  };
+  const press = (event: React.PointerEvent) => {
+    if (event.pointerType !== "mouse" || event.button !== 0 || sealed.current || !window.matchMedia("(prefers-reduced-motion: no-preference)").matches) return;
+    tween.current?.kill();
+    tween.current = gsap.to(level.current, { value: 1, duration: .95 * (1 - level.current.value), ease: "power2.in", onUpdate: apply,
+      onComplete: () => {
+        sealed.current = true;
+        wax.current?.classList.add("is-struck");
+        window.setTimeout(() => contact(), 560);
+        window.setTimeout(() => { sealed.current = false; lift(); }, 1700);
+      } });
+  };
+  const release = () => { if (!sealed.current) lift(); };
+  useEffect(() => () => { tween.current?.kill(); }, []);
+  return <p className="mo-call-action">
+    <button className="mo-call-write" type="button" onClick={() => { if (!sealed.current) contact(); }} onPointerDown={press} onPointerUp={release} onPointerLeave={release} onPointerCancel={release}><span>Écrire à la Maison</span><Arrow /></button>
+    <span className="mo-wax" ref={wax} aria-hidden="true"><i>M</i></span>
+    <span className="mo-call-hint mo-label" aria-hidden="true">Cliquer pour écrire · Maintenir pour sceller</span>
+  </p>;
+}
+
 const chapters = ["Le seuil", "La Maison", "Les ateliers", "La commande", "Les études", "Votre projet", "La lettre"];
 const ways = [
   { name: "À l’atelier", copy: "Un besoin précis, un atelier : un stand pour un salon, une identité, un site.", chain: "Un atelier" },
@@ -489,7 +524,7 @@ export default function MonumentHome() {
         <p className="mo-label">(05) Votre projet</p>
         <h2 id="mo-call-title" aria-label="Un seul interlocuteur, du premier trait au dernier détail."><Words text="Un seul interlocuteur," /> <span className="mo-second" aria-hidden="true"><Words text="du premier trait au dernier détail." /></span></h2>
         <p className="mo-call-copy" data-rise>Décrivez votre intention : la Maison compose l’équipe, le calendrier et le budget autour d’elle.</p>
-        <button className="mo-call-write" type="button" onClick={() => contact()}><span>Écrire à la Maison</span><Arrow /></button>
+        <CallButton />
       </section>
     </main>
   );
