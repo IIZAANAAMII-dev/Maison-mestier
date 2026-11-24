@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ateliers, atelierPath, path } from "../../lib/maison";
 import { createWorld, ringStop, score } from "./world";
+import { contact } from "../fabrication/fabrication-data";
 
 type Scene = { file: string; label: string; line: string; alt: string };
 type Props = { scenes: Scene[]; ringImages: string[]; manifesto: string; lenis: RefObject<Lenis | null>; onFail: () => void };
@@ -157,14 +158,14 @@ export default function Journey({ scenes, ringImages, manifesto, lenis, onFail }
         <canvas ref={canvas} aria-hidden="true" />
 
         <div className="jo-hero">
-          <div className="jo-hero-meta mo-label"><span>Maison de communication</span><span>Sud de la France</span><span>Huit ateliers</span><span>Une direction de création</span></div>
+          <div className="jo-hero-meta mo-label"><span>Maison de communication 360</span><span>Marques B2B · Sud de la France</span><span>Huit ateliers</span><span>Un seul interlocuteur</span></div>
           <h1 id="mo-title" className="jo-wordmark" aria-label="Maison Mestier">
             <span aria-hidden="true">{letters.map((letter, index) => <span className="mo-mask" key={index}><span className="jo-letter">{letter}</span></span>)}</span>
           </h1>
           <div className="jo-lead">
             <p className="jo-claim">L’art de faire <em>impression.</em></p>
-            <p className="jo-copy">Une identité, un site, un lieu, un moment. La Maison donne à vos idées toutes leurs dimensions.</p>
-            <a className="mo-link" href="#ateliers"><span>Entrer dans la Maison</span><Arrow /></a>
+            <p className="jo-copy">Identité, sites sur mesure, visibilité, événements, stands de salon, pop-up et contenus pour les marques B2B. Un seul interlocuteur, de A à Z.</p>
+            <p className="mo-actions"><button className="mo-pill" type="button" onClick={() => contact()}><span>Écrire à la Maison</span><Arrow /></button><a className="mo-link" href="#ateliers"><span>Voir les huit ateliers</span><Arrow /></a></p>
           </div>
           <span className="jo-cue mo-label" aria-hidden="true">Défiler pour traverser</span>
         </div>

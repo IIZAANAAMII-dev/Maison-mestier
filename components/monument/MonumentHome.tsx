@@ -33,7 +33,12 @@ function Words({ text }: { text: string }) {
   return <>{text.split(" ").map((word, index) => <span aria-hidden="true" key={index}><span className="mo-mask"><span className="mo-word-item" data-word>{word}</span></span>{" "}</span>)}</>;
 }
 
-const chapters = ["Le seuil", "La Maison", "Les ateliers", "Les études", "Votre projet", "La lettre"];
+const chapters = ["Le seuil", "La Maison", "Les ateliers", "La commande", "Les études", "Votre projet", "La lettre"];
+const ways = [
+  { name: "À l’atelier", copy: "Un besoin précis, un atelier : un stand pour un salon, une identité, un site.", chain: "Un atelier" },
+  { name: "Le parcours", copy: "Plusieurs ateliers liés par la même direction de création. Votre marque reste la même du site au salon.", chain: "Identité → Digital → Stands & Salons" },
+  { name: "La résidence", copy: "La Maison accompagne votre marque toute l’année, avec un seul chef de projet.", chain: "Les huit ateliers, à l’année" },
+];
 const veil = [.3, .05, .45, .15, 0, .38, .22, .5, .1, .33, .18, .42];
 
 export default function MonumentHome() {
@@ -238,6 +243,17 @@ export default function MonumentHome() {
         };
       }
 
+      // Offer: the three ways of working slide sideways while the counter follows.
+      const track = select(".mo-offer-track")[0] as HTMLElement | undefined;
+      if (track && wide) {
+        const figure = select(".mo-offer [data-way]")[0];
+        const distance = () => Math.max(0, track.scrollWidth - window.innerWidth);
+        gsap.to(track, { x: () => -distance(), ease: "none",
+          scrollTrigger: { trigger: select(".mo-offer")[0], start: "top top", end: () => "+=" + distance(), pin: select(".mo-offer-pin")[0], scrub: .7, anticipatePin: 1, invalidateOnRefresh: true,
+            onUpdate: (self) => { if (figure) figure.textContent = number(Math.min(ways.length - 1, Math.round(self.progress * ways.length))); } } });
+        gsap.from(select(".mo-way-number"), { yPercent: 60, autoAlpha: 0, duration: 1.2, ease: "power4.out", stagger: .12, scrollTrigger: { trigger: track, start: "top 85%", once: true } });
+      }
+
       // Studies arrive as laid-paper strips rising unevenly over the night.
       const strips = select(".mo-veil i");
       if (strips.length) {
@@ -288,7 +304,7 @@ export default function MonumentHome() {
       if (journey && journey.bottom > half) {
         const progress = -journey.top / Math.max(1, journey.height - window.innerHeight);
         next = progress < .18 ? 0 : progress < .64 ? 1 : 2;
-      } else next = top(".fab-footer") < half ? 5 : top(".mo-call") < half ? 4 : top(".mo-studies") < half ? 3 : top(".mo-ateliers") < half || journey ? 2 : top(".mo-manifesto") < half ? 1 : 0;
+      } else next = top(".fab-footer") < half ? 6 : top(".mo-call") < half ? 5 : top(".mo-studies") < half ? 4 : top(".mo-offer") < half ? 3 : top(".mo-ateliers") < half || journey ? 2 : top(".mo-manifesto") < half ? 1 : 0;
       setChapter(next);
       element.style.setProperty("--page", (window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight)).toFixed(4));
     };
@@ -308,7 +324,7 @@ export default function MonumentHome() {
         <span className="mo-loader-bar" />
       </div>
       <div className="mo-grain" aria-hidden="true" />
-      <p className="mo-frame mo-label" aria-hidden="true"><span className="mo-frame-number" key={"n" + chapter}>{number(chapter)}</span><span className="mo-frame-name" key={chapter}>{chapters[chapter]}</span><i /></p>
+      <p className="mo-frame mo-label" aria-hidden="true"><span className="mo-frame-number" key={"n" + chapter}>{String(chapter).padStart(2, "0")}</span><span className="mo-frame-name" key={chapter}>{chapters[chapter]}</span><i /></p>
       {mode === "world" ? <Journey scenes={scenes} ringImages={ringImages} manifesto={manifesto} lenis={lenisRef} onFail={fail} /> : <>
       <section className="mo-hero" aria-labelledby="mo-title">
         <div className="mo-hero-pin">
@@ -320,8 +336,8 @@ export default function MonumentHome() {
           </h1>
           <div className="mo-hero-lead">
             <p className="mo-hero-claim">L’art de faire <em>impression.</em></p>
-            <p className="mo-hero-copy">Une identité, un site, un lieu, un moment. La Maison donne à vos idées toutes leurs dimensions.</p>
-            <a className="mo-link" href="#ateliers"><span>Entrer dans la Maison</span><Arrow /></a>
+            <p className="mo-hero-copy">Identité, sites sur mesure, visibilité, événements, stands de salon, pop-up et contenus pour les marques B2B. Un seul interlocuteur, de A à Z.</p>
+            <p className="mo-actions"><button className="mo-pill" type="button" onClick={() => contact()}><span>Écrire à la Maison</span><Arrow /></button><a className="mo-link" href="#ateliers"><span>Voir les huit ateliers</span><Arrow /></a></p>
           </div>
           <figure className="mo-aperture">
             <img src={scenes[0].file} alt={scenes[0].alt} width="1536" height="1024" fetchPriority="high" decoding="async" />
@@ -378,10 +394,30 @@ export default function MonumentHome() {
         </div>
       </section>}
 
+      <section className="mo-offer" id="commande" aria-labelledby="mo-offer-title">
+        <div className="mo-offer-pin">
+          <header className="mo-offer-head">
+            <p className="mo-label">(03) La commande</p>
+            <h2 id="mo-offer-title">Trois façons <span className="mo-second">de travailler ensemble.</span></h2>
+            <p className="mo-offer-count mo-label" aria-hidden="true"><span data-way>01</span><i /><span>{number(ways.length - 1)}</span></p>
+          </header>
+          <ol className="mo-offer-track">
+            {ways.map((way, index) => <li className="mo-way" key={way.name}>
+              <span className="mo-way-number" aria-hidden="true">{number(index)}</span>
+              <div><h3>{way.name}</h3><p>{way.copy}</p><p className="mo-way-chain mo-label">{way.chain}</p></div>
+            </li>)}
+            <li className="mo-way mo-way-talk">
+              <p className="mo-label">Un budget par projet. Pas de taux journalier.</p>
+              <button type="button" onClick={() => contact()}><span>Parlons du vôtre.</span><Arrow /></button>
+            </li>
+          </ol>
+        </div>
+      </section>
+
       <section className="mo-studies" id="etudes" aria-labelledby="mo-studies-title">
         <div className="mo-veil" aria-hidden="true">{veil.map((_, index) => <i key={index} />)}</div>
         <header className="mo-studies-head">
-          <p className="mo-label">(03) Les études</p>
+          <p className="mo-label">(04) Les études</p>
           <h2 id="mo-studies-title" data-split aria-label="Trois recherches, avant tout projet."><Words text="Trois recherches," /> <span className="mo-second" aria-hidden="true"><Words text="avant tout projet." /></span></h2>
           <p data-rise>Le Portique, L’empreinte et L’entracte sont des études de création de la Maison. Ce ne sont pas des références clients.</p>
         </header>
@@ -403,10 +439,10 @@ export default function MonumentHome() {
 
       <section className="mo-call" aria-labelledby="mo-call-title">
         <span className="mo-call-flood" aria-hidden="true" />
-        <p className="mo-label">(04) Votre projet</p>
+        <p className="mo-label">(05) Votre projet</p>
         <h2 id="mo-call-title" aria-label="Un seul interlocuteur, du premier trait au dernier détail."><Words text="Un seul interlocuteur," /> <span className="mo-second" aria-hidden="true"><Words text="du premier trait au dernier détail." /></span></h2>
         <p className="mo-call-copy" data-rise>Décrivez votre intention : la Maison compose l’équipe, le calendrier et le budget autour d’elle.</p>
-        <button className="mo-call-button" type="button" onClick={() => contact()}><span>Composer votre projet</span><Arrow /></button>
+        <button className="mo-call-write" type="button" onClick={() => contact()}><span>Écrire à la Maison</span><Arrow /></button>
       </section>
     </main>
   );

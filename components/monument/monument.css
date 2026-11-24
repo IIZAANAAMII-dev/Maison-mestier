@@ -257,3 +257,36 @@ html[data-stage="night"] .fab-nav:not(.is-open) { background: linear-gradient(to
 .mo.is-live .mo-veil i { flex: 1; margin-right: -1px; background: var(--mo-paper); transform: scaleY(0); transform-origin: 50% 100%; will-change: transform; }
 .mo.is-live .mo-studies { border-radius: 0; }
 @media (max-width: 1100px) { .mo-frame { display: none; } .mo-second { padding-left: 1.2rem; } }
+
+/* Offer: what the Maison sells and how to order it */
+.mo-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.8rem; margin: 0; }
+.mo-pill { display: inline-flex; align-items: center; gap: .8rem; padding: .95rem 1.5rem; border: 0; border-radius: 99px; background: #8e2a23; color: #f3f0ea; font: inherit; font-size: .95rem; cursor: pointer; transition: background .45s, color .45s; }
+.mo-pill:hover, .mo-pill:focus-visible { background: #f3f0ea; color: #141a17; }
+.mo-pill:hover .mo-arrow { transform: translate(3px, -3px); }
+.mo-offer { position: relative; background: #141a17; color: #f3f0ea; padding: clamp(5rem, 12vh, 8rem) 0 calc(clamp(5rem, 12vh, 8rem) + clamp(2rem, 5vw, 5rem)); overflow: hidden; }
+.mo-offer-head { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 1.5rem; row-gap: 1.2rem; align-items: end; padding: 0 var(--gutter); }
+.mo-offer-head > .mo-label:first-child { grid-column: 1 / -1; color: #cfc8b6; }
+.mo-offer-head h2 { grid-column: 1 / span 9; font: 400 clamp(2.4rem, 5.6vw, 6rem)/.96 var(--display); letter-spacing: -.035em; }
+.mo-offer-count { grid-column: 10 / -1; display: flex; align-items: center; gap: 1rem; padding-bottom: .6rem; color: #cfc8b6; }
+.mo-offer-count i { flex: 1; height: 1px; background: rgba(243, 240, 234, .3); }
+.mo-offer-track { display: flex; margin: clamp(2.5rem, 7vh, 5rem) 0 0; padding: 0 var(--gutter); list-style: none; width: max-content; will-change: transform; }
+.mo-way { flex: none; width: min(36rem, 40vw); min-height: min(27rem, 44vh); padding: 1.4rem clamp(1.5rem, 3vw, 3rem) 1.6rem; border-left: 1px solid rgba(243, 240, 234, .2); display: grid; align-content: space-between; gap: 2rem; }
+.mo-way-number { font: 400 clamp(4.5rem, 9vw, 9.5rem)/.8 var(--display); letter-spacing: -.04em; color: #b08d57; }
+.mo-way h3 { font: 400 clamp(1.9rem, 2.8vw, 2.8rem)/1 var(--display); letter-spacing: -.03em; margin-bottom: .9rem; }
+.mo-way p { max-width: 26rem; color: #cfc8b6; }
+.mo-way .mo-way-chain { margin-top: 1.4rem; color: #b08d57; }
+.mo-way-talk { width: min(58rem, 72vw); align-content: end; }
+.mo-way-talk button { text-align: left; display: inline-flex; align-items: center; gap: .3em; justify-self: start; padding: 0 0 .1em; border: 0; border-bottom: 1px solid currentColor; background: none; color: #f3f0ea; font: italic 400 clamp(2.8rem, 6.6vw, 7.5rem)/1 var(--display); letter-spacing: -.035em; cursor: pointer; transition: color .45s; }
+.mo-way-talk button:hover, .mo-way-talk button:focus-visible { color: #b08d57; }
+.mo-way-talk .mo-arrow { width: .6em; height: .6em; }
+@media (min-width: 861px) { .mo.is-live .mo-offer { padding-top: 0; padding-bottom: clamp(2rem, 5vw, 5rem); } .mo.is-live .mo-offer-pin { height: 100vh; display: grid; grid-template-columns: minmax(0, 1fr); align-content: center; } }
+@media (max-width: 860px) {
+  .mo-offer-head h2, .mo-offer-count { grid-column: 1 / -1; }
+  .mo-offer-track { flex-direction: column; width: auto; }
+  .mo-way, .mo-way-talk { width: auto; min-height: 0; padding: 1.6rem 0 2rem; border-left: 0; border-top: 1px solid rgba(243, 240, 234, .2); }
+}
+/* Call: the action is the largest thing on screen */
+.mo-call h2 { font-size: clamp(2.2rem, 4.6vw, 5rem); max-width: 18ch; }
+.mo-call-write { text-align: left; grid-column: 1 / -1; justify-self: start; position: relative; z-index: 1; display: inline-flex; align-items: center; gap: .25em; margin-top: clamp(1rem, 4vh, 3rem); padding: 0 0 .08em; border: 0; border-bottom: 2px solid currentColor; background: none; color: #f3f0ea; mix-blend-mode: difference; font: italic 400 clamp(2.9rem, 10.5vw, 12rem)/1 var(--display); letter-spacing: -.045em; cursor: pointer; }
+.mo-call-write .mo-arrow { width: .55em; height: .55em; transition: transform .6s cubic-bezier(.2, .7, .2, 1); }
+.mo-call-write:hover .mo-arrow, .mo-call-write:focus-visible .mo-arrow { transform: translate(.08em, -.08em) rotate(45deg); }
