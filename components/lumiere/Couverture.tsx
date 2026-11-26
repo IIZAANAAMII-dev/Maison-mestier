@@ -11,8 +11,8 @@ export default function Couverture() {
             Maison de marketing 360 · Stands, événements et sites sur mesure
           </h1>
           <p className={styles.headline}>
-            <span>On monte <i>vos stands.</i></span>{" "}
-            <span>On développe <span className={styles.phrase}>vos sites</span> et <i>vos applications.</i></span>
+            <span><span>On monte</span>{" "}<i>vos stands.</i></span>{" "}
+            <span><span>On développe</span>{" "}<span>vos sites et</span>{" "}<i>vos applications.</i></span>
           </p>
         </div>
 
