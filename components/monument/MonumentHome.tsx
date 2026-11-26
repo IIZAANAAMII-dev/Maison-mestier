@@ -1,19 +1,19 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ateliers, atelierPath, image, path } from "../../lib/maison";
-import Journey from "./Journey";
 import "./monument.css";
 import AtelierInterlude from "./AtelierInterlude";
 import StudiesLedger from "./StudiesLedger";
 import ProjectInvitation from "./ProjectInvitation";
 import "./parcours-imprime.css";
 
+type JourneyComponent = typeof import("./Journey").default;
+
 const letters = "MESTIER".split("");
-let printedCoverSeen = false;
+
 const number = (index: number) => String(index + 1).padStart(2, "0");
 
 const scenes = [
@@ -38,15 +38,17 @@ function Words({ text }: { text: string }) {
 export default function MonumentHome() {
   const root = useRef<HTMLElement>(null);
   const [scene, setScene] = useState(0);
-  const [mode, setMode] = useState<"static" | "world" | null>(null);
-  const lenisRef = useRef<Lenis | null>(null);
-  const fail = useCallback(() => setMode("static"), []);
+  const [course, setCourse] = useState<JourneyComponent | "static" | null>(null);
+  const Journey = typeof course === "function" ? course : null;
+  const mode = Journey ? "world" : course === "static" ? "static" : null;
+  const fail = useCallback(() => setCourse("static"), []);
 
   useEffect(() => {
     const motion = window.matchMedia("(prefers-reduced-motion: no-preference)");
+    let disposed = false;
     let supported: boolean | undefined;
     const chooseCourse = () => {
-      if (!motion.matches) { setMode("static"); return; }
+      if (!motion.matches) { setCourse("static"); return; }
       if (supported === undefined) {
         try {
           const probe = document.createElement("canvas").getContext("webgl2");
@@ -54,11 +56,14 @@ export default function MonumentHome() {
           probe?.getExtension("WEBGL_lose_context")?.loseContext();
         } catch { supported = false; }
       }
-      setMode(supported ? "world" : "static");
+      if (!supported) { setCourse("static"); return; }
+      import("./Journey").then(({ default: Component }) => {
+        if (!disposed && motion.matches) setCourse(() => Component);
+      }).catch(() => { if (!disposed) setCourse("static"); });
     };
     chooseCourse();
     motion.addEventListener("change", chooseCourse);
-    return () => motion.removeEventListener("change", chooseCourse);
+    return () => { disposed = true; motion.removeEventListener("change", chooseCourse); };
   }, []);
 
   useEffect(() => {
@@ -86,44 +91,12 @@ export default function MonumentHome() {
       if (!motion) return;
       element.classList.add("is-live");
 
-      const lenis = new Lenis({ lerp: .09, wheelMultiplier: .9, anchors: true });
-      lenisRef.current = lenis;
-      lenis.on("scroll", ScrollTrigger.update);
-      const raf = (time: number) => lenis.raf(time * 1000);
-      gsap.ticker.add(raf);
-      gsap.ticker.lagSmoothing(0);
-      const locked = new MutationObserver(() => { if (document.documentElement.style.overflow === "hidden") lenis.stop(); else lenis.start(); });
-      locked.observe(document.documentElement, { attributes: true, attributeFilter: ["style"] });
-
       if (!world) {
         const hero = element.querySelector<HTMLElement>(".mo-hero")!;
         const photographs = select(".mo-aperture > img");
 
-        // Loader: plays once per session, never when the page is restored mid-scroll.
-        const loader = select(".mo-loader")[0] as HTMLElement | undefined;
-        let skip = printedCoverSeen || window.scrollY > 8 || Boolean(location.hash) || !loader;
-        try {
-          skip ||= sessionStorage.getItem("mo-seen") === "1";
-          sessionStorage.setItem("mo-seen", "1");
-        } catch { /* The in-memory flag still covers repeat visits. */ }
-        printedCoverSeen = true;
         const intro = gsap.timeline({ defaults: { ease: "power4.out" } });
-        let t0 = .1;
-        if (skip) { if (loader) gsap.set(loader, { display: "none" }); }
-        else {
-          const count = { value: 0 };
-          const figure = loader!.querySelector<HTMLElement>(".mo-loader-count")!;
-          lenis.stop();
-          intro
-            .from(loader!.querySelectorAll(".mo-loader-word"), { yPercent: 110, duration: .9, stagger: .08 }, 0)
-            .to(count, { value: 100, duration: 1.5, ease: "power2.inOut", onUpdate: () => { figure.textContent = String(Math.round(count.value)).padStart(3, "0"); } }, 0)
-            .to(loader!.querySelector(".mo-loader-bar"), { scaleX: 1, duration: 1.5, ease: "power2.inOut" }, 0)
-            .to(loader!.querySelectorAll(".mo-loader-word"), { yPercent: -110, duration: .6, stagger: .05, ease: "power3.in" }, 1.55)
-            .to(loader!, { clipPath: "inset(0% 0% 100% 0%)", duration: 1, ease: "power4.inOut" }, 1.85)
-            .add(() => { lenis.start(); }, 2.3)
-            .set(loader!, { display: "none" });
-          t0 = 2.15;
-        }
+        const t0 = 0;
         intro
           .from(select(".mo-letter"), { yPercent: 108, duration: 1.25, stagger: .06 }, t0)
           .from(select(".mo-hero-meta > *"), { y: 14, autoAlpha: 0, duration: .8, stagger: .06 }, t0 + .25)
@@ -172,8 +145,6 @@ export default function MonumentHome() {
 
       return () => {
         window.removeEventListener("load", settle);
-        locked.disconnect();
-        gsap.ticker.remove(raf); lenis.destroy(); lenisRef.current = null;
         element.classList.remove("is-live");
       };
     });
@@ -190,8 +161,7 @@ export default function MonumentHome() {
         if (cancelled || location.hash !== entry || !anchor.isConnected) return;
         const margin = parseFloat(getComputedStyle(anchor).scrollMarginTop) || 0;
         const top = anchor.getBoundingClientRect().top + window.scrollY - margin;
-        if (lenisRef.current) lenisRef.current.scrollTo(top, { immediate: true, force: true });
-        else window.scrollTo({ top, behavior: "instant" });
+        window.scrollTo({ top, behavior: "instant" });
       }));
     }
     return () => {
@@ -204,14 +174,7 @@ export default function MonumentHome() {
 
   return (
     <main id="contenu" className={mode === "world" ? "mo is-world" : "mo"} data-parcours={mode ?? "static"} ref={root} tabIndex={-1}>
-      <noscript><style>{".mo-loader{display:none!important}"}</style></noscript>
-      <div className="mo-loader" aria-hidden="true">
-        <p className="mo-loader-name"><span className="mo-mask"><span className="mo-loader-word mo-loader-logo" style={{ maskImage: `url(${path("/logo-maison-mestier.png")})`, WebkitMaskImage: `url(${path("/logo-maison-mestier.png")})` }} /></span></p>
-        <p className="mo-loader-foot mo-label"><span>L’art de faire impression</span><span className="mo-loader-count">000</span></p>
-        <span className="mo-loader-bar" />
-      </div>
-      <div className="mo-grain" aria-hidden="true" />
-      {mode === "world" ? <Journey scenes={scenes} ringImages={ringImages} manifesto={manifesto} lenis={lenisRef} onFail={fail} /> : <>
+      {Journey ? <Journey scenes={scenes} ringImages={ringImages} manifesto={manifesto} onFail={fail} /> : <>
       <section className="mo-hero" aria-labelledby="mo-title">
         <div className="mo-hero-pin">
           <div className="mo-hero-meta">

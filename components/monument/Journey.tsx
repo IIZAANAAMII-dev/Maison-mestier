@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type KeyboardEvent, type RefObject } from "react";
-import type Lenis from "lenis";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ateliers, atelierPath, path } from "../../lib/maison";
@@ -9,7 +8,7 @@ import { createWorld, ringStop, score } from "./world";
 import "./journey-editorial.css";
 
 type Scene = { file: string; label: string; line: string; alt: string };
-type Props = { scenes: Scene[]; ringImages: string[]; manifesto: string; lenis: RefObject<Lenis | null>; onFail: () => void };
+type Props = { scenes: Scene[]; ringImages: string[]; manifesto: string; onFail: () => void };
 type SelectRoom = (index: number, focus?: boolean) => void;
 
 const letters = [..."MESTIER"];
@@ -27,7 +26,7 @@ function Words({ text }: { text: string }) {
   return <>{text.split(" ").map((word, index) => <span aria-hidden="true" key={index}><span className="mo-mask"><span className="mo-word-item" data-word>{word}</span></span>{" "}</span>)}</>;
 }
 
-export default function Journey({ scenes, ringImages, manifesto, lenis, onFail }: Props) {
+export default function Journey({ scenes, ringImages, manifesto, onFail }: Props) {
   const root = useRef<HTMLElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const [room, setRoom] = useState(0);
@@ -122,8 +121,7 @@ export default function Journey({ scenes, ringImages, manifesto, lenis, onFail }
 
       const trigger = timeline.scrollTrigger!;
       function jumpTo(target: number) {
-        if (lenis.current) lenis.current.scrollTo(target, { immediate: true, force: true });
-        else window.scrollTo({ top: target, behavior: "instant" });
+        window.scrollTo({ top: target, behavior: "instant" });
         ScrollTrigger.update();
       }
       function scrollToProgress(position: number) {
@@ -156,7 +154,6 @@ export default function Journey({ scenes, ringImages, manifesto, lenis, onFail }
         const id = entryHash.slice(1);
         const target = document.getElementById(id);
         if (!target) return;
-        lenis.current?.resize();
         if (id === "maison") scrollToProgress(maisonAnchor / 100);
         else if (id === "ateliers") selectRoom(0);
         else {
@@ -249,7 +246,7 @@ export default function Journey({ scenes, ringImages, manifesto, lenis, onFail }
       context.revert();
       world.dispose();
     };
-  }, [scenes, ringImages, lenis, onFail]);
+  }, [scenes, ringImages, onFail]);
 
   const active = ateliers[room];
 

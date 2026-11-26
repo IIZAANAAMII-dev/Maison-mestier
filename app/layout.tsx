@@ -32,10 +32,28 @@ export const metadata: Metadata = {
 };
 export const viewport: Viewport = { themeColor: "#e9e6de", width: "device-width", initialScale: 1 };
 
+// Both documents register before the browser captures the shared photograph.
+const studyTransition = `
+  function nameStudyTransition(event) {
+    const transition = event.viewTransition;
+    if (!transition || !transition.types) return;
+    const activation = event.activation || window.navigation?.activation;
+    if (!activation?.from?.url || !activation.entry?.url) return;
+    const study = entry => new URL(entry.url).pathname.match(/\\/recherches\\/(le-portique|lempreinte|lentracte)\\/?$/)?.[1];
+    const from = study(activation.from);
+    const to = study(activation.entry);
+    if (Boolean(from) === Boolean(to)) return;
+    transition.types.add(to || from);
+  }
+  window.addEventListener("pageswap", nameStudyTransition);
+  window.addEventListener("pagereveal", nameStudyTransition);
+`;
+
 export default function Layout({ children }: Readonly<{children: React.ReactNode}>) {
   return (
     <html lang="fr" className={[display.variable, sans.variable, mono.variable].join(" ")}>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: studyTransition }} />
         <style>{"@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }"}</style>
       </head>
       <body id="haut">

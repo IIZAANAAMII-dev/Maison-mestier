@@ -39,3 +39,29 @@ main:focus { outline: none; }
   html { scroll-behavior: auto !important; }
   ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .fab-nav { view-transition-name: maison-navigation; }
+  ::view-transition-group(maison-navigation) { z-index: 5; }
+  html:active-view-transition-type(le-portique) [data-study-plate="le-portique"] { view-transition-name: etude-portique; }
+  html:active-view-transition-type(lempreinte) [data-study-plate="lempreinte"] { view-transition-name: etude-empreinte; }
+  html:active-view-transition-type(lentracte) [data-study-plate="lentracte"] { view-transition-name: etude-entracte; }
+  ::view-transition-group(etude-portique),
+  ::view-transition-group(etude-empreinte),
+  ::view-transition-group(etude-entracte) {
+    animation-delay: 375ms;
+    animation-duration: 1125ms;
+    animation-fill-mode: both;
+    animation-timing-function: cubic-bezier(.65,0,.35,1);
+    animation-timing-function: linear(0,.001,.0078,.0264,.0625,.1221,.2109,.335,.5,.665,.7891,.8779,.9375,.9736,.9922,.999,1);
+    overflow: clip;
+  }
+  html:is(:active-view-transition-type(le-portique), :active-view-transition-type(lempreinte), :active-view-transition-type(lentracte))::view-transition-old(root) {
+    z-index: 1;
+    animation: etude-caption-out 750ms ease-out both;
+  }
+  html:is(:active-view-transition-type(le-portique), :active-view-transition-type(lempreinte), :active-view-transition-type(lentracte))::view-transition-new(root) {
+    animation: none;
+  }
+  @keyframes etude-caption-out { to { opacity: 0; } }
+}

@@ -137,7 +137,10 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
   try { renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: "high-performance" }); }
   catch { return null; }
   const coarse = window.matchMedia("(pointer: coarse)").matches;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, coarse ? 1.5 : 1.75));
+  const pixelCaps = coarse ? [1.5, 1.2, 1] : [1.75];
+  let quality = 0;
+  const pixelRatio = () => Math.min(window.devicePixelRatio || 1, pixelCaps[quality]);
+  renderer.setPixelRatio(pixelRatio());
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = .7;
 
@@ -151,7 +154,21 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
   const loader = new THREE.TextureLoader(manager);
   const disposables: { dispose(): void }[] = [];
   const keep = <T extends { dispose(): void }>(item: T) => { disposables.push(item); return item; };
-  const photo = (url: string) => { const texture = keep(loader.load(url)); texture.colorSpace = THREE.SRGBColorSpace; texture.anisotropy = 4; return texture; };
+  const photographs = new Map<string, { texture: THREE.Texture; ratio: { value: number } }>();
+  function photo(url: string) {
+    const existing = photographs.get(url);
+    if (existing) return existing;
+    const ratio = { value: 1.5 };
+    const texture = keep(loader.load(url, (loaded) => {
+      const image = loaded.image as { width: number; height: number };
+      ratio.value = image.width / image.height;
+    }));
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = 4;
+    const item = { texture, ratio };
+    photographs.set(url, item);
+    return item;
+  }
   const tile = (url: string, x: number, y: number) => { const texture = keep(loader.load(url)); texture.wrapS = texture.wrapT = THREE.RepeatWrapping; texture.repeat.set(x, y); return texture; };
 
   // Ribbon: laid paper on one face, brushed brass on the other.
@@ -177,14 +194,10 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
 
   // Photographs: three plates along the way, eight around the ring.
   const plane = keep(new THREE.PlaneGeometry(1, 1, 32, 16));
-  const plateMaterials: THREE.ShaderMaterial[] = [];
   const makePlate = (url: string, width: number, height: number) => {
-    const map = photo(url);
+    const { texture, ratio } = photo(url);
     const material = keep(new THREE.ShaderMaterial({ vertexShader: plateVertex, fragmentShader: plateFragment, side: THREE.DoubleSide,
-      uniforms: { uMap: { value: map }, uRatio: { value: 1.5 }, uPlane: { value: width / height }, uFocus: { value: 1 }, uBend: { value: 0 }, uTime: time, uFog: { value: new THREE.Color(NIGHT) }, uDensity: { value: .034 } } }));
-    const sized = () => { const image = map.image as { width?: number; height?: number } | undefined; if (image?.width && image.height) material.uniforms.uRatio.value = image.width / image.height; };
-    map.onUpdate = sized;
-    plateMaterials.push(material);
+      uniforms: { uMap: { value: texture }, uRatio: ratio, uPlane: { value: width / height }, uFocus: { value: 1 }, uBend: { value: 0 }, uTime: time, uFog: { value: new THREE.Color(NIGHT) }, uDensity: { value: .034 } } }));
     const mesh = new THREE.Mesh(plane, material);
     mesh.scale.set(width, height, 1);
     return mesh;
@@ -250,13 +263,26 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
   const rim = new THREE.DirectionalLight(0x9fb4c8, .5); rim.position.set(-6, 2, -8); scene.add(rim);
   const lamp = new THREE.PointLight(0xffb675, 5, 16, 1.7); scene.add(lamp);
 
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  let environment: THREE.Texture | null = null;
+  let disposed = false;
+  let pendingEnvironment: THREE.DataTexture | null = null;
+  let environment: THREE.WebGLRenderTarget | null = null;
   new HDRLoader(manager).load(options.textures.environment, (hdr) => {
-    environment = pmrem.fromEquirectangular(hdr).texture;
-    scene.environment = environment; scene.environmentIntensity = .9;
-    hdr.dispose(); pmrem.dispose();
+    if (disposed) hdr.dispose();
+    else pendingEnvironment = hdr;
   });
+  function prepareEnvironment() {
+    if (!pendingEnvironment) return;
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    try {
+      environment = pmrem.fromEquirectangular(pendingEnvironment);
+      scene.environment = environment.texture;
+      scene.environmentIntensity = .9;
+    } finally {
+      pendingEnvironment.dispose();
+      pendingEnvironment = null;
+      pmrem.dispose();
+    }
+  }
 
   const composer = new EffectComposer(renderer);
   composer.addPass(new RenderPass(scene, camera));
@@ -264,7 +290,8 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
   composer.addPass(bloom);
   const finish = new ShaderPass(finishShader);
   composer.addPass(finish);
-  composer.addPass(new OutputPass());
+  const output = new OutputPass();
+  composer.addPass(output);
 
   // Camera score.
   let portrait = false;
@@ -297,23 +324,75 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
   let target = 0, progress = 0, speed = 0, reveal = 0, shown = -1;
   const pointer = new THREE.Vector2(), eased = new THREE.Vector2();
   const position = new THREE.Vector3(), look = new THREE.Vector3(), lookNow = new THREE.Vector3();
-  let frame = 0, active = true, disposed = false, last = performance.now(), first = true;
-  let sceneReady = false;
+  let frame = 0, last = 0, ambientUntil = 0, nextPlate = 0;
+  let first = true, active = true, sceneReady = false;
+  let width = 0, height = 0, slowFrames = 0, fastFrames = 0;
 
-  const resize = () => {
-    const width = canvas.clientWidth || window.innerWidth, height = canvas.clientHeight || window.innerHeight;
-    portrait = width / height < .9;
+  function syncResolution() {
+    const ratio = pixelRatio();
+    if (renderer.getPixelRatio() !== ratio) {
+      renderer.setPixelRatio(ratio);
+      composer.setPixelRatio(ratio);
+    }
+    dustMaterial.uniforms.uScale.value = ratio * height / 900;
+  }
+
+  function syncViewport() {
+    const nextWidth = canvas.clientWidth || window.innerWidth;
+    const nextHeight = canvas.clientHeight || window.innerHeight;
+    if (width === nextWidth && height === nextHeight && renderer.getPixelRatio() === pixelRatio()) return false;
+    const nextPortrait = nextWidth / nextHeight < .9;
+    const reframe = !width || nextPortrait !== portrait;
+    width = nextWidth;
+    height = nextHeight;
+    portrait = nextPortrait;
     camera.aspect = width / height; camera.fov = portrait ? 52 : 35; camera.updateProjectionMatrix();
     renderer.setSize(width, height, false); composer.setSize(width, height);
-    dustMaterial.uniforms.uScale.value = renderer.getPixelRatio() * height / 900;
-    bloom.strength = portrait ? 0 : coarse ? .16 : .22;
-    layout();
-  };
+    syncResolution();
+    // Portrait has no bloom in the art direction. Skip its bright pass and blur pyramid.
+    bloom.enabled = !portrait;
+    if (reframe) layout();
+    return true;
+  }
 
-  const render = (now: number) => {
-    frame = 0;
-    if (disposed || !active) return;
-    const delta = Math.min(.05, (now - last) / 1000); last = now;
+  function adaptResolution(interval: number, moving: boolean) {
+    if (!coarse || window.devicePixelRatio <= 1) return;
+    let next = quality;
+    if (!moving || target <= score.heroOut || reveal < .99) {
+      next = 0;
+      slowFrames = fastFrames = 0;
+    } else if (interval > 0) {
+      slowFrames = interval > 42 ? slowFrames + 1 : 0;
+      fastFrames = interval < 22 ? fastFrames + 1 : 0;
+      if (slowFrames >= 6) next = Math.min(quality + 1, pixelCaps.length - 1);
+      if (fastFrames >= 75) next = Math.max(quality - 1, 0);
+    }
+    if (next !== quality) {
+      quality = next;
+      slowFrames = fastFrames = 0;
+      syncResolution();
+    }
+  }
+
+  function prepareNextPlate() {
+    if (nextPlate >= plates.length) return;
+    const plate = plates[nextPlate];
+    if (nextPlate === 0) {
+      // These photographs share one shader. Compile it for the same colour target
+      // used by the scene, after the cover has already appeared on screen.
+      const previous = renderer.getRenderTarget();
+      renderer.setRenderTarget(composer.readBuffer);
+      try { renderer.compile(plate, camera, scene); }
+      finally { renderer.setRenderTarget(previous); }
+    }
+    renderer.initTexture(plate.material.uniforms.uMap.value);
+    nextPlate++;
+  }
+
+  function draw(now: number) {
+    const interval = last ? now - last : 0;
+    const delta = interval ? Math.min(.15, interval / 1000) : 1 / 60;
+    last = now;
     time.value += delta;
     const before = progress;
     progress += (target - progress) * (first ? 1 : 1 - Math.exp(-delta * 5.5));
@@ -353,47 +432,90 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
       mesh.position.y = Math.sin(time.value * .45 + index) * .06;
     });
 
+    const moving = Math.abs(target - progress) > .00005 || Math.abs(speed) > .001
+      || eased.distanceToSquared(pointer) > .00001 || lookNow.distanceToSquared(look) > .0001;
+    adaptResolution(interval, moving);
     finish.uniforms.uTime.value = time.value; finish.uniforms.uSpeed.value = Math.min(1, Math.abs(speed) * 6);
     composer.render(delta);
+    const canPrepare = !first && !moving && target <= score.heroOut && reveal >= .99;
+    if (canPrepare) prepareNextPlate();
     first = false;
-    frame = requestAnimationFrame(render);
-  };
-  const wake = () => {
-    if (!sceneReady || frame || !active || disposed) return;
-    last = performance.now();
-    frame = requestAnimationFrame(render);
-  };
+    if (moving || now < ambientUntil || (canPrepare && nextPlate < plates.length)) frame = requestAnimationFrame(render);
+  }
 
-  const lost = (event: Event) => { event.preventDefault(); active = false; options.onLost?.(); };
+  function render(now: number) {
+    frame = 0;
+    if (disposed || !active || document.hidden) return;
+    try {
+      prepareEnvironment();
+      draw(now);
+    } catch {
+      active = false;
+      options.onLost?.();
+    }
+  }
+
+  function wake(ambientMillis = 0) {
+    if (!sceneReady || !active || disposed || document.hidden) return;
+    ambientUntil = Math.max(ambientUntil, performance.now() + ambientMillis);
+    if (frame) return;
+    last = 0;
+    frame = requestAnimationFrame(render);
+  }
+
+  const lost = (event: Event) => {
+    event.preventDefault();
+    active = false;
+    cancelAnimationFrame(frame);
+    frame = 0;
+    options.onLost?.();
+  };
   canvas.addEventListener("webglcontextlost", lost);
 
   const ready = new Promise<void>((resolve, reject) => {
+    let failed = false;
     manager.onLoad = () => {
-      if (disposed) return;
-      try {
-        resize();
-        composer.render(0);
-      } catch (error) { reject(error); return; }
+      if (disposed || failed) return;
       sceneReady = true;
-      wake();
+      const rect = canvas.getBoundingClientRect();
+      active = active && !document.hidden && rect.bottom > 0 && rect.top < window.innerHeight
+        && rect.right > 0 && rect.left < window.innerWidth;
+      if (active) {
+        try {
+          syncViewport();
+          prepareEnvironment();
+          const now = performance.now();
+          ambientUntil = now + 1000;
+          draw(now);
+        } catch (error) { reject(error); return; }
+      }
       resolve();
     };
-    manager.onError = (url) => reject(new Error("asset " + url));
+    manager.onError = (url) => {
+      failed = true;
+      reject(new Error("asset " + url));
+    };
   });
 
   return {
     ready,
-    setProgress(value) { target = value; },
-    setReveal(value) { reveal = value; },
-    setPointer(x, y) { pointer.set(x, y); },
-    setActive(value) { active = value; if (value) wake(); else if (frame) { cancelAnimationFrame(frame); frame = 0; } },
-    resize,
+    setProgress(value) { if (target !== value) { target = value; wake(); } },
+    setReveal(value) { if (reveal !== value) { reveal = value; wake(300); } },
+    setPointer(x, y) { if (pointer.x !== x || pointer.y !== y) { pointer.set(x, y); wake(); } },
+    setActive(value) {
+      if (disposed) return;
+      active = value;
+      if (value && sceneReady) { syncViewport(); wake(first ? 1000 : 0); }
+      else { cancelAnimationFrame(frame); frame = 0; }
+    },
+    resize() { if (sceneReady && active && !document.hidden && syncViewport()) wake(); },
     dispose() {
       disposed = true;
       if (frame) cancelAnimationFrame(frame);
       canvas.removeEventListener("webglcontextlost", lost);
       disposables.forEach((item) => item.dispose());
-      environment?.dispose(); bloom.dispose(); composer.dispose(); renderer.dispose();
+      pendingEnvironment?.dispose();
+      environment?.dispose(); bloom.dispose(); finish.dispose(); output.dispose(); composer.dispose(); renderer.dispose();
     },
   };
 }
