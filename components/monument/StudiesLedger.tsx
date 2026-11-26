@@ -17,6 +17,11 @@ const anchor = (study: Study) => "etude-" + study.slug;
 
 function Photograph({ study }: { study: Study }) {
   const [original, setOriginal] = useState(false);
+  const photograph = useRef<HTMLImageElement>(null);
+  useEffect(() => {
+    const loaded = photograph.current;
+    if (loaded?.complete && loaded.currentSrc && !loaded.naturalWidth) setOriginal(true);
+  }, []);
   const frame = art[study.slug];
   const [width, height] = original ? frame.original : [1536, 1024];
   const [mobileWidth, mobileHeight] = original ? frame.originalMobile : [800, 1000];
@@ -31,7 +36,7 @@ function Photograph({ study }: { study: Study }) {
       <picture>
         <source media="(max-width: 849px) and (orientation: portrait)" srcSet={mobile}
           width={mobileWidth} height={mobileHeight} />
-        <img src={large} width={width} height={height}
+        <img ref={photograph} src={large} width={width} height={height}
           alt={original ? study.alt : frame.alt} loading="lazy" decoding="async"
           onError={original ? undefined : () => setOriginal(true)} />
       </picture>
