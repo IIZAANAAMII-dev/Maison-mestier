@@ -12,11 +12,12 @@ export const metadata: Metadata = {
 export default function Contact() {
   return <main className={s.page} id="contenu" tabIndex={-1}>
     <div className={s.entree}>
-      <div><p className={s.repere}><a href={path("/")}>Maison Mestier</a> / Contact</p>
+      <div className={s.ecriture}><p className={s.repere}><a href={path("/")}>Maison Mestier</a> / Contact</p>
         <h1>Votre <i>projet.</i></h1><p className={s.chapeau}>Dites-nous ce que vous préparez, même si ce n’est encore qu’une idée.</p>
+        <nav className={s.choix} aria-label="Choisir un premier échange"><a href="#lettre">Écrire à la Maison</a><a href="#appel">Proposer un appel</a></nav>
         <a className={s.adresse} href={ecrireHref}>{emailMaison}</a>
       </div>
-      <figure><img src={path("/galerie/editorial.webp")} alt="Étude de papeterie Maison Mestier : un carton vergé rehaussé de laiton posé sur une enveloppe cachet." width={1536} height={1024} /></figure>
+      <figure><img src={path("/galerie/editorial.webp")} alt="Étude de papeterie Maison Mestier : un carton vergé rehaussé de laiton posé sur une enveloppe cachet." width={1536} height={1024} /><figcaption>Papeterie · Étude de la Maison</figcaption></figure>
     </div>
     <div className={s.corps}>
       <Appel />

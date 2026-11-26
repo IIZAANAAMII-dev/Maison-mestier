@@ -1,55 +1,102 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { path } from "../../lib/maison";
 import s from "./reperages.module.css";
 
 export const metadata: Metadata = {
   title: "Le carnet de mouvement",
-  description: "Les séquences étudiées pour le pli de la couverture, le menu, les fiches ateliers et la trame numérique de Maison Mestier.",
+  description: "Quatre sites primés sur Awwwards et les gestes qu’ils ont inspirés à Maison Mestier, de la couverture au sommaire.",
 };
 
-const references = [
+const etudes = [
   {
-    geste: "Le pli", name: "Moooi — Paper Play", author: "Build in Amsterdam", cadence: "30 images par seconde",
-    source: "https://www.awwwards.com/inspiration/moooi-paper-play-webgl-animations-scrolling",
-    mesure: "Le premier recul démarre vers 0,80 s. Entre 1,83 et 2,63 s, le cadrage se pose. Une seconde couronne se déploie avant que l’objet ne pivote de face à profil.",
-    ici: "Sur la couverture, ces étapes suivent le défilement. Le papier, son revers et la maquette partagent un point fixe pendant le changement d’échelle.",
-    site: "/#matiere", action: "Revoir la couverture",
+    id: "repere-couverture",
+    lieu: "La couverture",
+    nom: "Dior by Starck 2023",
+    auteur: "Bien-Fondé",
+    projet: "https://www.awwwards.com/sites/dior-by-starck-2023",
+    film: "https://www.awwwards.com/inspiration/product-3d-dior-by-starck-2023",
+    extrait: "Entre 0,20 et 2,40 s, le fauteuil passe du dos à la face, puis au profil. Son axe reste au centre. Derrière lui, de grandes lettres grises défilent jusqu’à sortir du cadre.",
+    adaptation: "Au défilement, le mot « Mestier » glisse vers la gauche sur le mur de l’atelier. La silhouette du portique en masque les lettres à mesure que le cadrage se resserre. Un pli clair rejoint le papier de la page suivante.",
+    destination: "/#matiere",
+    lien: "Revoir la couverture",
   },
   {
-    geste: "Le menu", name: "Nava Press", author: "Mine studio, Onofrio Napolitano et empi", cadence: "25 images par seconde",
-    source: "https://www.awwwards.com/inspiration/unfolding-menu-nava-press",
-    mesure: "La page glisse vers le bas et la gauche. Entre les images 30 et 47, son bord droit passe de 100 % à 39,9 % de la largeur. Le texte du menu reste en place derrière elle.",
-    ici: "Le feuillet de Maison Mestier reprend cette trajectoire sur ordinateur. Il s’ouvre en 680 ms et revient à sa place en 600 ms. Sur téléphone, il se décale davantage pour laisser lire les rubriques.",
+    id: "repere-terrain-digital",
+    lieu: "Du terrain au digital",
+    nom: "Cartier Watches & Wonders 2024",
+    auteur: "Immersive Garden et 60fps",
+    projet: "https://www.awwwards.com/sites/cartier-watches-wonders-2024",
+    film: "https://www.awwwards.com/inspiration/transition-through-univeses-cartier-watches-wonders-2024",
+    extrait: "Une pierre grossit et quitte le cadre par le haut. À 2 s, le sable occupe toute l’image. Une onde s’y dessine, puis des feuilles entrent par le bas. On regarde désormais le jardin en plongée.",
+    adaptation: "Sur grand écran, un cercle de lumière s’élargit sur l’établi et révèle la trame numérique. Les deux récits gardent leur place de part et d’autre de l’image. Sur téléphone, ils se succèdent au fil de la page.",
+    destination: "/#terrain",
+    lien: "Parcourir les deux récits",
   },
   {
-    geste: "Les fiches ateliers", name: "Nine To Five Studio", author: "ET Studio", cadence: "60 images par seconde",
-    source: "https://www.e-t.studio/works/nine-to-five-studio", sourceLabel: "Voir le film chez ET Studio",
-    mesure: "Entre 8,30 et 8,90 s, une surface monte du bas et remplit le cadre. Après un temps de lecture, elle glisse vers la gauche. À 10,60 s, elle couvre encore 68 % de la largeur.",
-    ici: "Dans le catalogue, le nom choisi accompagne le passage vers la fiche. L’atelier se lit immédiatement en accès direct ou avec la réduction des animations.",
-    site: "/ateliers/", action: "Ouvrir le catalogue",
+    id: "repere-index-ateliers",
+    lieu: "L’index des ateliers",
+    nom: "Hervé Baillargeon",
+    auteur: "Locomotive",
+    projet: "https://www.awwwards.com/sites/herve-baillargeon",
+    film: "https://www.awwwards.com/inspiration/portfolio-herve-baillargeon",
+    extrait: "À 0,43 s, un film au format 16:9 apparaît d’un coup derrière les deux colonnes de titres. Le nom choisi reste blanc et ses voisins s’atténuent. À 7,40 s, une coupe franche ramène l’index sur fond noir.",
+    adaptation: "À chaque métier correspond un tirage détouré. Le survol ou le clavier change l’objet central et sa légende sans déplacer la liste des huit ateliers. Les flèches permettent aussi de feuilleter les études.",
+    destination: "/ateliers/",
+    lien: "Feuilleter les huit ateliers",
   },
   {
-    geste: "La lumière", name: "Artisans d’Idées", author: "Immersive Garden", cadence: "30 images par seconde",
-    source: "https://www.awwwards.com/inspiration/artisans-didees-immersive-digital-experience-3d-masterpiece",
-    mesure: "Entre 3,97 et 4,77 s, à droite du plan, le front lumineux remonte de 90 % à 48 % de la hauteur de l’image. Son épaisseur se réduit à l’approche de l’horizon.",
-    ici: "Une lumière traverse les fils de notre étude numérique en une seconde. Son passage révèle la courbure de la feuille, qui réagit ensuite au déplacement du pointeur.",
-    site: "/#terrain", action: "Voir la trame",
+    id: "repere-sommaire",
+    lieu: "Le sommaire",
+    nom: "Editorial New",
+    auteur: "Locomotive pour Pangram Pangram",
+    projet: "https://www.awwwards.com/sites/editorial-new",
+    film: "https://www.awwwards.com/inspiration/overlay-menu-editorial-new-typeface",
+    extrait: "À la seconde ouverture, entre les images 135 et 148 du film, le bord du menu va du bord gauche au premier tiers de l’écran. Les liens restent en place tandis que le volet les découvre.",
+    adaptation: "Le bouton Menu déploie le sommaire sur toute la fenêtre en 433 millisecondes. Sur ordinateur, les rubriques occupent la gauche et le tirage de la Maison à droite change au passage d’un intitulé à l’autre.",
   },
 ];
 
 export default function Reperages() {
-  return <main id="contenu" tabIndex={-1} className={s.page}>
-    <nav className={s.crumb} aria-label="Fil d’Ariane"><a href={path("/")}>Maison Mestier</a><span aria-hidden="true">/</span>Les repérages</nav>
-    <header className={s.intro} id="storyboard">
-      <h1>Le carnet de <i>mouvement.</i></h1>
-      <p>Quatre séquences regardées image par image. Les temps indiqués sont ceux des vidéos de référence.</p>
-    </header>
-    <div id="references">{references.map((ref) => <article className={s.etude} key={ref.geste}>
-      <div className={s.titre}><p>{ref.geste}</p><h2>{ref.name}</h2><span>{ref.author}</span></div>
-      <div className={s.texte}><p className={s.cadence}>{ref.cadence}</p><p>{ref.mesure}</p><p>{ref.ici}</p>
-        <div className={s.liens}><a href={ref.source}>{ref.sourceLabel || "Voir la séquence sur Awwwards"}</a>{ref.site && <a href={path(ref.site)}>{ref.action}</a>}</div>
+  return (
+    <main id="contenu" tabIndex={-1} className={s.page}>
+      <nav className={s.crumb} aria-label="Fil d’Ariane">
+        <a href={path("/")}>Maison Mestier</a><span aria-hidden="true">/</span><span aria-current="page">Les repérages</span>
+      </nav>
+      <header className={s.intro} id="storyboard">
+        <div className={s.ouverture}>
+          <h1>Le carnet de <i>mouvement.</i></h1>
+          <p>Awwwards a primé ces quatre sites. Nous avons suivi leurs films image par image pour comprendre comment un fauteuil, un paysage, une liste et un volet se mettent en mouvement.</p>
+        </div>
+        <figure className={s.ruban}>
+          <Image src={path("/images/hero-depth-ribbon.webp")} width={495} height={540} sizes="(max-width: 46rem) 34vw, 23vw" alt="Un ruban torsadé présente tour à tour sa face ivoire et son revers doré." />
+          <figcaption>Étude de lumière, papier et laiton.</figcaption>
+        </figure>
+      </header>
+      <div className={s.releves} id="references">
+        {etudes.map((etude) => (
+          <article key={etude.id} className={s.etude} aria-labelledby={etude.id}>
+            <header className={s.identite}>
+              <p className={s.lieu}>{etude.lieu}</p>
+              <h2 id={etude.id}><a href={etude.projet}>{etude.nom}</a></h2>
+              <p className={s.auteur}>{etude.auteur}</p>
+            </header>
+            <div className={s.notes}>
+              <div>
+                <h3>Dans le film</h3>
+                <p>{etude.extrait}</p>
+                <a className={s.lien} href={etude.film} aria-label={`Voir l’extrait de ${etude.nom} sur Awwwards`}>Voir l’extrait sur Awwwards <span aria-hidden="true">↗︎</span></a>
+              </div>
+              <div>
+                <h3>À la Maison</h3>
+                <p>{etude.adaptation}</p>
+                {etude.destination && <a className={s.lien} href={path(etude.destination)}>{etude.lien} <span aria-hidden="true">→</span></a>}
+              </div>
+            </div>
+          </article>
+        ))}
       </div>
-    </article>)}</div>
-    <a className={s.suite} href={path("/laboratoire/")}>Les études de la Maison</a>
-  </main>;
+      <a className={s.suite} href={path("/laboratoire/")}>Les études de la Maison <span aria-hidden="true">→</span></a>
+    </main>
+  );
 }

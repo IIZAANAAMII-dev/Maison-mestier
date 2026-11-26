@@ -14,11 +14,11 @@ export default function Pied() {
         <div className={s.listePied}>{ateliersMaison.map(({ name, slug }) => <a key={slug} href={atelierPath(slug)}>{name}</a>)}</div>
       </nav>
       <nav aria-labelledby="pied-univers"><h2 id="pied-univers">Univers</h2>{universMaison.map(({ name, slug }) => <a key={slug} href={path("/" + slug + "/")}>{name}</a>)}</nav>
-      <nav aria-labelledby="pied-maison"><h2 id="pied-maison">La Maison</h2><a href={path("/la-maison/")}>L’équipe</a><a href={path("/contact/")}>Contact</a><a href="#haut">Retour en haut</a></nav>
+      <nav aria-labelledby="pied-maison"><h2 id="pied-maison">La Maison</h2><a href={path("/la-maison/")}>L’équipe</a><a href={path("/contact/")}>Contact</a></nav>
     </div>
     <div className={s.colophon}>
       <span>Maison Mestier, une marque de Nexora Strategy</span><span>Var · Bouches-du-Rhône</span>
-      <a href={path("/mentions-legales/")}>Mentions légales</a><a href={path("/confidentialite/")}>Confidentialité</a>
+      <a href={path("/mentions-legales/")}>Mentions légales</a><a href={path("/confidentialite/")}>Confidentialité</a><a href="#haut">Retour en haut</a>
     </div>
   </footer>;
 }

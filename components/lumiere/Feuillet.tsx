@@ -175,10 +175,10 @@ export default function Feuillet() {
   }, []);
 
   return (
-    <div className={styles.image} ref={holder}>
+    <div id="pli" className={styles.image} ref={holder}>
       <picture>
         <source media="(max-width: 44rem)" srcSet={mobileSources} sizes="(max-width: 27.5rem) calc(100vw - 36px), 92vw" />
-        <img ref={picture} src={mediumPavilion} srcSet={`${mobileSources}, ${pavilion} 1536w`} sizes="(min-width: 126rem) 900px, 44.3vw" width="1536" height="1024" fetchPriority="high" alt="Étude de la Maison d’une architecture en papier plié, éclairée par une lumière rasante." />
+        <img ref={picture} src={mediumPavilion} srcSet={`${mobileSources}, ${pavilion} 1536w`} sizes="(min-width: 100rem) 1230px, 88vw" width="1536" height="1024" loading="lazy" decoding="async" alt="Étude de la Maison d’une architecture en papier plié, éclairée par une lumière rasante." />
       </picture>
     </div>
   );

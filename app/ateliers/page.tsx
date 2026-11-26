@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Catalogue from "../../components/lumiere/Catalogue";
-import styles from "../../components/lumiere/accueil.module.css";
 
 export const metadata: Metadata = {
   title: "Les huit ateliers",
@@ -8,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function Ateliers() {
-  return <main className={styles.accueil} id="contenu" tabIndex={-1}><Catalogue standalone /></main>;
+  return <main id="contenu" tabIndex={-1}><Catalogue standalone /></main>;
 }

@@ -1,0 +1,122 @@
+.passage {
+  --papier-scene: #f3f0ea;
+  --laiton-scene: #dec49b;
+  --developpe: .5;
+  --passage: .5;
+  --point-x: 74.8%;
+  --point-y: 59.5%;
+  --regard-x: 0px;
+  --regard-y: 0px;
+  position: relative;
+  isolation: isolate;
+  background: #1c2333;
+  color: var(--papier-scene);
+}
+.ancre { position: absolute; inset: 0 auto auto 0; width: 1px; height: 1px; }
+.plateau { position: relative; isolation: isolate; overflow: clip; background: #1c2333; }
+.terrain, .numerique { position: relative; isolation: isolate; }
+.paysage { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: -2; }
+.paysage picture, .paysage img, .trame, .trame canvas {
+  position: absolute; inset: 0; display: block; width: 100%; height: 100%;
+}
+.paysage img { object-fit: cover; object-position: 56% 52%; }
+.trame { isolation: isolate; background: #1c2333; }
+.trame img { filter: grayscale(.8) brightness(.5) contrast(1.22); }
+.trame::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: repeating-conic-gradient(from 91deg at var(--point-x) var(--point-y), transparent 0deg 4.8deg, rgb(224 187 124 / .45) 4.88deg 5deg);
+  mask-image: linear-gradient(to bottom, transparent 44%, #000 88%);
+}
+.trame:has(canvas[data-ready])::after { display: none; }
+.trame canvas { z-index: 2; opacity: 0; }
+.trame canvas[data-ready] { opacity: 1; }
+.copie { position: relative; z-index: 3; }
+.copie .mention {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: .45em; color: var(--laiton-scene);
+  font: 450 clamp(.72rem, .84vw, .9rem)/1.5 var(--mono); letter-spacing: .035em;
+}
+.mention a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .24em; }
+.copie h2 {
+  margin: .65rem 0 .9rem; font: 400 clamp(3.75rem, 5.9vw, 7.5rem)/.98 var(--display);
+  letter-spacing: -.068em; text-wrap: balance; color: var(--papier-scene);
+}
+.copie h2 i { font-weight: 400; }
+.copie h2 button {
+  position: relative; display: inline-block; border: 0; padding: 0; margin: 0; background: transparent;
+  font: inherit; color: inherit; text-align: inherit; letter-spacing: inherit; line-height: inherit; cursor: pointer;
+}
+.copie h2 button:hover { color: #f3ddbd; }
+.copie p { margin: 0; font: 430 clamp(1.02rem, 1.18vw, 1.25rem)/1.48 var(--sans); text-wrap: pretty; }
+.copie .aparte { margin: .8rem 0 .55rem; font: italic 420 clamp(1.13rem, 1.55vw, 1.65rem)/1.19 var(--display); }
+.copie .lien {
+  position: relative; color: var(--papier-scene); text-decoration: none; font: 550 1rem/1.2 var(--sans);
+  display: inline-flex; align-items: center; min-height: 46px;
+}
+.lien::before { position: absolute; content: ""; bottom: .45em; width: 100%; height: 1px; background: var(--laiton-scene); }
+.lien:hover::before { background: var(--papier-scene); }
+.copie :is(a, button):focus-visible { outline: 2px solid #f3ddbd; outline-offset: 5px; }
+
+/* Both margins of the same spread remain readable throughout the camera move. */
+@media (min-width: 900px) {
+  .plateau { min-height: max(590px, 81svh); }
+  .terrain, .numerique { position: static; isolation: auto; }
+  .paysage { inset: -1.3%; z-index: 0; }
+  .numerique .paysage {
+    z-index: 1; mask-image: linear-gradient(104deg, transparent 28%, #000 72%);
+  }
+  .plateau::after {
+    content: ""; position: absolute; z-index: 2; inset: 0; pointer-events: none;
+    background: linear-gradient(90deg, rgb(14 20 31 / .88), rgb(17 23 36 / .82) 17%, rgb(18 24 37 / .49) 31%, transparent 47%, transparent 54%, rgb(18 24 37 / .62) 73%, rgb(14 20 31 / .86) 100%),
+      linear-gradient(0deg, rgb(15 21 34 / .68), transparent 32%, transparent 78%, rgb(16 22 36 / .25));
+  }
+  .copie { position: absolute; width: min(25.5vw, 26rem); }
+  .terrain .copie { left: clamp(2.25rem, 4.6vw, 6rem); bottom: clamp(2.4rem, 7.4svh, 6.7rem); }
+  .numerique .copie::before {
+    content: ""; position: absolute; z-index: -1; inset: -18% -23% -32%; pointer-events: none;
+    background: radial-gradient(ellipse at 48% 56%, rgb(14 20 32 / .55) 0% 40%, rgb(14 20 32 / .30) 62%, transparent 82%);
+  }
+  .numerique .copie { right: clamp(2.25rem, 4.6vw, 6rem); top: clamp(2.7rem, 8svh, 7.5rem); }
+  .copie h2 button i { position: relative; display: inline-block; }
+  .copie h2 button i::after {
+    content: ""; position: absolute; right: -.29em; top: .17em; width: .075em; height: .075em;
+    border: 1px solid var(--laiton-scene); border-radius: 50%;
+  }
+  .copie h2 button[aria-pressed="true"] i::after { background: var(--laiton-scene); }
+  .passage[data-lecture="plateau"] { height: 163svh; }
+  .passage[data-lecture="plateau"] .plateau { position: sticky; top: var(--head-height, 86px); height: calc(100svh - var(--head-height, 86px)); min-height: 0; }
+  .passage[data-lecture="plateau"] .paysage {
+    transform: translate(var(--regard-x),var(--regard-y)) scale(calc(1.004 + .105 * var(--avance, 0) - .045 * var(--developpe)));
+    transform-origin: var(--point-x) var(--point-y);
+  }
+  .passage[data-lecture="plateau"] .numerique .paysage {
+    opacity: min(1, calc(var(--developpe) * 15));
+    mask-image: radial-gradient(ellipse farthest-corner at var(--point-x) var(--point-y), #000 calc(var(--developpe) * 124% - 13%), transparent calc(var(--developpe) * 124% + 5%));
+  }
+  .passage[data-lecture="plateau"] .numerique .paysage::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse farthest-corner at var(--point-x) var(--point-y), transparent calc(var(--developpe) * 124% - 24%), rgb(241 210 157 / .24) calc(var(--developpe) * 124% - 11%), transparent calc(var(--developpe) * 124% + 1%));
+  }
+}
+
+@media (max-width: 899px) {
+  .paysage { inset: 0 0 auto; height: clamp(21rem, 58svh, 34rem); }
+  .paysage img { object-position: 73% 52%; }
+  .numerique .trame { filter: brightness(1.13); }
+  .terrain, .numerique {
+    display: flex; align-items: flex-end; min-height: min(48rem, 83svh);
+    padding: clamp(10rem, 31svh, 18rem) var(--marge-edition, 6vw) clamp(2.25rem, 6svh, 4.5rem);
+  }
+  .copie { max-width: 35rem; }
+  .copie h2 { margin-top: .45rem; font-size: clamp(3.55rem, 10.5vw, 5.9rem); }
+  .terrain::after, .numerique::after {
+    position: absolute; content: ""; z-index: -1; inset: 0; pointer-events: none;
+    background: linear-gradient(0deg,#151c2b 0%,rgb(20 27 41 / .96) 21%,rgb(21 28 42 / .89) 43%,rgb(21 28 42 / .38) 65%,transparent 80%);
+  }
+  .numerique::after { background: linear-gradient(1deg,#141b29 0%,rgb(20 27 41 / .98) 18%,rgb(21 28 42 / .87) 41%,rgb(19 26 40 / .29) 64%,transparent 77%); }
+  .passage[data-lecture="libre"] .paysage { transform: scale(calc(1.01 + .036 * var(--passage))); transform-origin: var(--point-x) var(--point-y); }
+}
+
+@media (max-width: 360px) {
+  .terrain, .numerique { min-height: auto; padding-top: 10.25rem; }
+  .copie h2 { font-size: 3.45rem; }
+}

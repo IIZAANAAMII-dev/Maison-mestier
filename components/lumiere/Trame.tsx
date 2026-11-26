@@ -2,148 +2,115 @@
 
 import { useEffect, useRef } from "react";
 import { path } from "../../lib/maison";
-import styles from "./accueil.module.css";
+import styles from "./passage-edition.module.css";
 
-const sweep = [[0, .90], [.16, .77], [.34, .64], [.56, .57], [.88, .48], [1, .46]];
-
-function lightHeight(progress: number) {
-  for (let i = 1; i < sweep.length; i++) {
-    const [until, height] = sweep[i];
-    if (progress <= until) {
-      const [from, start] = sweep[i - 1];
-      return start + (height - start) * (progress - from) / (until - from);
+// Slope and contour come from the same exposure as the first act. The floor lines
+// extend beyond the frame; their vanishing point stays registered to the print.
+function develop(image: HTMLImageElement, canvas: HTMLCanvasElement) {
+  const rect = canvas.getBoundingClientRect();
+  if (!rect.width || !rect.height || !image.naturalWidth) return;
+  const ratio = Math.min(1.2, 1050 / rect.width, 900 / rect.height);
+  const width = Math.max(1, Math.round(rect.width * ratio));
+  const height = Math.max(1, Math.round(rect.height * ratio));
+  if (canvas.width === width && canvas.height === height && canvas.dataset.ready) return;
+  canvas.width = width; canvas.height = height;
+  const ctx = canvas.getContext("2d", { alpha: false, willReadFrequently: true });
+  if (!ctx) return;
+  const scale = Math.max(width / image.naturalWidth, height / image.naturalHeight);
+  const w = image.naturalWidth * scale, h = image.naturalHeight * scale;
+  const crop = innerWidth < 900 ? .73 : .56;
+  const left = (width - w) * crop, top = (height - h) * .52;
+  ctx.drawImage(image, left, top, w, h);
+  const data = ctx.getImageData(0, 0, width, height);
+  const pixels = data.data;
+  const luminance = new Uint8Array(width * height);
+  for (let i = 0; i < luminance.length; i++) {
+    const p = i * 4;
+    luminance[i] = (pixels[p] * 3 + pixels[p + 1] * 6 + pixels[p + 2]) / 10;
+  }
+  for (let y = 0; y < height; y++) {
+    const previous = Math.max(0, y - 1) * width, next = Math.min(height - 1, y + 1) * width;
+    for (let x = 0; x < width; x++) {
+      const i = y * width + x, p = i * 4;
+      const horizontal = Math.abs(luminance[y * width + Math.min(width - 1, x + 1)] - luminance[y * width + Math.max(0, x - 1)]);
+      const vertical = Math.abs(luminance[next + x] - luminance[previous + x]);
+      const line = Math.min(1, Math.max(0, (horizontal + vertical - 6) / 76));
+      const exposure = luminance[i] / 255;
+      pixels[p] = 19 + 39 * exposure + 137 * line;
+      pixels[p + 1] = 26 + 36 * exposure + 114 * line;
+      pixels[p + 2] = 40 + 34 * exposure + 70 * line;
     }
   }
-  return sweep[sweep.length - 1][1];
+  ctx.putImageData(data, 0, 0);
+
+  const vanishingX = left + w * .748;
+  const horizon = top + h * .595;
+  // Creases converge under the maker’s fingertip. These coordinates are on the
+  // photograph itself, before the responsive object-fit crop.
+  const creases = [[.20,.61],[.02,.85],[.347,.465],[.646,.28],[.909,1.02]];
+  ctx.lineWidth = Math.max(.7, width / 960);
+  for (const [u,v] of creases) {
+    const x = left + w * u, y = top + h * v;
+    const glint = ctx.createLinearGradient(x,y,vanishingX,horizon);
+    glint.addColorStop(0,"rgba(222,193,149,0)");
+    glint.addColorStop(.70,"rgba(228,194,133,.58)");
+    glint.addColorStop(1,"rgba(237,211,168,.95)");
+    ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(vanishingX,horizon);
+    ctx.strokeStyle = glint; ctx.stroke();
+  }
+  // A ruled sheet lies on the same table, with one corner lifted off the surface.
+  function point(lateral: number, depth: number) {
+    const lift = Math.sin(Math.PI * depth) * Math.exp(-((lateral - .16) ** 2) / .24) * .22;
+    return [vanishingX + lateral * width * (.05 + depth * .85), horizon + height * (depth * .7 - lift)];
+  }
+  ctx.lineCap = "round";
+  ctx.lineWidth = Math.max(.65, width / 1250);
+  for (let c = -31; c <= 31; c++) {
+    const lateral = c / 15;
+    ctx.beginPath();
+    for (let j = 0; j <= 32; j++) {
+      const [x, y] = point(lateral, j / 32);
+      if (j === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = c % 5 === 0 ? "rgba(226,191,133,.57)" : "rgba(206,186,151,.26)";
+    ctx.stroke();
+  }
+  for (let j = 1; j <= 27; j++) {
+    const depth = (j / 27) ** 1.85;
+    ctx.beginPath();
+    for (let c = -32; c <= 32; c++) {
+      const [x, y] = point(c / 15, depth);
+      if (c === -32) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = j % 5 === 0 ? "rgba(226,191,133,.46)" : "rgba(224,214,194,.23)";
+    ctx.stroke();
+  }
+  canvas.dataset.ready = "";
 }
 
 export default function Trame() {
+  const image = useRef<HTMLImageElement>(null);
   const surface = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const canvas = surface.current;
-    const ctx = canvas?.getContext("2d", { alpha: false });
-    if (!canvas || !ctx) return;
-
-    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const columns = 76;
-    const rows = 30;
-    const grid = Array.from({ length: rows + 1 }, (_, row) => {
-      const v = row / rows * 2 - 1;
-      return Array.from({ length: columns + 1 }, (_, column) => {
-        const u = column / columns * 2 - 1;
-        const crest = .52 * Math.sin(u * 3.4 + v * 1.25 + .55) * Math.cos(v * .92);
-        return [u * 1.35, crest + .22 * v * v - .16 * u, v * .75];
-      });
-    });
-    let width = 0, height = 0, angle = -.39, target = -.39;
-    let frame = 0, visible = false, firstLight: number | undefined;
-
-    function render(now: number) {
+    const source = image.current!, canvas = surface.current!;
+    let visible = false, frame = 0;
+    function draw() {
       frame = 0;
-      if (!canvas || !ctx || width < 1 || height < 1) return;
-      angle += (target - angle) * .16;
-      const scale = Math.min(width * .31, height * .55);
-      const t = motion.matches || firstLight === undefined ? 1 : Math.max(0, Math.min(1, (now - firstLight) / 1000));
-      const front = lightHeight(t);
-      const sin = Math.sin(angle), cos = Math.cos(angle);
-      const ground = ctx.createRadialGradient(width * .45, height * .39, 3, width * .58, height * .54, width * .85);
-      ground.addColorStop(0, "#30394a"); ground.addColorStop(.54, "#1c2333"); ground.addColorStop(1, "#121824");
-      ctx.fillStyle = ground;
-      ctx.fillRect(0, 0, width, height);
-
-      const points = grid.map((row) => row.map(([x, y, z]) => {
-        const depth = -x * sin + z * cos;
-        const perspective = 1 + depth * .065;
-        return [width * .5 + (x * cos + z * sin) * scale * perspective, height * .57 + (depth * .39 - y) * scale * perspective];
-      }));
-
-      const highlight = (sy: number) => {
-        const band = .23 - t * .18;
-        return t >= 1 ? 0 : Math.max(0, 1 - Math.abs(sy / height - front) / band) * Math.sin(t * Math.PI) * .59;
-      };
-      const wire = ctx.createLinearGradient(0, 0, 0, height);
-      const wireColour = "rgba(227,232,233,.34)";
-      const band = .23 - t * .18;
-      wire.addColorStop(0, wireColour);
-      wire.addColorStop(Math.max(0, front - band), wireColour);
-      wire.addColorStop(front, `rgba(243,240,234,${.34 + Math.sin(t * Math.PI) * .58})`);
-      wire.addColorStop(Math.min(1, front + band), wireColour);
-      wire.addColorStop(1, wireColour);
-      const line = (p: number[]) => ctx.lineTo(p[0], p[1]);
-      ctx.lineJoin = "round";
-      for (let r = 0; r < rows; r++) {
-        const back = points[r], edge = points[r + 1];
-        ctx.beginPath();
-        ctx.moveTo(back[0][0], back[0][1]);
-        back.slice(1).forEach(line);
-        for (let c = columns; c >= 0; c--) line(edge[c]);
-        ctx.closePath();
-        ctx.fillStyle = `rgb(${31 + r / 2},${39 + r / 2},${55 + r / 2})`;
-        ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo(edge[0][0], edge[0][1]);
-        edge.slice(1).forEach(line);
-        ctx.strokeStyle = `rgba(242,239,232,${.35 + .22 * r / rows + highlight(edge[columns >> 1][1])})`;
-        ctx.lineWidth = r === rows - 1 ? 1.1 : .65;
-        ctx.stroke();
-        ctx.beginPath();
-        for (let c = 0; c <= columns; c++) {
-          ctx.moveTo(back[c][0], back[c][1]); line(edge[c]);
-        }
-        ctx.strokeStyle = wire;
-        ctx.lineWidth = .65;
-        ctx.stroke();
-      }
-      canvas.dataset.ready = "true";
-      if (visible && !document.hidden && !motion.matches && (Math.abs(target - angle) > .0003 || t < 1)) frame = requestAnimationFrame(render);
+      if (visible && source.complete && source.naturalWidth) develop(source, canvas);
     }
-
-    function requestDraw() {
-      if (!frame && visible && !document.hidden) frame = requestAnimationFrame(render);
-    }
-    function resize() {
-      if (!canvas || !ctx) return;
-      const box = canvas.getBoundingClientRect();
-      width = box.width; height = box.height;
-      const ratio = Math.min(1.7, window.devicePixelRatio || 1);
-      canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio);
-      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-      requestDraw();
-    }
-    function move(event: PointerEvent) {
-      if (!canvas || motion.matches || event.pointerType === "touch") return;
-      const box = canvas.getBoundingClientRect();
-      target = -.39 + ((event.clientX - box.left) / width - .5) * .42;
-      requestDraw();
-    }
-    function settle() { target = -.39; if (motion.matches) angle = target; requestDraw(); }
-    const size = new ResizeObserver(resize);
-    const appearance = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-      if (visible && firstLight === undefined) firstLight = performance.now();
-      requestDraw();
-    }, { threshold: .15 });
-    size.observe(canvas);
-    appearance.observe(canvas);
-    canvas.addEventListener("pointermove", move);
-    canvas.addEventListener("pointerleave", settle);
-    motion.addEventListener("change", settle);
-    document.addEventListener("visibilitychange", requestDraw);
-    return () => {
-      cancelAnimationFrame(frame);
-      size.disconnect(); appearance.disconnect();
-      canvas.removeEventListener("pointermove", move);
-      canvas.removeEventListener("pointerleave", settle);
-      motion.removeEventListener("change", settle);
-      document.removeEventListener("visibilitychange", requestDraw);
-    };
+    function queue() { if (!frame && visible) frame = requestAnimationFrame(draw); }
+    const intersection = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; queue(); }, { rootMargin: "160px" });
+    const size = new ResizeObserver(queue);
+    intersection.observe(canvas); size.observe(canvas); source.addEventListener("load", queue);
+    return () => { intersection.disconnect(); size.disconnect(); cancelAnimationFrame(frame); source.removeEventListener("load", queue); };
   }, []);
 
-  return (
-    <div className={styles.trame}>
-      <img src={path("/images/la-trame.webp")} width={680} height={442} loading="lazy" decoding="async" fetchPriority="low" alt="Une feuille numérique se soulève. De fins fils de lumière dessinent sa courbure sur un fond d’encre." />
-      <canvas ref={surface} aria-hidden="true" />
-    </div>
-  );
+  return <div className={styles.trame}>
+    <picture>
+      <source media="(max-width: 719px)" srcSet={path("/images/edition/terrain-760.webp")} />
+      <img ref={image} src={path("/images/edition/terrain-1440.webp")} width="1440" height="810" loading="lazy" decoding="async" alt="" />
+    </picture>
+    <canvas ref={surface} aria-hidden="true" />
+  </div>;
 }

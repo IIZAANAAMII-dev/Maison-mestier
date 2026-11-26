@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ateliers, atelierPath, image, path, studies } from "../../../lib/maison";
+import Feuillet from "../../../components/lumiere/Feuillet";
 import Sommaire from "../../../components/lumiere/chapitres/Sommaire";
 import s from "../../../components/lumiere/chapitres/fiche.module.css";
 
@@ -29,6 +30,11 @@ export default async function StudyPage({ params }: Props) {
   const next = studies[(position + 1) % studies.length];
   const atelier = ateliers.find((item) => item.slug === study.workshop)!;
   const usage = study.scene === "sceau" ? "Sur le papier" : "Dans l’espace";
+  const portique = study.slug === "le-portique";
+  const entrees = [
+    ...(portique ? [{ id: "pli", title: "Le pli" }] : []),
+    { id: "geste", title: "Le geste" }, { id: "usage", title: usage },
+  ];
   const sizes = { atelier: [1240, 930], empreinte: [1120, 840], entracte: [1000, 750] } as const;
   const [width, height] = sizes[study.image];
   return <main className={s.fiche} id="contenu" tabIndex={-1}>
@@ -43,11 +49,12 @@ export default async function StudyPage({ params }: Props) {
           <div className={s.image}><a href={image(study.image)} aria-label={`Agrandir l’étude ${study.name}`}><img src={image(study.image)} alt={study.alt} width={width} height={height} fetchPriority="high" /></a></div>
           <figcaption><span>Étude de la Maison</span><span>{study.material}</span></figcaption>
         </figure>
-        <div className={s.introduction}><p>{study.intro}</p><a className={s.lien} href="#geste">Observer l’étude</a></div>
+        <div className={s.introduction}><p>{study.intro}</p><a className={s.lien} href={portique ? "#pli" : "#geste"}>Observer l’étude</a></div>
       </div>
     </header>
+    {portique && <Feuillet />}
     <div className={s.lecture}>
-      <aside><Sommaire entrees={[{ id: "geste", title: "Le geste" }, { id: "usage", title: usage }]} /></aside>
+      <aside><Sommaire entrees={entrees} /></aside>
       <div className={s.chapitres}>
         <section className={s.chapitre} id="geste" tabIndex={-1}><h2>Le geste.</h2><div className={s.texte}><p>{study.gesture}</p></div></section>
         <section className={s.chapitre} id="usage" tabIndex={-1}><h2>{usage}.</h2><div className={s.texte}><p>{study.use}</p></div><a className={s.lien} href={atelierPath(atelier.slug)}>L’atelier {atelier.name}</a></section>

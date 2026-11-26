@@ -20,7 +20,7 @@ const titre = "Agence de communication et marketing 360 · Maison Mestier";
 const description = "Stands de salon, sites et applications sur mesure, événements et pop-up, pour les entreprises B2B techniques comme pour la mode. Une seule équipe, de la stratégie à la mise en ligne.";
 const origine = process.env.NEXT_PUBLIC_SITE_URL || (process.env.VERCEL_ENV === "preview" && process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}` : "https://maisonmestier.fr");
-const imagePartage = path("/galerie/pavilion.webp");
+const imagePartage = path("/images/edition/ouverture-1440.webp");
 
 export const metadata: Metadata = {
   metadataBase: new URL(origine),
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website", locale: "fr_FR", siteName: "Maison Mestier",
     title: titre, description,
-    images: [{ url: imagePartage, width: 1536, height: 1024, alt: "Maquette de portique, étude de création Maison Mestier" }],
+    images: [{ url: imagePartage, width: 1440, height: 810, alt: "Un portique de papier ivoire dans la pénombre de l’atelier, étude de création Maison Mestier" }],
   },
   twitter: { card: "summary_large_image", title: titre, description, images: [imagePartage] },
 };
