@@ -1,0 +1,715 @@
+[
+  {
+    "slug": "stands-salons",
+    "label": "Stands & Salons",
+    "kind": "atelier",
+    "title": "Stand de salon sur mesure, en France et à l’étranger · Maison Mestier",
+    "description": "Conception, fabrication et montage de stands sur mesure, en France et à l’étranger. Nous sommes sur chaque montage, du dossier exposant au suivi des contacts.",
+    "heading": "Votre stand, du dossier exposant au dernier contact relancé.",
+    "introduction": [
+      "Un salon dure trois jours et engage une grande partie du budget annuel. La Maison s’occupe de tout ce qui l’entoure, de la réservation au suivi des contacts, pour que votre équipe se consacre aux rendez-vous.",
+      "**Nous sommes sur chaque montage.** À Singapour, sur 15 m², nous étions là du montage à la fermeture. À Paris et à Amsterdam aussi."
+    ],
+    "sections": [
+      {
+        "id": "choisir-le-bon-salon",
+        "title": "Choisir le bon salon",
+        "blocks": [
+          "Tous les salons ne servent pas votre marque de la même façon. Nous vous aidons à choisir où exposer, à obtenir le bon emplacement et à fixer ce que le salon doit rapporter, par exemple un nombre de rendez-vous ou de commandes."
+        ]
+      },
+      {
+        "id": "concevoir-un-stand-qui-sert-vos-ventes",
+        "title": "Concevoir un stand qui sert vos ventes",
+        "blocks": [
+          "Vous voyez votre stand en 3D avant toute fabrication. C’est Léa Nicaise, notre directrice artistique, formée au design d’espace à Milan, qui le modélise. Elle dessine aussi le mobilier lui-même : comptoir, présentoirs, assises. Rien ne vient d’un catalogue de location. Sur mesure ou modulaire, il est pensé pour vos usages : attirer depuis l’allée, accueillir, faire une démonstration, recevoir un client à l’écart. Un stand modulaire peut être réutilisé et adapté d’un salon à l’autre."
+        ]
+      },
+      {
+        "id": "fabriquer-livrer-monter",
+        "title": "Fabriquer, livrer, monter",
+        "blocks": [
+          "Nous remplissons le dossier exposant et respectons le règlement technique de l’organisateur. Notre standiste partenaire, qui nous accompagne sur chaque salon, s’occupe de l’aménagement complet. Le stand est fabriqué dans sa propre menuiserie, en région parisienne : on peut aller voir les pièces avant leur départ. Transport, montage, démontage et stockage sont suivis par la Maison, et nous sommes sur place jusqu’à la fermeture."
+        ]
+      },
+      {
+        "id": "faire-venir-les-bons-visiteurs",
+        "title": "Faire venir les bons visiteurs",
+        "blocks": [
+          "Selon les options que vous choisissez, nous préparons tout ce qui fait venir du monde sur votre stand. Les invitations, envoyées par e-mail ou imprimées et postées à vos meilleurs clients. Les publications avant le salon sur LinkedIn ou Instagram, et si besoin une campagne vers les entreprises que vous voulez rencontrer. Le message est le même partout, et vous n’avez qu’un interlocuteur pour l’ensemble."
+        ]
+      },
+      {
+        "id": "repartir-avec-des-contacts-utiles",
+        "title": "Repartir avec des contacts utiles",
+        "blocks": [
+          "Sur le stand, chaque badge est scanné avec le lecteur fourni par l’organisateur, le seul qui lit vraiment les badges du salon. Quand la badgeuse le permet, nous y ajoutons un questionnaire propre à votre activité, en plus des champs classiques. Sinon, nous préparons une fiche de rendez-vous imprimée à vos couleurs, avec votre logo et vos produits, que votre équipe remplit à chaque échange. Dans les deux cas, vos commerciaux savent après le salon qui relancer, et pour parler de quoi. Dans la semaine qui suit, les contacts sont relancés et vous recevez la liste des rendez-vous obtenus."
+        ]
+      },
+      {
+        "id": "prolonger-le-salon",
+        "title": "Prolonger le salon",
+        "blocks": [
+          "Le stand est photographié et filmé. Vous avez de quoi nourrir votre site et vos réseaux pendant plusieurs mois."
+        ]
+      },
+      {
+        "id": "ce-que-les-salons-nous-ont-appris",
+        "title": "Ce que les salons nous ont appris",
+        "blocks": [
+          "**Euronaval.** Le salon le plus exigeant qu’on ait fait. Avant de poser la moindre cloison, il y a des papiers, puis d’autres papiers, et l’administratif ne s’arrête jamais vraiment. Les créneaux de montage et de démontage sont serrés, sans marge. Sur place, une console n’était pas à la bonne taille. Notre standiste l’a reprise en deux heures, et le stand était prêt à temps. Sur la badgeuse, nous avions construit un questionnaire propre au client : au-delà du nom et de la société, des questions liées à ses produits. Après le salon, ses commerciaux avaient un fichier de prospects qu’ils pouvaient vraiment utiliser.",
+          "**JFR.** Rien à signaler. Le stand a été monté et démonté dans les temps, sans mauvaise surprise.",
+          "**SantExpo.** Le stand en lui-même était simple. Le plus délicat, c’était le matériel médical à installer. Ce sont les équipes du client qui montent leurs appareils, c’est leur produit et leur responsabilité. Notre travail, c’est qu’en arrivant, elles trouvent la place, le courant et le bon créneau, et n’aient plus qu’à installer.",
+          "**IBC Amsterdam et BroadcastAsia Singapour.** Deux salons à l’étranger, tous les deux sur un pavillon France, en lien avec la Chambre de commerce. À Singapour, le stand faisait 15 m². Le pavillon simplifie beaucoup les démarches et la logistique, et il permet à une entreprise française d’être visible à moindre coût, même quand elle a déjà une antenne dans le pays. Pour un premier salon à l’étranger, c’est souvent la bonne porte d’entrée."
+        ]
+      },
+      {
+        "id": "ils-nous-ont-vus-sur-ces-salons",
+        "title": "Ils nous ont vus sur ces salons",
+        "blocks": [
+          "Des stands conçus et montés par Anne-Laure, en France et à l’étranger, d’abord sous Nexora Strategy, la société dont la Maison est née.",
+          {
+            "list": [
+              "**Santé** : Journées Francophones de Radiologie (JFR), SantExpo",
+              "**Défense et naval** : Euronaval",
+              "**Audiovisuel et broadcast** : SATIS, IBC Amsterdam, BroadcastAsia Singapour",
+              "**Image et impression** : C!Print, Salon de la Photo"
+            ]
+          },
+          "Chaque secteur a ses règles, et nous les avons apprises sur le terrain."
+        ]
+      },
+      {
+        "id": "questions-frequentes",
+        "title": "Questions fréquentes",
+        "blocks": [
+          {
+            "question": "Combien de temps à l’avance préparer un stand ?",
+            "answer": "Comptez environ six mois pour un stand sur mesure, et au moins trois mois pour un stand modulaire. Plus on commence tôt, plus le choix de l’emplacement est large."
+          },
+          {
+            "question": "Faut-il acheter ou louer son stand ?",
+            "answer": "Si vous exposez plusieurs fois par an, un stand modulaire réutilisable coûte souvent moins cher sur la durée. Pour un salon unique, la location ou le sur-mesure sont plus adaptés. Nous comparons les deux avec vous."
+          },
+          {
+            "question": "Exposer à l’étranger, c’est beaucoup plus compliqué ?",
+            "answer": "Un peu, surtout pour la logistique. À l’IBC et à BroadcastAsia, nous avons travaillé avec la Chambre de commerce sur des pavillons France, ce qui simplifie beaucoup les choses. Nous étions sur place du montage à la fermeture."
+          },
+          {
+            "question": "Un pavillon France, c’est intéressant pour nous ?",
+            "answer": "Souvent, oui. Vous exposez sous une bannière commune, pour un coût plus bas qu’un stand isolé, et une partie des démarches est mutualisée. C’est valable même si votre entreprise a déjà une filiale ou une antenne dans le pays."
+          },
+          {
+            "question": "Vous occupez-vous des démarches auprès de l’organisateur ?",
+            "answer": "Oui : dossier exposant, plans, règlement technique, commandes d’électricité et d’élingage, badges."
+          }
+        ]
+      },
+      {
+        "id": "realisation",
+        "title": "Réalisation",
+        "blocks": [
+          "Références présentées en rendez-vous."
+        ]
+      }
+    ],
+    "cta": "Dites-nous sur quel salon vous exposez, et quand.",
+    "related": [
+      "evenement",
+      "contenu",
+      "visibilite",
+      "intendance"
+    ]
+  },
+  {
+    "slug": "digital",
+    "label": "Digital",
+    "kind": "atelier",
+    "title": "Création de sites, e-commerce et applications · Maison Mestier",
+    "description": "Sites sur mesure reliés à votre CRM et à vos logiciels internes, boutiques en ligne, applications web et mobiles, expériences 3D. Conçus pour générer des demandes et des ventes.",
+    "heading": "Un site qui travaille pendant que vous êtes en rendez-vous.",
+    "introduction": [
+      "Après un salon, beaucoup de visiteurs passent par votre site avant de vous rappeler. En quelques secondes, il doit confirmer ce qu’ils ont vu sur le stand. Pour une marque de mode, c’est souvent là que se fait la vente. Notre développeur web et notre directrice artistique le conçoivent ensemble, en interne."
+    ],
+    "sections": [
+      {
+        "id": "un-site-dessine-pour-vous",
+        "title": "Un site dessiné pour vous",
+        "blocks": [
+          "Nous dessinons le site à partir de votre marque et de ce que vos clients viennent y chercher, sans modèle acheté. Une fois en ligne, vous modifiez vous-même vos textes et vos réalisations."
+        ]
+      },
+      {
+        "id": "montrer-ce-qui-ne-tient-pas-sur-une-photo",
+        "title": "Montrer ce qui ne tient pas sur une photo",
+        "blocks": [
+          "Une machine qu’on fait tourner à l’écran, un showroom qu’on visite en ligne : nous utilisons la 3D quand elle aide vraiment à comprendre ou à choisir."
+        ]
+      },
+      {
+        "id": "un-site-vieillissant-devenu-plusieurs-sites",
+        "title": "Un site vieillissant, devenu plusieurs sites",
+        "blocks": [
+          "Un client B2B avait un seul site, obsolète, qui s’adressait à tout le monde à la fois. Ses métiers visent des clients très différents, et certains travaillent dans des environnements critiques où l’on ne doit pas mélanger les publics. Au lieu de refaire un seul site, nous avons construit plusieurs micro-sites, un par métier. Chaque prospect arrive dans un univers qui ressemble à son propre secteur, avec ses mots et ses exigences."
+        ]
+      },
+      {
+        "id": "relie-a-vos-outils-meme-les-plus-specifiques",
+        "title": "Relié à vos outils, même les plus spécifiques",
+        "blocks": [
+          "Un site d’entreprise vit rarement seul. Nous le connectons à votre CRM, et aussi aux logiciels que votre entreprise a développés elle-même.",
+          "Pour un client, nous avons construit un site marchand relié à ses bases de données d’achat. Son logiciel d’achat et sa gestion des stocks étaient purement internes : aucun outil du marché, donc aucun connecteur tout fait. Notre développeur a construit la liaison sur mesure, pour que le site affiche les vrais stocks et transmette les commandes au bon endroit."
+        ]
+      },
+      {
+        "id": "les-gros-projets",
+        "title": "Les gros projets",
+        "blocks": [
+          "Une plateforme avec un espace client, un catalogue de milliers de références, un site en plusieurs langues relié à vos logiciels internes : ce sont des chantiers de plusieurs mois. Nous les découpons en étapes, chacune avec son calendrier et son budget validés avant de commencer. Et la stratégie vient en premier, comme pour le client dont le site unique est devenu plusieurs micro-sites.",
+          "Un gros site ne doit pas dépendre d’une seule personne. Le code est documenté, la maintenance peut être prévue au contrat, et des équipes partenaires de confiance peuvent renforcer la nôtre pendant le chantier, sans que vous changiez d’interlocuteur."
+        ]
+      },
+      {
+        "id": "une-boutique-en-ligne-a-votre-image",
+        "title": "Une boutique en ligne à votre image",
+        "blocks": [
+          "Fiches produits, lookbook, paiement, livraison : la boutique est dessinée pour votre marque, et vous la mettez à jour vous-même."
+        ]
+      },
+      {
+        "id": "des-applications",
+        "title": "Des applications",
+        "blocks": [
+          "Une application mobile pour vos clients, pour vos commerciaux sur le terrain, ou pour accueillir les invités d’un événement privé et enregistrer leur arrivée. Sur le web ou sur téléphone, elle est développée par la même équipe que votre site."
+        ]
+      },
+      {
+        "id": "un-espace-reserve-a-vos-clients",
+        "title": "Un espace réservé à vos clients",
+        "blocks": [
+          "Catalogue confidentiel, espace distributeurs, commandes en ligne entre professionnels. Vos clients trouvent leurs documents et leurs tarifs sans avoir à vous appeler."
+        ]
+      },
+      {
+        "id": "solide-dans-la-duree",
+        "title": "Solide dans la durée",
+        "blocks": [
+          "Rapide sur mobile, accessible, conforme au RGPD, hébergé de façon sécurisée. Après la mise en ligne, nous pouvons assurer les mises à jour et la maintenance, en option."
+        ]
+      }
+    ],
+    "cta": "Envoyez-nous l’adresse de votre site actuel. Nous vous dirons ce qui freine vos visiteurs.",
+    "related": [
+      "visibilite",
+      "identite",
+      "contenu"
+    ]
+  },
+  {
+    "slug": "evenement",
+    "label": "Événement",
+    "kind": "atelier",
+    "title": "Agence événementielle premium · Maison Mestier",
+    "description": "Lancements, soirées clients, conventions et journées presse, pour les marques techniques comme pour le luxe et la mode. Conçus, produits et mesurés, de l’idée au bilan.",
+    "heading": "Une soirée se prépare comme un montage de salon.",
+    "introduction": [
+      "Le lieu n’est souvent disponible que quelques heures avant l’arrivée des invités, et l’heure d’ouverture ne bouge pas. Ce rythme, nous l’avons appris sur les salons. Nous l’appliquons aujourd’hui aux lancements de produit comme aux soirées clients."
+    ],
+    "sections": [
+      {
+        "id": "avant-les-marques-il-y-a-eu-des-soirees",
+        "title": "Avant les marques, il y a eu des soirées",
+        "blocks": [
+          "« J’organise des soirées depuis mes 18 ans. Pendant mes études, c’était pour des associations, dans des bars ou dans des domaines. Aujourd’hui, c’est pour des marques, avec d’autres budgets et d’autres exigences, mais c’est toujours la partie de mon métier que je préfère. » Anne-Laure, fondatrice"
+        ]
+      },
+      {
+        "id": "commencer-par-ce-que-la-soiree-doit-rapporter",
+        "title": "Commencer par ce que la soirée doit rapporter",
+        "blocks": [
+          "Annoncer un produit et remercier vos meilleurs clients, ce ne sont pas les mêmes soirées. Avant de chercher un lieu, nous fixons avec vous ce que vous attendez de l’événement, et comment on saura si c’est réussi."
+        ]
+      },
+      {
+        "id": "un-lieu-choisi-pour-ce-quil-permet",
+        "title": "Un lieu choisi pour ce qu’il permet",
+        "blocks": [
+          "Un très beau lieu qui ne laisse que deux heures pour installer, c’est un risque. Nous le visitons avec des questions très concrètes : par où entre le matériel, où est le courant, à quelle heure on peut commencer. Le déroulé minute par minute s’écrit ensuite, avec un budget validé dès le départ."
+        ]
+      },
+      {
+        "id": "le-jour-j",
+        "title": "Le jour J",
+        "blocks": [
+          "Nous sommes sur place du montage jusqu’au départ du dernier invité. La lumière, le son, le traiteur et l’accueil passent par nous, vous n’avez personne d’autre à gérer. L’équipe d’accueil connaît déjà le nom de vos invités importants quand ils arrivent."
+        ]
+      },
+      {
+        "id": "quand-levenement-est-technique",
+        "title": "Quand l’événement est technique",
+        "blocks": [
+          "Une démonstration produit pendant une convention, un écran qui doit afficher une régie en direct : c’est notre terrain d’origine. Comme sur un salon, vos équipes techniques trouvent l’installation prête en arrivant."
+        ]
+      },
+      {
+        "id": "le-lendemain",
+        "title": "Le lendemain",
+        "blocks": [
+          "Les premières photos arrivent dès le lendemain, dans une galerie privée. Dans la semaine, vous recevez le bilan et la liste des contacts à relancer."
+        ]
+      },
+      {
+        "id": "lart-dans-vos-lieux",
+        "title": "L’art dans vos lieux",
+        "blocks": [
+          "Pour une soirée ou un lancement, Morgane Goulot, galeriste et fondatrice de [TGL gallery](https://tglgallery.com), choisit et installe des œuvres d’artistes contemporains, en lien avec votre marque."
+        ]
+      }
+    ],
+    "cta": "Envoyez-nous la date et le nombre d’invités, c’est assez pour commencer.",
+    "related": []
+  },
+  {
+    "slug": "ephemere",
+    "label": "Éphémère",
+    "kind": "atelier",
+    "title": "Pop-up store et boutique éphémère · Maison Mestier",
+    "description": "Pop-up stores, corners en grand magasin ou en hôtel, boutiques itinérantes. Recherche du lieu, design, équipe de vente et soirée d’ouverture.",
+    "heading": "Un pop-up, c’est un stand qu’on laisse ouvert plus longtemps.",
+    "introduction": [
+      "Il faut un lieu, une autorisation, et un mobilier qui se monte vite puis repart sans abîmer les murs. C’est notre métier depuis le début, appliqué cette fois à une boutique de quelques semaines. À Paris, sur la Côte d’Azur l’été, ou dans une ville où vous voulez voir si votre marque prend."
+    ],
+    "sections": [
+      {
+        "id": "trouver-le-lieu-et-le-droit-de-louvrir",
+        "title": "Trouver le lieu, et le droit de l’ouvrir",
+        "blocks": [
+          "Boutique en rue, corner en grand magasin, hall d’hôtel ou galerie. Nous cherchons l’emplacement, négocions un bail de courte durée et obtenons les autorisations. C’est souvent cette étape qui fixe la date d’ouverture, alors nous la lançons en premier."
+        ]
+      },
+      {
+        "id": "un-mobilier-fait-pour-le-lieu",
+        "title": "Un mobilier fait pour le lieu",
+        "blocks": [
+          "Le mobilier et la vitrine sont dessinés par notre directrice artistique, puis fabriqués à vos mesures dans la menuiserie de notre standiste partenaire. Ils se montent en quelques jours et repartent sans laisser de trace. Bien pensés, ils peuvent resservir pour un salon ou pour le pop-up suivant."
+        ]
+      },
+      {
+        "id": "de-lart-si-le-lieu-sy-prete",
+        "title": "De l’art, si le lieu s’y prête",
+        "blocks": [
+          "Morgane Goulot, galeriste et fondatrice de [TGL gallery](https://tglgallery.com), peut choisir et installer des œuvres d’art contemporain en lien avec votre marque."
+        ]
+      },
+      {
+        "id": "ouvrir-et-faire-venir-du-monde",
+        "title": "Ouvrir, et faire venir du monde",
+        "blocks": [
+          "Nous formons le personnel de vente à votre marque et organisons la soirée d’ouverture. Pendant toute la durée du pop-up, vos réseaux ont de quoi publier."
+        ]
+      },
+      {
+        "id": "rendre-les-cles",
+        "title": "Rendre les clés",
+        "blocks": [
+          "Le dernier jour, nous démontons et rendons le lieu en l’état. Vous recevez la fréquentation et les ventes, et vous savez si cette ville mérite une adresse permanente."
+        ]
+      }
+    ],
+    "cta": "Une ville en tête et une période ? C’est assez pour qu’on commence à chercher.",
+    "related": [
+      "evenement",
+      "identite",
+      "contenu"
+    ]
+  },
+  {
+    "slug": "identite",
+    "label": "Identité",
+    "kind": "atelier",
+    "title": "Agence d’identité de marque et packaging · Maison Mestier",
+    "description": "Stratégie de marque, logo, charte graphique, packaging et imprimés soignés, pour les marques techniques comme pour le luxe et la mode. De la plateforme de marque au carton d’invitation.",
+    "heading": "Une marque se reconnaît avant qu’on lise son nom.",
+    "introduction": [
+      "Sur un salon, le visiteur décide en passant dans l’allée s’il s’arrête. Votre identité fait une grande partie de ce travail, sur le stand comme sur votre site. Chez nous, elle est dessinée en interne, par notre directrice artistique, formée au design à KEDGE puis à Milan."
+    ],
+    "sections": [
+      {
+        "id": "commencer-par-ce-que-vous-voulez-dire",
+        "title": "Commencer par ce que vous voulez dire",
+        "blocks": [
+          "Avant de dessiner, nous parlons à vos clients et à vos équipes, et nous regardons ce que font vos concurrents. Il en sort une plateforme de marque, un document court qui dit ce que vous faites et pourquoi on vous choisit. Vos commerciaux s’en servent pour leurs présentations, vos fournisseurs pour leurs briefs."
+        ]
+      },
+      {
+        "id": "lisible-sur-six-metres-de-cloison-comme-sur-un-ecran-de-telephone",
+        "title": "Lisible sur six mètres de cloison comme sur un écran de téléphone",
+        "blocks": [
+          "Une identité ne vit pas seulement en ligne. Elle doit tenir sur la cloison d’un stand vue de loin, et rester nette en tout petit sur un téléphone. Nous la vérifions dans ces conditions avant de vous la livrer, avec une charte courte et des fichiers prêts pour le standiste comme pour le web."
+        ]
+      },
+      {
+        "id": "une-marque-technique-ne-se-dessine-pas-comme-une-marque-de-mode",
+        "title": "Une marque technique ne se dessine pas comme une marque de mode",
+        "blocks": [
+          "Un fabricant de matériel médical a besoin d’inspirer confiance, avec une identité sobre et très lisible. Une marque de mode doit se reconnaître sur une étiquette ou un sac. Nous travaillons pour les deux, et nous ne les abordons pas de la même façon."
+        ]
+      },
+      {
+        "id": "imprimes-et-packaging",
+        "title": "Imprimés et packaging",
+        "blocks": [
+          "Plaquettes, cartons d’invitation, coffrets, cadeaux de fin d’année. Nous choisissons le papier et les finitions, puis nous suivons l’impression jusqu’à la livraison.",
+          "Pour le textile, nous travaillons avec une créatrice qui a sa propre marque et sa presse. Formée au graphisme, elle conçoit avec nous les tenues d’équipe d’un stand ou les pièces d’un lancement."
+        ]
+      }
+    ],
+    "cta": "Montrez-nous votre logo actuel. On vous dira franchement ce qu’on en pense.",
+    "related": [
+      "digital",
+      "stands-salons",
+      "contenu"
+    ]
+  },
+  {
+    "slug": "visibilite",
+    "label": "Visibilité",
+    "kind": "atelier",
+    "title": "Agence SEO, GEO et Google Ads · Maison Mestier",
+    "description": "Référencement naturel, présence dans ChatGPT et Perplexity, campagnes Google Ads et LinkedIn Ads. Plus de demandes qualifiées, mesurées chaque mois.",
+    "heading": "Être trouvé par ceux qui cherchent déjà.",
+    "introduction": [
+      "Vos futurs clients cherchent sur Google et posent de plus en plus leurs questions aux IA. La Maison fait en sorte qu’ils vous trouvent, et mesure ce que cela rapporte."
+    ],
+    "sections": [
+      {
+        "id": "remonter-sur-google",
+        "title": "Remonter sur Google",
+        "blocks": [
+          "Nous commençons par corriger ce qui freine votre site. Ensuite, nous choisissons les recherches qui comptent pour votre métier et nous écrivons les pages qui y répondent, en France comme à l’étranger."
+        ]
+      },
+      {
+        "id": "etre-cite-par-les-ia",
+        "title": "Être cité par les IA",
+        "blocks": [
+          "ChatGPT, Perplexity, Gemini et les réponses IA de Google s’appuient sur des sources. Nous travaillons vos contenus et votre présence sur d’autres sites pour que votre nom en fasse partie, et nous suivons ces mentions."
+        ]
+      },
+      {
+        "id": "une-page-pour-chaque-salon-ou-vous-exposez",
+        "title": "Une page pour chaque salon où vous exposez",
+        "blocks": [
+          "Quand un acheteur prépare sa visite, il tape le nom du salon. Nous créons des pages pour les salons où vous serez et pour les recherches précises de votre secteur, plutôt que de viser des mots trop larges où tout le monde se bat."
+        ]
+      },
+      {
+        "id": "des-campagnes-avant-le-salon",
+        "title": "Des campagnes avant le salon",
+        "blocks": [
+          "Quelques semaines avant l’ouverture, une campagne LinkedIn montre votre stand aux décideurs des entreprises que vous voulez rencontrer. Google Ads, de son côté, capte ceux qui cherchent déjà ce que vous vendez."
+        ]
+      },
+      {
+        "id": "chaque-euro-suivi",
+        "title": "Chaque euro suivi",
+        "blocks": [
+          "Chaque mois, un rapport simple vous dit combien de demandes vous avez reçues et ce que chacune vous a coûté. Les données remontent dans votre CRM."
+        ]
+      }
+    ],
+    "cta": "Tapez votre métier dans Google, puis dans ChatGPT. Si vous n’apparaissez pas, écrivez-nous.",
+    "related": [
+      "digital",
+      "stands-salons",
+      "contenu"
+    ]
+  },
+  {
+    "slug": "contenu",
+    "label": "Contenu",
+    "kind": "atelier",
+    "title": "Production photo et vidéo de marque · Maison Mestier",
+    "description": "Photos, films de marque, captation et post-production de salons et d’événements, publications LinkedIn et Instagram autour de vos temps forts.",
+    "heading": "Chaque salon, chaque soirée devient des mois de contenus.",
+    "introduction": [
+      "Un stand monté pour trois jours peut nourrir vos réseaux pendant des mois, à condition que quelqu’un soit là pour le capter. Nous connaissons bien les salons, et nous savons à quel moment un stand est le plus beau : souvent juste avant l’ouverture, quand le hall est encore vide."
+    ],
+    "sections": [
+      {
+        "id": "sur-le-stand-et-pendant-la-soiree",
+        "title": "Sur le stand et pendant la soirée",
+        "blocks": [
+          "Un photographe et un vidéaste viennent sur place. Les premières images arrivent dès le lendemain pour vos réseaux, le film complet un peu plus tard."
+        ]
+      },
+      {
+        "id": "photo-et-film-de-marque",
+        "title": "Photo et film de marque",
+        "blocks": [
+          "Portraits de vos équipes, ateliers, produits, film de présentation. Tout est photographié pour vous."
+        ]
+      },
+      {
+        "id": "des-publications-autour-de-chaque-moment",
+        "title": "Des publications autour de chaque moment",
+        "blocks": [
+          "Les semaines avant un salon ou un lancement, nous préparons les posts LinkedIn et Instagram qui annoncent votre présence. Après, nous tirons de la captation une série de publications montées et prêtes à poster pour les mois suivants. Nous ne gérons pas vos comptes au quotidien : nous travaillons autour de vos temps forts."
+        ]
+      },
+      {
+        "id": "presse-et-influence",
+        "title": "Presse et influence",
+        "blocks": [
+          "Nous rédigeons vos communiqués et les envoyons aux journalistes de votre secteur. Pour la mode et l’art de vivre, nous travaillons aussi avec des créateurs de contenu."
+        ]
+      }
+    ],
+    "cta": "Prévenez-nous avant votre prochain salon, pas après.",
+    "related": [
+      "stands-salons",
+      "evenement",
+      "visibilite"
+    ]
+  },
+  {
+    "slug": "intendance",
+    "label": "L’Intendance",
+    "kind": "atelier",
+    "title": "Direction de projet communication 360 · Maison Mestier",
+    "description": "Un seul chef de projet pour votre site, vos salons, vos événements et vos contenus. Budget consolidé, calendrier partagé, prestataires coordonnés.",
+    "heading": "Un seul numéro à appeler.",
+    "introduction": [
+      "Un site, deux salons, une soirée clients, un film : d’habitude, autant de prestataires et de réunions. Chez Maison Mestier, la même personne suit l’ensemble, et elle est sur place à chaque montage."
+    ],
+    "sections": [
+      {
+        "id": "une-personne-qui-connait-tout-le-dossier",
+        "title": "Une personne qui connaît tout le dossier",
+        "blocks": [
+          "Elle connaît votre marque et vos contraintes, et elle parle elle-même au standiste, au développeur et au traiteur. Vous n’avez plus à répéter la même information à chacun."
+        ]
+      },
+      {
+        "id": "un-budget-un-calendrier",
+        "title": "Un budget, un calendrier",
+        "blocks": [
+          "Un budget consolidé et un rétroplanning partagé, mis à jour à chaque étape. Vous savez toujours où en est chaque projet."
+        ]
+      },
+      {
+        "id": "des-renforts-quand-il-le-faut",
+        "title": "Des renforts quand il le faut",
+        "blocks": [
+          "Sur un gros projet, des équipes partenaires de confiance viennent renforcer la nôtre, en développement, en production ou sur place. Nous avons de quoi suppléer sur presque tous nos métiers, et vous gardez le même interlocuteur du début à la fin."
+        ]
+      },
+      {
+        "id": "verifie-avant-de-partir",
+        "title": "Vérifié avant de partir",
+        "blocks": [
+          "Les fichiers d’impression sont relus avant l’envoi, et les pièces du stand vérifiées avant de quitter la menuiserie. Les décisions sont écrites, pour que personne ne les oublie entre deux réunions."
+        ]
+      },
+      {
+        "id": "projet-parcours-residence",
+        "title": "Projet, parcours, résidence",
+        "blocks": [
+          "Pas de forfait ni de prix au mètre carré. Vous choisissez jusqu’où on vous accompagne. Dans les trois cas, nous commençons par la stratégie : à qui vous parlez, ce que ça doit rapporter, et donc ce qu’il faut faire, ou ne pas faire.",
+          "**Le projet.** Vous venez pour une seule chose : une identité, un site, un stand, une soirée de lancement. Nous la prenons en charge de bout en bout, et vous gardez vos autres prestataires si vous en avez déjà. Le projet peut être simple, ou très technique. Nous avons par exemple construit un site marchand relié au logiciel d’achat et à la gestion des stocks qu’un client avait développés lui-même, sans aucun outil du marché pour faire le lien.",
+          "**Le parcours.** Plusieurs ateliers autour d’un même objectif. Le lancement d’un produit, par exemple : le nom et le packaging, la page produit reliée à votre stock, les invitations à la soirée, les posts qui l’annoncent, puis les photos qui serviront pendant des mois. Ou une refonte : pour un client B2B, un seul site vieillissant est devenu plusieurs micro-sites, un par métier, pour que chaque cible se reconnaisse et que les publics d’environnements critiques ne se croisent pas. Un salon peut être au centre du parcours, mais ce n’est pas obligatoire. Pour une marque de mode, il se construit plutôt autour d’une collection, de la journée presse au pop-up.",
+          "**La résidence.** La Maison travaille pour vous toute l’année. Nous connaissons vos produits, vos clients et vos outils internes. Le site évolue avec votre catalogue, les contenus suivent vos salons et vos lancements, et quand arrive un salon, une soirée ou une nouvelle collection, le dossier est déjà prêt. Pour une entreprise technique, c’est souvent un site métier à faire vivre et plusieurs salons dans l’année. Pour une marque de mode, une boutique en ligne, des collections et des pop-up d’une saison à l’autre."
+        ]
+      }
+    ],
+    "cta": "Listez vos projets de l’année, même en vrac. On vous propose une façon de les mener ensemble.",
+    "related": [
+      "stands-salons",
+      "evenement",
+      "digital"
+    ]
+  },
+  {
+    "slug": "marques-techniques",
+    "label": "Marques techniques",
+    "kind": "univers",
+    "title": "Communication et stands pour marques techniques · Maison Mestier",
+    "description": "Stands de salon, événements et sites pour la santé, la défense, le broadcast et l’image. Déjà présents au JFR, à Euronaval, à l’IBC et au SATIS.",
+    "heading": "Communication et stands pour les marques techniques",
+    "introduction": [
+      "Votre produit est complexe. Ce que voit le visiteur ne doit pas l’être.",
+      "Un scanner ou une régie vidéo ne se vendent pas avec une belle photo. Le visiteur doit comprendre ce que fait la machine en passant dans l’allée, et le stand doit laisser assez de place pour la faire tourner. C’est sur ce genre de salons que nous avons appris le métier."
+    ],
+    "sections": [
+      {
+        "id": "sante-et-medtech",
+        "title": "Santé et medtech",
+        "blocks": [
+          "JFR, SantExpo. Ce qu’on peut dire d’un dispositif médical est encadré : nous le savons avant d’écrire la première ligne du stand. Nous prévoyons les espaces de démonstration et les rendez-vous à l’écart. Vos équipes installent leurs appareils, c’est leur métier : nous faisons en sorte qu’elles trouvent tout prêt en arrivant."
+        ]
+      },
+      {
+        "id": "defense-et-naval",
+        "title": "Défense et naval",
+        "blocks": [
+          "Euronaval est le salon le plus exigeant que nous ayons fait : des dossiers administratifs à n’en plus finir et des créneaux de montage serrés, sans marge. Nous travaillons sous accord de confidentialité, par défaut."
+        ]
+      },
+      {
+        "id": "broadcast-et-audiovisuel",
+        "title": "Broadcast et audiovisuel",
+        "blocks": [
+          "SATIS, IBC Amsterdam, BroadcastAsia Singapour. Sur un stand broadcast, le matériel tourne en direct toute la journée, il doit donc marcher avant d’être beau. À l’IBC comme à BroadcastAsia, nous avons exposé sur des pavillons France, avec la Chambre de commerce : une façon de rendre visible une entreprise française à l’étranger pour un coût plus bas. À Singapour, sur 15 m², nous étions là du montage à la fermeture."
+        ]
+      },
+      {
+        "id": "image-et-impression",
+        "title": "Image et impression",
+        "blocks": [
+          "C!Print, Salon de la Photo. Les visiteurs sont imprimeurs ou photographes, et ils regardent un stand comme ils regardent un tirage : de très près."
+        ]
+      },
+      {
+        "id": "tech-et-industrie",
+        "title": "Tech et industrie",
+        "blocks": [
+          "Pour les entreprises tech et industrielles, la logique est la même : un produit à expliquer à des acheteurs qui n’ont que quelques minutes devant le stand."
+        ]
+      },
+      {
+        "id": "ce-que-nous-faisons-pour-vous",
+        "title": "Ce que nous faisons pour vous",
+        "blocks": [
+          "Stands & Salons, Événement, Digital (un site par métier quand vos cibles ne doivent pas se croiser, sites reliés à votre CRM et à vos logiciels internes, configurateur 3D, applications pour vos équipes terrain), Visibilité (LinkedIn Ads vers les bons comptes, avant le salon), Contenu (captation sur le stand)."
+        ]
+      },
+      {
+        "id": "quand-vous-parlez-au-grand-public",
+        "title": "Quand vous parlez au grand public",
+        "blocks": [
+          "Il arrive qu’une marque technique s’adresse au grand public, par exemple un medtech qui lance un produit pour les patients. Boutique en ligne ou showroom ouvert à tous, nous savons faire ce pas de côté."
+        ]
+      }
+    ],
+    "cta": "Envoyez-nous le nom du salon et la surface de votre stand. On part de là.",
+    "related": []
+  },
+  {
+    "slug": "luxe-mode-art-de-vivre",
+    "label": "Luxe, mode et art de vivre",
+    "kind": "univers",
+    "title": "Agence pop-up et événementiel luxe et mode · Maison Mestier",
+    "description": "Pop-up stores, lancements, showrooms, sites et identité pour les marques de mode, de beauté et d’art de vivre. La rigueur des salons internationaux, le soin du détail.",
+    "heading": "Pop-up, événements et sites pour les marques de luxe et de mode",
+    "introduction": [
+      "Un pop-up de trois semaines se prépare comme un salon à Singapour.",
+      "Le calendrier est aussi serré, et le lieu doit être rendu intact à la fin. Nous venons des salons techniques, où l’on n’a pas le droit de rater un montage, et c’est cette habitude que nous apportons aux marques de mode et d’art de vivre."
+    ],
+    "sections": [
+      {
+        "id": "pop-up-corners-et-boutiques-ephemeres",
+        "title": "Pop-up, corners et boutiques éphémères",
+        "blocks": [
+          "Nous trouvons le lieu, négocions le bail court, dessinons l’espace et formons l’équipe de vente. Le mobilier et la vitrine sont dessinés par notre directrice artistique, puis fabriqués à vos mesures dans la menuiserie de notre standiste partenaire. Nous sommes là le jour de l’ouverture, et nous rendons le lieu en l’état."
+        ]
+      },
+      {
+        "id": "lancements-et-soirees",
+        "title": "Lancements et soirées",
+        "blocks": [
+          "Pour présenter une collection ou ouvrir une adresse, nous nous occupons des invitations, du lieu et du déroulé minute par minute. La soirée est filmée, et vous vous en servez encore les semaines suivantes."
+        ]
+      },
+      {
+        "id": "showrooms-et-journees-presse",
+        "title": "Showrooms et journées presse",
+        "blocks": [
+          "Présenter une collection aux acheteurs et aux journalistes, le temps de quelques jours. Nous trouvons le lieu, mettons en scène les pièces, gérons les invitations et les rendez-vous, puis relançons chaque contact. C’est très proche de ce que nous faisons sur les salons depuis le début."
+        ]
+      },
+      {
+        "id": "boutique-en-ligne-site-et-application",
+        "title": "Boutique en ligne, site et application",
+        "blocks": [
+          "Un site dessiné pour votre marque, avec vos fiches produits, votre lookbook et le paiement en ligne. Vous modifiez les pages vous-même. Si vos clients ont besoin de vous retrouver sur leur téléphone, nous développons aussi l’application."
+        ]
+      },
+      {
+        "id": "identite-packaging-et-imprimes",
+        "title": "Identité, packaging et imprimés",
+        "blocks": [
+          "Étiquettes, coffrets, cartons d’invitation, papeterie. Nous choisissons le papier et les finitions et suivons l’impression jusqu’à la livraison."
+        ]
+      },
+      {
+        "id": "lart-dans-vos-lieux",
+        "title": "L’art dans vos lieux",
+        "blocks": [
+          "Pour une soirée, un showroom ou un pop-up, Morgane Goulot, galeriste d’art contemporain et fondatrice de [TGL gallery](https://tglgallery.com), rejoint le projet. Elle choisit des œuvres en lien avec votre marque, et s’occupe du prêt ou de la location comme de l’installation."
+        ]
+      },
+      {
+        "id": "une-equipe-qui-connait-ce-monde",
+        "title": "Une équipe qui connaît ce monde",
+        "blocks": [
+          "Léa Nicaise, notre directrice artistique, a déjà travaillé pour plusieurs maisons de luxe, notamment en 3D. Morgane Goulot, la galeriste qui nous rejoint sur vos lieux, a présenté sa dernière exposition à l’Hôtel & Spa du Castellet, un cinq-étoiles Relais & Châteaux du Var dont le restaurant a trois étoiles au guide Michelin. Et vos délais sont tenus comme sur un salon international, avec Anne-Laure sur place le jour de l’ouverture."
+        ]
+      }
+    ],
+    "cta": "Racontez-nous votre projet, même s’il n’a encore ni date ni lieu.",
+    "related": []
+  },
+  {
+    "slug": "la-maison",
+    "label": "La Maison",
+    "kind": "maison",
+    "title": "L’équipe et l’histoire de Maison Mestier",
+    "description": "Anne-Laure, fondatrice, Léa Nicaise, directrice artistique, et les savoir-faire qui les entourent : aménagement de stands, menuiserie, art contemporain, textile. L’histoire d’une maison née sur les salons.",
+    "heading": "La Maison, et ceux qui la font",
+    "introduction": [
+      "Maison Mestier n’est pas sortie de nulle part. Elle vient des ventes et des salons pilotés depuis Singapour pour une entreprise du broadcast, de salons montés seule ensuite, puis d’une équipe réunie autour des mêmes exigences."
+    ],
+    "sections": [
+      {
+        "id": "anne-laure-fondatrice",
+        "title": "Anne-Laure, fondatrice",
+        "blocks": [
+          "Je m’appelle Anne-Laure. J’organise des soirées depuis mes 18 ans, d’abord pour des associations étudiantes, dans des bars ou des domaines. J’ai fait six ans d’école de commerce, jusqu’au diplôme du programme Grande École de KEDGE Business School, à Marseille, avec une spécialisation en marketing digital.",
+          "J’ai fait mon Master 2 en alternance dans une entreprise du broadcast, qui m’a ensuite confié ses ventes en Asie, depuis Singapour. Je pilotais aussi ses salons et ses événements. C’est de là que viennent les questionnaires sur la badgeuse et les fiches de rendez-vous : j’ai été de l’autre côté du stand, je sais ce qu’une équipe commerciale a besoin de savoir en rentrant d’un salon.",
+          "Puis j’ai créé Nexora Strategy. J’y travaillais seule, pour accompagner des entreprises en développement commercial, en marketing et en événementiel, et c’est avec elle que j’ai fait mes premiers salons : le JFR, SantExpo, Euronaval, l’IBC, BroadcastAsia. Maison Mestier est née de Nexora, avec une équipe autour de moi et beaucoup plus de métiers. Nexora se consacre désormais au conseil, à l’audit et à la formation.",
+          "Ma formation couvre aussi la finance et la comptabilité analytique. Quand je vous propose un salon ou un site, je sais vous dire ce qu’il coûte vraiment et ce qu’il doit rapporter. Et je suis toujours sur place le jour du montage.",
+          "Sur ma chaîne, je décrypte le marketing et je partage des conseils d’entrepreneuriat."
+        ]
+      },
+      {
+        "id": "lea-nicaise-directrice-artistique",
+        "title": "Léa Nicaise, directrice artistique",
+        "blocks": [
+          "Léa s’est formée au design de mobilier et d’espace à KEDGE, puis à l’École polytechnique de Milan. Elle travaille d’abord en volumes. Sur un stand ou dans un pop-up, elle modélise l’espace en 3D, puis dessine elle-même le comptoir, les présentoirs et les assises, qui partent ensuite à la menuiserie.",
+          "Elle signe aussi les identités et le graphisme. Le logo d’une marque, son carton d’invitation et le meuble sur lequel il sera posé sortent donc de la même main. Elle a déjà travaillé pour plusieurs maisons de luxe, notamment en 3D."
+        ]
+      },
+      {
+        "id": "notre-developpeur-web",
+        "title": "Notre développeur web",
+        "blocks": [
+          "Il est arrivé au code par l’UX, avec une licence dans ce domaine. Il a travaillé en agence, puis en freelance, et a repris ses études pour un master alors que son niveau ne l’y obligeait pas.",
+          "Il aime les projets que les outils standards ne savent pas traiter. Pour un client, il a relié un site marchand à un logiciel d’achat et à une gestion des stocks développés en interne, sans aucun connecteur existant. Pour un autre, il a transformé un site vieillissant en plusieurs micro-sites, un par métier."
+        ]
+      },
+      {
+        "id": "ceux-qui-nous-rejoignent-sur-chaque-projet",
+        "title": "Ceux qui nous rejoignent sur chaque projet",
+        "blocks": [
+          "**Notre standiste.** Il s’occupe de l’aménagement complet des stands et nous accompagne sur chaque salon. Sa société a sa propre menuiserie, en région parisienne : les meubles dessinés par Léa y sont fabriqués, et on peut aller les voir avant leur départ.",
+          "**Morgane Goulot**, galeriste et fondatrice de [TGL gallery](https://tglgallery.com). Elle choisit des œuvres d’art contemporain en lien avec votre marque et les installe pour vos soirées, vos showrooms et vos pop-up. Sa dernière exposition s’est tenue à l’Hôtel & Spa du Castellet, cinq-étoiles Relais & Châteaux dans le Var.",
+          "**Nos équipes partenaires.** Sur un gros projet, des équipes de confiance viennent renforcer la nôtre, en développement comme en production. Vous gardez le même interlocuteur.",
+          "**Notre créatrice textile.** Elle a lancé sa propre marque et possède sa presse. Formée au graphisme, elle intervient sur les tenues d’équipe et les pièces de lancement, et sur les visuels qui vont avec.",
+          "**Des techniciens** lumière, son et vidéo, que nous choisissons selon le lieu et le projet."
+        ]
+      }
+    ],
+    "cta": "Vous voulez savoir qui travaillera sur votre projet ? Écrivez à Anne-Laure, elle vous répond elle-même.",
+    "related": []
+  }
+]

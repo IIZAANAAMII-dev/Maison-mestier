@@ -1,0 +1,158 @@
+.accueil {
+  --bord: clamp(1.25rem, 4.7vw, 6rem);
+  --filet: color-mix(in srgb, #9a968e 68%, #f3f0ea);
+  --encre: #1c2333;
+  --verge: #f3f0ea;
+  --cachet: #8e2a23;
+  color: var(--encre);
+  background: var(--verge);
+}
+.accueil :is(section, article)[id] { scroll-margin-top: .9rem; }
+.accueil :is(h2, h3, i) { font-weight: 400; }
+.duo, .maison, .ateliers { padding-inline: var(--bord); }
+.duo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(2rem, 5.4vw, 7rem);
+  padding-block: clamp(4.5rem, 8vw, 9rem) clamp(3.5rem, 6vw, 7rem);
+}
+.preuve { position: relative; display: flex; flex-direction: column; min-width: 0; }
+.preuve + .preuve::before {
+  content: ""; position: absolute; inset-block: 0; left: calc(clamp(2rem, 5.4vw, 7rem) * -.5);
+  border-left: 1px solid var(--filet);
+}
+.preuveTitre { padding: .9rem 0 1.65rem; border-top: 1px solid var(--encre); }
+.preuveTitre h2 { font: 400 clamp(2.7rem, 4.75vw, 5.8rem)/1.04 var(--display); letter-spacing: -.064em; }
+.preuveFigure { margin: 0; }
+.cadre { position: relative; overflow: hidden; aspect-ratio: 1.54; background: var(--encre); }
+.cadre picture, .cadre img, .trame, .trame canvas { display: block; height: 100%; width: 100%; }
+.cadre img { object-fit: cover; }
+.trame canvas { position: absolute; inset: 0; opacity: 0; }
+.trame canvas[data-ready] { opacity: 1; }
+.preuveFigure figcaption, .planche figcaption {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+  padding-top: .65rem; font: 400 .75rem/1.5 var(--mono);
+}
+.preuveFigure figcaption :is(a,span) { font: italic 400 1.06rem/1.35 var(--display); }
+.preuveTexte { display: flex; flex-direction: column; align-items: start; flex-grow: 1; padding-top: 1.65rem; }
+.preuveTexte > p:first-child { max-width: 48ch; font-size: clamp(1rem, 1.34vw, 1.28rem); line-height: 1.51; }
+.aparte { flex: 1; max-width: 39ch; margin: .75rem 0 1.2rem; font: italic 400 1.18rem/1.35 var(--display); }
+.lien {
+  display: inline-flex; align-items: center; min-height: 44px; width: fit-content; max-width: 100%;
+  font: 600 1rem/1.3 var(--sans); color: inherit; text-decoration: underline;
+  text-decoration-thickness: 1px; text-underline-offset: .37em; text-decoration-color: var(--cachet);
+}
+.lien:hover { color: var(--cachet); }
+.bandeau { overflow: hidden; border-block: 1px solid var(--filet); padding: 1.05rem 0; }
+.rouleau { display: flex; width: max-content; animation: salons 56s linear infinite; }
+.rouleau ul { display: flex; flex-shrink: 0; align-items: center; list-style: none; margin: 0; padding: 0; }
+.rouleau li { display: flex; align-items: center; white-space: nowrap; font: 400 .85rem/1.5 var(--mono); }
+.rouleau li::after { content: "·"; margin-inline: clamp(1.5rem, 3.4vw, 3.5rem); }
+.bandeau:hover .rouleau, .bandeau:focus-within .rouleau { animation-play-state: paused; }
+@keyframes salons { to { transform: translateX(-50%); } }
+
+.ateliers { padding-block: clamp(4.4rem, 8.5vw, 10rem) clamp(4rem, 7vw, 8rem); }
+.ateliersEntete { display: grid; grid-template-columns: 1.26fr .74fr; column-gap: clamp(2rem, 6vw, 8rem); align-items: end; margin-bottom: clamp(2.5rem, 4.7vw, 5.8rem); }
+.ateliersEntete :is(h1,h2) { font: 400 clamp(4.1rem, 6.65vw, 8.3rem)/1.02 var(--display); letter-spacing: -.077em; }
+.ateliersEntete :is(h1,h2) i { white-space: nowrap; }
+.ateliersEntete p { max-width: 55ch; font: 400 1rem/1.65 var(--sans); }
+.index { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2.6rem, 7vw, 9rem); align-items: start; }
+.planche { min-width: 0; position: sticky; top: calc(var(--head-height, 76px) + 1.5rem); }
+.tirage { display: block; position: relative; overflow: hidden; isolation: isolate; aspect-ratio: 1 / 1.03; background: #e3ddd1; }
+.tirage img { display: block; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; }
+.tirage .tiragePrecedent { z-index: 1; opacity: 1; }
+.tirage .tirageActif { z-index: 2; opacity: 1; }
+.planche figcaption { border-bottom: 1px solid var(--filet); padding-bottom: .8rem; }
+.planche figcaption i { text-align: right; font: italic 400 1.14rem/1.3 var(--display); }
+.indexListe { margin: 0; padding: 0; list-style: none; border-bottom: 1px solid var(--encre); }
+.indexListe li { border-top: 1px solid var(--filet); }
+.indexListe li:first-child { border-top: 1px solid var(--encre); }
+.indexListe a {
+  display: grid; grid-template-columns: 2.3rem 1fr 1.1rem; align-items: start; column-gap: 1rem;
+  color: inherit; text-decoration: none; padding: .94rem 0 1rem;
+}
+.numero { padding-top: .44rem; font: 400 .85rem/1.2 var(--mono); font-variant-numeric: tabular-nums; }
+.indexCopie { display: grid; row-gap: .28rem; }
+.nomAtelier { justify-self: start; font: 400 clamp(1.8rem, 2.65vw, 3.4rem)/1.08 var(--display); letter-spacing: -.065em; }
+.resume { max-width: 48ch; font: 400 1rem/1.45 var(--sans); }
+.encoche { position: relative; align-self: center; height: 1px; width: 1rem; background: currentColor; }
+.encoche::before { content: ""; position: absolute; width: 1px; height: 1rem; left: 50%; top: -.46rem; background: currentColor; transition: transform .35s ease; }
+.indexListe li[data-active] .encoche::before { transform: rotate(90deg); }
+.indexListe li[data-active] :is(.numero,.encoche) { color: var(--cachet); }
+.indexListe a:hover .nomAtelier, .indexListe a:focus-visible .nomAtelier { color: var(--cachet); }
+@media (prefers-reduced-motion: no-preference) {
+  .tirageActif { animation: changerTirage .55s cubic-bezier(.21,.73,.19,1) both; }
+}
+@keyframes changerTirage { from { clip-path: inset(0 0 100% 0); transform: scale(1.035); } to { clip-path: inset(0); transform: none; } }
+
+.univers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(2rem, 5.4vw, 7rem); padding: clamp(3.5rem, 6vw, 7.5rem) var(--bord); background: var(--encre); color: var(--verge); }
+.univers article { display: flex; flex-direction: column; align-items: start; justify-content: space-between; min-width: 0; border-block: 1px solid #858995; padding: clamp(1.7rem, 3vw, 3.5rem) 0; }
+.universLien { display: block; font: 400 clamp(2.7rem, 4.5vw, 5.6rem)/1.12 var(--display); text-decoration: none; color: inherit; letter-spacing: -.058em; }
+.universLien :is(span,i) { display: block; }
+.universLien:hover i, .universLien:focus-visible i { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .12em; }
+.univers p { max-width: 44ch; margin-top: 2.4rem; font: 400 1.03rem/1.6 var(--sans); }
+
+.maison { display: grid; grid-template-columns: 1fr .9fr; align-items: end; gap: clamp(3rem, 9vw, 12rem); padding-block: clamp(4rem, 7vw, 9rem); }
+.methode h2 { margin-bottom: 2.2rem; font: 400 clamp(3.25rem, 5.6vw, 7rem)/1 var(--display); letter-spacing: -.069em; }
+.methode h2 a { color: inherit; text-decoration: none; }
+.methode h2 a:hover i { text-decoration: underline; text-underline-offset: .13em; text-decoration-thickness: 1px; }
+.maison p { max-width: 54ch; font: 400 clamp(1rem, 1.2vw, 1.18rem)/1.6 var(--sans); }
+.maison .lien { margin-top: 1.25rem; }
+.equipe { border-top: 1px solid var(--encre); padding-top: 1.2rem; }
+
+.invitation { padding: 0 var(--bord) clamp(4rem, 7vw, 8rem); }
+.feuillet { border-block: 1px solid var(--encre); padding-block: clamp(2.4rem, 4.6vw, 5.5rem); }
+.feuillet h2 { max-width: 24ch; font: 400 clamp(2.75rem, 4.85vw, 6.3rem)/1.055 var(--display); letter-spacing: -.063em; }
+.invitationBas { display: flex; justify-content: space-between; align-items: end; gap: 2rem; margin-top: clamp(2rem, 3vw, 4rem); }
+.invitationBas p { max-width: 54ch; font: 400 1.04rem/1.65 var(--sans); }
+.contactLiens { display: flex; align-items: center; gap: clamp(1.4rem, 3vw, 4rem); flex-shrink: 0; }
+.primaire { display: inline-flex; align-items: center; justify-content: center; min-height: 49px; padding: .65rem 1.55rem; background: var(--encre); color: var(--verge); font: 500 1rem/1.3 var(--sans); text-decoration: none; transition: background .25s; }
+.primaire:hover { background: var(--cachet); }
+
+@media (min-width: 1750px) {
+  .accueil { --bord: max(6rem, calc((100vw - 1660px) / 2)); }
+}
+@media (max-width: 1000px) {
+  .ateliersEntete { grid-template-columns: 1.1fr .9fr; gap: 2rem; }
+  .ateliersEntete :is(h1,h2) { font-size: clamp(3.1rem, 6.75vw, 4.3rem); }
+  .index { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 2rem; }
+  .indexListe a { grid-template-columns: 1.6rem 1fr 1rem; column-gap: .75rem; }
+  .invitationBas { flex-wrap: wrap; }
+}
+@media (max-width: 700px) {
+  .duo, .index, .maison, .univers, .ateliersEntete { grid-template-columns: 1fr; }
+  .duo { gap: 3.5rem; padding-top: 3.5rem; }
+  .preuve + .preuve::before { display: none; }
+  .preuveTitre { padding: .85rem 0 1rem; }
+  .preuveTexte { padding-top: 1.15rem; }
+  .aparte { margin-bottom: .6rem; }
+  .ateliersEntete { gap: 1.8rem; }
+  .ateliersEntete :is(h1,h2) { font-size: clamp(2.9rem, 10.65vw, 4.7rem); }
+  .ateliersEntete p { max-width: 53ch; }
+  .ateliersEntete :is(h1,h2) i { white-space: normal; }
+  .index { gap: 1.65rem; }
+  .planche { position: relative; top: auto; }
+  .tirage { aspect-ratio: 1.75; }
+  .indexListe a { grid-template-columns: 1.45rem 1fr .8rem; }
+  .nomAtelier { font-size: clamp(1.8rem, 7.5vw, 3rem); }
+  .numero { padding-top: .32rem; }
+  .univers { gap: 0; }
+  .univers article { padding-block: 1.8rem; }
+  .univers article + article { border-top: 0; }
+  .universLien { font-size: clamp(2.5rem, 9vw, 4.5rem); }
+  .univers p { margin-top: 1.2rem; }
+  .maison { gap: 2.5rem; }
+  .methode h2 { margin-bottom: 1.5rem; }
+  .feuillet h2 { font-size: clamp(2.45rem, 8.8vw, 3.8rem); }
+  .desktopBreak { display: none; }
+  .invitationBas { gap: 1.4rem; }
+  .contactLiens { flex-wrap: wrap; flex-shrink: 1; min-width: 0; max-width: 100%; gap: .65rem 1.35rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rouleau { width: 100%; animation: none; }
+  .rouleau ul { width: 100%; padding: 0 var(--bord); justify-content: center; flex-wrap: wrap; gap: .35rem 1.65rem; }
+  .rouleau ul[aria-hidden="true"], .rouleau li::after { display: none; }
+  .encoche::before, .primaire { transition: none; }
+}
+
+.preuveFigure figcaption a { text-decoration-thickness: 1px; text-underline-offset: .23em; }

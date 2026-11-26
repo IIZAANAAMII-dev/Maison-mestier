@@ -1,0 +1,96 @@
+.passage-atelier { display: none; }
+
+/* NAV 9TO5, ET Studio. Le plan de travail se lève, ses deux légendes
+   coulissent, puis la feuille sort à gauche. La cadence du film est de 60 i/s. */
+@media (prefers-reduced-motion: no-preference) {
+  html:active-view-transition-type(ouvrir-atelier) {
+    --pas-legende: 67vw;
+    --montee-atelier: linear(
+      0, .0083, .0083, .0194, .0194, .0278, .0278, .0472, .0472, .0722, .0722,
+      .1083, .1083, .1556, .1556, .2, .2, .2917, .2917, .4333, .4333, .6,
+      .6, .7306, .7306, .7889, .7889, .8528, .8528, .8972, .8972, .9306, .9306,
+      .9528, .9528, .9667, .9667, .9792, .9778, .9889, .9889, .9944, .9944, 1
+    );
+    --lecture-atelier: linear(
+      0, .0012, .0012, .0035, .0035, .0082, .0082, .0164, .0164, .0292, .0292,
+      .0468, .0468, .0608, .0608, .0901, .0901, .1298, .1298, .1848, .1848, .2678,
+      .2678, .345, .345, .5029, .5029, .6596, .6596, .7696, .7696, .8374, .8374,
+      .8713, .8713, .9123, .9123, .9392, .9392, .9661, .9661, .9754, .9754, .9836,
+      .9836, .9918, .9918, .9965, .9965, 1, 1, 1, 1, 1, 1,
+      1
+    );
+    --sortie-atelier: linear(
+      0, .0023, .0023, .0086, .0086, .0195, .0195, .0344, .0344, .0539, .0539,
+      .0719, .0719, .1063, .1063, .1517, .1517, .2205, .2205, .3237, .3237, .4191,
+      .4191, .5887, .5887, .7217, .7217, .8084, .8084, .8686, .8686, .896, .896,
+      .9304, .9304, .9554, .9554, .9726, .9726, .9851, .9851, .9914, .9914, 1
+    );
+  }
+  html:active-view-transition-type(ouvrir-atelier) [data-raccord-atelier] {
+    view-transition-name: none !important;
+  }
+  html:active-view-transition-type(ouvrir-atelier) .passage-atelier { display: contents; }
+  .passage-atelier > * {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    padding-inline: 9vw;
+    pointer-events: none;
+  }
+  .passage-atelier-papier { view-transition-name: volet-atelier; background: #1c2333; }
+  .passage-atelier > span {
+    color: #f3f0ea;
+    font: 500 clamp(.8rem, 1.5vw, 1.7rem)/1.2 var(--mono);
+    text-transform: uppercase;
+    letter-spacing: .035em;
+  }
+  .passage-atelier-maison { view-transition-name: volet-maison; }
+  .passage-atelier-folio { view-transition-name: volet-folio; }
+  .passage-atelier-nom { view-transition-name: volet-nom; justify-content: flex-end; }
+  html:active-view-transition-type(ouvrir-atelier)::view-transition-group(volet-atelier),
+  html:active-view-transition-type(ouvrir-atelier)::view-transition-group(volet-maison),
+  html:active-view-transition-type(ouvrir-atelier)::view-transition-group(volet-folio),
+  html:active-view-transition-type(ouvrir-atelier)::view-transition-group(volet-nom) {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    animation: none;
+    transform: none;
+    z-index: 2;
+  }
+  html:active-view-transition-type(ouvrir-atelier)::view-transition-group(volet-atelier) { z-index: 1; }
+  html:active-view-transition-type(ouvrir-atelier)::view-transition-image-pair(volet-atelier),
+  html:active-view-transition-type(ouvrir-atelier)::view-transition-image-pair(volet-maison),
+  html:active-view-transition-type(ouvrir-atelier)::view-transition-image-pair(volet-folio),
+  html:active-view-transition-type(ouvrir-atelier)::view-transition-image-pair(volet-nom) {
+    animation: lever-volet-atelier 716.667ms var(--montee-atelier) both,
+      retirer-volet-atelier 716.667ms var(--sortie-atelier) 2066.667ms forwards;
+  }
+  html:active-view-transition-type(ouvrir-atelier)::view-transition-old(root) {
+    mix-blend-mode: normal;
+    animation: fermer-page-atelier 716.667ms steps(1, end) both;
+  }
+  html:active-view-transition-type(ouvrir-atelier)::view-transition-new(root) {
+    mix-blend-mode: normal;
+    animation: ouvrir-page-atelier 716.667ms steps(1, end) both;
+  }
+  html:active-view-transition-type(ouvrir-atelier)::view-transition-new(volet-atelier) { animation: none; }
+  html:active-view-transition-type(ouvrir-atelier)::view-transition-new(volet-maison) {
+    animation: quitter-legende-atelier 916.667ms var(--lecture-atelier) 866.667ms both;
+  }
+  html:active-view-transition-type(ouvrir-atelier)::view-transition-new(volet-folio),
+  html:active-view-transition-type(ouvrir-atelier)::view-transition-new(volet-nom) {
+    animation: entrer-legende-atelier 916.667ms var(--lecture-atelier) 866.667ms both;
+  }
+}
+@media (max-width: 37rem) {
+  html:active-view-transition-type(ouvrir-atelier) { --pas-legende: 56vw; }
+}
+
+@keyframes lever-volet-atelier { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes retirer-volet-atelier { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+@keyframes quitter-legende-atelier { from { transform: translateX(0); } to { transform: translateX(calc(0px - var(--pas-legende))); } }
+@keyframes entrer-legende-atelier { from { transform: translateX(var(--pas-legende)); } to { transform: translateX(0); } }
+@keyframes fermer-page-atelier { from { opacity: 1; } to { opacity: 0; } }
+@keyframes ouvrir-page-atelier { from { opacity: 0; } to { opacity: 1; } }

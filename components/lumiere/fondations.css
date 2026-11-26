@@ -1,0 +1,50 @@
+@property --ouverture-sommaire {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+html:root {
+  --papier-maison: #f3f0ea;
+  --encre-maison: #1c2333;
+  --cachet-maison: #8e2a23;
+  --pierre-maison: #9a968e;
+  --paper: var(--papier-maison);
+  --ink: var(--encre-maison);
+  --cachet: var(--cachet-maison);
+  --muted: #515560;
+  --line: color-mix(in srgb, var(--pierre-maison) 62%, var(--papier-maison));
+  --head-height: 92px;
+  --marge-edition: clamp(1.25rem, 4.6vw, 6rem);
+  --ouverture-sommaire: 0;
+  --retrait-horizontal: 60.1vw;
+  --retrait-vertical: 35.7dvh;
+}
+
+html[data-sommaire] {
+  overflow: hidden;
+  scrollbar-gutter: var(--gouttiere-sommaire, auto);
+  scroll-behavior: auto;
+  transition-property: --ouverture-sommaire;
+}
+
+html[data-sommaire="ouvert"] {
+  --ouverture-sommaire: 1;
+  transition-duration: 680ms;
+  transition-timing-function: cubic-bezier(.66, .03, .24, 1);
+  transition-timing-function: linear(0, .032 23.5%, .052 29.4%, .158 35.3%, .2 41.2%, .295 47.1%, .463 52.9%, .587 58.8%, .804 64.7%, .874 70.6%, .933 76.5%, .955 82.4%, .983 88.2%, 1);
+}
+
+html[data-sommaire="fermeture"] {
+  --ouverture-sommaire: 0;
+  transition-duration: 600ms;
+  transition-timing-function: cubic-bezier(.57, .01, .41, 1);
+  transition-timing-function: linear(0, .022 13.3%, .045 20%, .087 26.7%, .149 33.3%, .24 40%, .5 46.7%, .629 53.3%, .76 60%, .869 66.7%, .913 73.3%, .978 80%, .99 86.7%, 1);
+}
+
+@media (max-width: 760px) {
+  html:root { --head-height: 88px; --retrait-horizontal: 87vw; --retrait-vertical: 30dvh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-sommaire] { transition-duration: 0s; }
+}

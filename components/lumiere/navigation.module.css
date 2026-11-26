@@ -1,0 +1,157 @@
+.feuille { position: relative; background: var(--papier-maison); color: var(--encre-maison); }
+:global(html[data-sommaire]) .feuille {
+  transform: translate3d(calc(-1 * var(--retrait-horizontal) * var(--ouverture-sommaire)), calc(var(--retrait-vertical) * var(--ouverture-sommaire)), 0);
+  clip-path: inset(var(--coupe-haute, 0px) 0 0);
+}
+
+.entete, .hautSommaire {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 2rem;
+  height: var(--head-height);
+  padding: 0 var(--marge-edition);
+  font: 500 .9375rem/1.15 var(--sans);
+  color: var(--encre-maison);
+}
+
+.entete {
+  position: sticky;
+  z-index: 40;
+  top: 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--papier-maison);
+}
+
+.marque { display: inline-flex; width: fit-content; align-items: center; }
+.signature { width: 160px; height: auto; max-width: none; }
+.entete a, .sommaire a, .pied a { text-decoration: none; }
+.liensEntete, .actions { display: flex; align-items: center; }
+.liensEntete { gap: clamp(1.15rem, 3vw, 3.5rem); }
+.actions { justify-content: end; gap: clamp(1.2rem, 3.4vw, 4.2rem); }
+.entete details { position: relative; }
+.liensEntete > a, .liensEntete summary, .toggle, .projet { display: inline-flex; min-height: 44px; align-items: center; }
+.entete summary, .sommaire summary { list-style: none; }
+.entete summary::-webkit-details-marker, .sommaire summary::-webkit-details-marker { display: none; }
+.liensEntete summary { gap: 7px; }
+.liensEntete summary::after {
+  content: "";
+  width: 5px; height: 5px;
+  margin-top: -3px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(45deg);
+}
+.entete details[open] summary::after { margin-top: 2px; transform: rotate(225deg); }
+.sousMenu { position: absolute; top: calc(100% + 8px); left: -1.4rem; z-index: 2; width: max-content; min-width: 15rem; padding: .55rem 1.35rem; border: 1px solid var(--line); background: var(--papier-maison); box-shadow: 0 12px 18px #1c23330b; }
+.sousMenu a { display: flex; min-height: 40px; align-items: center; border-bottom: 1px solid #9a968e70; }
+.sousMenu a:last-child { border: 0; }
+.projet { position: relative; white-space: nowrap; }
+.projet::after { position: absolute; bottom: .45rem; content: ""; height: 1px; width: 100%; background: currentColor; transform-origin: left; transition: transform .25s ease; }
+.toggle { justify-self: end; justify-content: center; gap: .75rem; margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; }
+.traits, .croix { position: relative; display: inline-flex; width: 25px; height: 18px; align-items: center; justify-content: center; }
+.traits i, .croix i { position: absolute; right: 0; width: 100%; height: 1px; background: currentColor; }
+.traits i:first-child { transform: translateY(-3px); }
+.traits i:last-child { width: 70%; transform: translateY(3px); }
+.croix i:first-child { transform: rotate(45deg); }
+.croix i:last-child { transform: rotate(-45deg); }
+
+.sommaire {
+  position: fixed; inset: 0; width: 100%; height: 100%; height: 100dvh; max-width: 100%; max-height: none;
+  margin: 0; padding: 0; border: 0; outline: none; overflow: hidden; background: transparent; color: var(--encre-maison);
+}
+.sommaire::backdrop { background: transparent; }
+.verso {
+  --bord-x: calc(100% - var(--retrait-horizontal) * var(--ouverture-sommaire));
+  --bord-y: calc(var(--retrait-vertical) * var(--ouverture-sommaire));
+  position: absolute; inset: 0;
+  background: var(--papier-maison);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, var(--bord-x) 100%, var(--bord-x) var(--bord-y), 0 var(--bord-y));
+}
+.verso::before {
+  content: "";
+  position: absolute; inset: 0; pointer-events: none;
+  opacity: var(--ouverture-sommaire);
+  background: linear-gradient(#e5e1d8,#e5e1d8) left calc(var(--bord-y) - 8px) / calc(var(--bord-x) + 8px) 8px no-repeat,
+    linear-gradient(#e5e1d8,#e5e1d8) var(--bord-x) var(--bord-y) / 8px calc(100% - var(--bord-y)) no-repeat;
+}
+.hautSommaire { position: absolute; z-index: 2; inset: 0 0 auto; display: flex; justify-content: space-between; }
+.hautSommaire .toggle { min-width: 74px; }
+.rubriques {
+  position: absolute;
+  top: var(--head-height); right: 0; bottom: 0;
+  display: flex; width: var(--retrait-horizontal); flex-direction: column; justify-content: safe center;
+  padding: clamp(1.5rem, 5vh, 5rem) var(--marge-edition) 1.5rem clamp(2rem, 5vw, 6rem);
+  overflow: auto; overscroll-behavior: contain;
+}
+.indexMenu h2, .regionMenu, .pied h2, .colophon {
+  font: 400 .78rem/1.5 var(--mono);
+}
+.indexMenu h2 { padding-bottom: 1rem; letter-spacing: .08em; }
+.indexMenu > a, .indexMenu summary {
+  position: relative; display: flex;
+  min-height: 48px; align-items: center; justify-content: space-between;
+  padding: .12em 0 .15em;
+  border-top: 1px solid var(--line);
+  font: 400 clamp(2.4rem, 5vw, 6.8rem)/1.06 var(--display); letter-spacing: -.066em;
+}
+.indexMenu > a:last-child { border-bottom: 1px solid var(--line); }
+.indexMenu > a i { font-weight: 400; }
+.indexMenu summary::after { content: "+"; font: 400 1.6rem/1 var(--sans); }
+.indexMenu details[open] summary::after { content: "−"; }
+.sommaireLiens { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 1.15rem; padding: .25rem 0 1.2rem; }
+.sommaireLiens a { display: flex; align-items: center; min-height: 37px; font-size: 1rem; }
+.regionMenu { margin: 1.7rem 0 0; }
+.retourFeuille { position: absolute; left: 0; bottom: 0; width: calc(100vw - var(--retrait-horizontal)); height: calc(100% - var(--retrait-vertical)); margin: 0; padding: 0; border: 0; background: transparent; }
+
+.pied {
+  position: relative;
+  padding: clamp(3rem, 7vw, 7rem) var(--marge-edition) 1.25rem;
+  background: var(--encre-maison); color: var(--papier-maison);
+}
+.annuaire { display: grid; grid-template-columns: 1.1fr 1.4fr 1fr .8fr; gap: clamp(1.5rem, 5vw, 6rem); align-items: start; }
+.adresse img { width: clamp(160px, 12vw, 240px); height: auto; }
+.adresse p { max-width: 23ch; margin: 1.5rem 0 0; font: 400 1rem/1.35 var(--sans); }
+.pied nav { display: grid; align-content: start; }
+.pied h2 { margin: 0 0 .85rem; letter-spacing: .08em; opacity: .8; }
+.pied nav > a, .listePied a { width: fit-content; min-height: 32px; padding-block: .2rem; font: 400 1rem/1.4 var(--sans); }
+.listePied { display: grid; grid-template-rows: repeat(4,auto); grid-auto-flow: column; column-gap: 1.8rem; }
+.pied nav a:hover, .pied a:focus-visible { text-decoration: underline; text-underline-offset: .25em; }
+.colophon { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .8rem 1.5rem; align-items: center; margin-top: clamp(2.4rem, 6vw, 6.8rem); padding-top: 1.3rem; border-top: 1px solid #f3f0ea50; }
+.colophon span:first-child { margin-right: auto; }
+.colophon a { padding: .4rem 0; }
+.pied :focus-visible { outline-color: var(--papier-maison); }
+
+@media (hover: hover) {
+  .liensEntete > a:hover, .entete summary:hover, .sousMenu a:hover, .sommaireLiens a:hover { text-decoration: underline; text-underline-offset: .3em; }
+  .projet:hover::after { transform: scaleX(.55); }
+  .indexMenu summary:hover, .indexMenu > a:hover { color: var(--cachet-maison); }
+}
+@media (max-width: 900px) {
+  .annuaire { grid-template-columns: 1fr 1.2fr; row-gap: 2.4rem; }
+  .adresse p { margin-top: .8rem; }
+}
+@media (max-width: 760px) {
+  .entete { display: flex; justify-content: space-between; gap: 1rem; }
+  .liensEntete { display: none; }
+  .actions { column-gap: 1.6rem; }
+  .rubriques { padding: 1.4rem var(--marge-edition); }
+  .sommaireLiens { grid-template-columns: 1fr; }
+  .sommaireLiens a { min-height: 41px; }
+  .indexMenu > a, .indexMenu summary { font-size: clamp(2.6rem, 9.2vw,4.2rem); }
+  .sommaireLiens a, .pied nav > a, .listePied a { min-height: 40px; }
+}
+@media (max-width: 490px) {
+  .actions { gap: 1.1rem; }
+  .actions .projet { display: none; }
+  .annuaire { grid-template-columns: 1fr 1fr; gap: 1.8rem 1.4rem; }
+  .adresse { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; grid-column: 1 / -1; }
+  .adresse p { margin: 0; max-width: 12ch; }
+  .pied .ateliersPied { grid-column: 1 / -1; }
+  .listePied { grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 0 1.4rem; }
+  .colophon { display: grid; grid-template-columns: 1fr auto; }
+  .colophon span:first-child, .colophon span:nth-child(2) { grid-column: 1 / -1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .projet::after { transition: none; }
+}

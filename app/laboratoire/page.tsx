@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { path } from "../../lib/maison";
-import { ArrowIcon, MaisonMark } from "../../components/galerie/Icons";
+import { ArrowIcon } from "../../components/galerie/Icons";
 import s from "../galerie-carnets.module.css";
 
 export const metadata: Metadata = {
@@ -36,7 +36,7 @@ export default function LaboratoirePage() {
       <div className={`${s.folio} ${s.kicker}`}><span>Le laboratoire de la Maison</span><span>Matières &amp; intentions</span></div>
       <header className={s.hero}>
         <h1>À l’origine,<br /><i>la matière.</i></h1>
-        <div className={s.heroAside}><span aria-hidden="true"><MaisonMark /></span><p>Trois études pour donner forme à une même idée.</p><p>Des images de recherche générées pour Maison Mestier, à explorer comme des intentions de création.</p><a className={s.link} href="#pli">Ouvrir les études <span aria-hidden="true"><ArrowIcon direction="down-right" /></span></a></div>
+        <div className={s.heroAside}><span aria-hidden="true"><img src={path("/signatures/monogramme-encre.svg")} width={52} height={40} alt="" /></span><p>Trois études pour donner forme à une même idée.</p><p>Des images de recherche générées pour Maison Mestier, à explorer comme des intentions de création.</p><a className={s.link} href="#pli">Ouvrir les études <span aria-hidden="true"><ArrowIcon direction="down-right" /></span></a></div>
       </header>
       {studies.map((study, index) => <section key={study.id} id={study.id} className={`${s.study} ${index === 1 ? s.studyReverse : ""}`} aria-labelledby={`etude-${study.id}`}>
         <figure className={s.studyImage}>
@@ -45,7 +45,7 @@ export default function LaboratoirePage() {
         </figure>
         <div className={s.studyCopy}><span className={s.number} aria-hidden="true">{study.number}</span><p className={s.kicker}>{study.label}</p><h2 id={`etude-${study.id}`}>{study.title}</h2><p>{study.text}</p><dl><div><dt>Matières</dt><dd>{study.matter}</dd></div><div><dt>Le geste</dt><dd>{study.gesture}</dd></div></dl><a className={s.link} href={path(`/ateliers/${study.atelier}/`)}>{study.link}<span aria-hidden="true"><ArrowIcon /></span></a></div>
       </section>)}
-      <aside className={s.note} aria-labelledby="recherche-note"><h2 id="recherche-note">Un regard<br /><i>en construction.</i></h2><div><p>Ces études explorent des matières, des ambiances et des compositions. Elles ne documentent pas des réalisations clients.</p><p>La sculpture de l’accueil est, elle, une scène en trois dimensions manipulable dans le navigateur : vous pouvez en changer la matière et mettre son mouvement en pause.</p><a className={s.link} href={path("/#matiere")}>Retrouver la sculpture vivante<span aria-hidden="true"><ArrowIcon /></span></a></div></aside>
+      <aside className={s.note} aria-labelledby="recherche-note"><h2 id="recherche-note">Un regard<br /><i>en construction.</i></h2><div><p>Ces études explorent des matières, des ambiances et des compositions. Elles ne documentent pas des réalisations clients.</p><p>Sur l’accueil, le défilement conduit du pli de papier au portique de stand. La lumière suit le revers de la feuille pendant qu’elle s’ouvre.</p><a className={s.link} href={path("/#matiere")}>Retrouver le pli de la couverture<span aria-hidden="true"><ArrowIcon /></span></a></div></aside>
     </div>
   </main>;
 }

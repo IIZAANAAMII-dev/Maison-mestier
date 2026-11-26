@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { path } from "../lib/maison";
-import { FabricationNav, FabricationFooter, FabricationContact, FabricationPointer } from "../components/fabrication/FabricationShell";
+import Navigation from "../components/lumiere/Navigation";
+import Pied from "../components/lumiere/Pied";
+import { emailMaison } from "../lib/correspondance";
 import "./globals.css";
-import "./galerie.css";
+import "../components/lumiere/fondations.css";
 
 const display = localFont({
   src: [
@@ -14,21 +16,30 @@ const display = localFont({
 const sans = localFont({ src: "./fonts/instrument-sans.woff2", weight: "400 700", variable: "--font-sans", display: "swap" });
 const mono = localFont({ src: "./fonts/ibm-plex-mono.woff2", variable: "--font-mono", display: "swap", preload: false });
 
+const titre = "Agence de communication et marketing 360 · Maison Mestier";
+const description = "Stands de salon, sites et applications sur mesure, événements et pop-up, pour les entreprises B2B techniques comme pour la mode. Une seule équipe, de la stratégie à la mise en ligne.";
+const origine = process.env.NEXT_PUBLIC_SITE_URL || (process.env.VERCEL_ENV === "preview" && process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}` : "https://maisonmestier.fr");
+const imagePartage = path("/galerie/pavilion.webp");
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://iizaanaamii-dev.github.io"),
-  title: { default: "Maison Mestier — L’art de faire impression", template: "%s · Maison Mestier" },
-  description: "Stands de salon, événements professionnels, identité et sites sur mesure. Huit ateliers, une direction de création dans le Sud de la France.",
-  icons: { icon: path("/cachet.png") },
+  metadataBase: new URL(origine),
+  title: { default: titre, template: "%s · Maison Mestier" },
+  description,
+  icons: { icon: { url: path("/signatures/monogramme-encre.svg"), type: "image/svg+xml" } },
   robots: { index: false, follow: false },
   applicationName: "Maison Mestier",
   openGraph: {
     type: "website", locale: "fr_FR", siteName: "Maison Mestier",
-    title: "Maison Mestier — L’art de faire impression",
-    description: "Une maison. Huit ateliers. De l’idée à la matière, nous donnons forme aux marques.",
-    url: path("/"),
-    images: [{ url: path("/galerie/pavilion.webp"), width: 1536, height: 1024, alt: "Le pli monumental, étude de création Maison Mestier" }],
+    title: titre, description,
+    images: [{ url: imagePartage, width: 1536, height: 1024, alt: "Maquette de portique, étude de création Maison Mestier" }],
   },
-  twitter: { card: "summary_large_image", title: "Maison Mestier — L’art de faire impression", images: [path("/galerie/pavilion.webp")] },
+  twitter: { card: "summary_large_image", title: titre, description, images: [imagePartage] },
+};
+const organisation = {
+  "@context": "https://schema.org", "@type": "Organization", name: "Maison Mestier", legalName: "NEXORA STRATEGY",
+  url: "https://maisonmestier.fr", email: emailMaison,
+  logo: new URL(path("/signatures/signature-encre.svg"), origine).toString(),
 };
 export const viewport: Viewport = { themeColor: "#f3f0ea", width: "device-width", initialScale: 1 };
 
@@ -40,11 +51,8 @@ export default function Layout({ children }: Readonly<{children: React.ReactNode
       </head>
       <body id="haut">
         <a className="skip" href="#contenu">Aller au contenu</a>
-        <FabricationNav />
-        {children}
-        <FabricationFooter />
-        <FabricationContact />
-        <FabricationPointer />
+        <Navigation>{children}<Pied /></Navigation>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organisation).replace(/</g, "\\u003c") }} />
       </body>
     </html>
   );
