@@ -1,0 +1,195 @@
+.mo-interlude {
+  --interlude-night: #141a17;
+  --interlude-paper: var(--ledger-paper, #e9e6de);
+  position: relative;
+  margin: 0;
+  background: var(--interlude-paper);
+  color: var(--mo-ink, #24241f);
+  view-timeline-name: --atelier-interlude;
+}
+
+.mo-ateliers + .mo-interlude {
+  --interlude-night: #182021;
+}
+
+.mo-interlude-stage {
+  position: relative;
+  isolation: isolate;
+  height: clamp(30rem, 81svh, 55rem);
+  overflow: hidden;
+  background: var(--interlude-night);
+}
+
+.mo-interlude-names {
+  position: absolute;
+  z-index: 1;
+  top: 9%;
+  inset-inline: var(--gutter);
+  display: block;
+  margin: 0;
+  color: #e2dece;
+  font: 400 clamp(1.12rem, 2.06vw, 2.8rem)/1.17 var(--display);
+  letter-spacing: -.035em;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.mo-interlude-names span {
+  display: inline-block;
+  margin-inline: .22em;
+  white-space: nowrap;
+}
+
+.mo-interlude-names span:nth-child(even) {
+  font-style: italic;
+}
+
+.mo-interlude-names span:not(:last-child)::after {
+  content: "";
+  display: inline-block;
+  width: .14em;
+  height: .14em;
+  margin-left: .46em;
+  vertical-align: .22em;
+  border-radius: 100%;
+  background: #b69a71;
+}
+
+.mo-interlude-opening,
+.mo-interlude-paper {
+  position: absolute;
+  inset: 0;
+}
+
+.mo-interlude-opening {
+  z-index: 2;
+  clip-path: ellipse(68% 82% at 53% 108%);
+}
+
+.mo-interlude-opening img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 43%;
+}
+
+.mo-interlude-paper {
+  z-index: 3;
+  inset-block-end: -1px;
+  background: var(--interlude-paper);
+  clip-path: ellipse(154% 60% at 100% 138%);
+  pointer-events: none;
+}
+
+.mo-interlude-caption {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: .55rem 1.15rem;
+  position: relative;
+  padding: .2rem var(--gutter) clamp(2.4rem, 5vw, 5rem);
+}
+
+.mo-interlude-caption::before {
+  content: "";
+  width: clamp(1.75rem, 4vw, 4.5rem);
+  height: 1px;
+  align-self: center;
+  background: #92744b;
+}
+
+.mo-interlude-caption > span {
+  font: 400 .69rem/1.45 var(--mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.mo-interlude-caption p {
+  margin: 0;
+  font: 400 clamp(1.08rem, 1.48vw, 1.65rem)/1.28 var(--display);
+}
+
+@keyframes mo-interlude-aperture {
+  0% { clip-path: ellipse(14% 39% at 56% 94%); }
+  35% { clip-path: ellipse(34% 62% at 55% 87%); }
+  75% { clip-path: ellipse(76% 101% at 52% 85%); }
+  100% { clip-path: ellipse(102% 120% at 50% 84%); }
+}
+
+@keyframes mo-interlude-reframe {
+  from { transform: scale(1.13); }
+  to { transform: scale(1); }
+}
+
+@keyframes mo-interlude-sheet {
+  from { clip-path: ellipse(154% 49% at 100% 135%); }
+  to { clip-path: ellipse(154% 83% at 100% 139%); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .mo-interlude-opening,
+    .mo-interlude-opening img,
+    .mo-interlude-paper {
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-duration: auto;
+      animation-timeline: --atelier-interlude;
+    }
+
+    .mo-interlude-opening {
+      animation-name: mo-interlude-aperture;
+      animation-range: entry 10% exit 15%;
+    }
+
+    .mo-interlude-opening img {
+      animation-name: mo-interlude-reframe;
+      animation-range: entry 10% exit 15%;
+    }
+
+    .mo-interlude-paper {
+      animation-name: mo-interlude-sheet;
+      animation-range: entry 78% exit 70%;
+    }
+  }
+}
+
+@media (max-width: 680px) {
+  .mo-interlude-stage {
+    height: clamp(23rem, 65svh, 37rem);
+  }
+
+  .mo-interlude-names {
+    top: 8%;
+    font-size: clamp(1.12rem, 4.75vw, 1.8rem);
+  }
+
+  .mo-interlude-names span {
+    margin-inline: .15em;
+  }
+
+  .mo-interlude-names span:not(:last-child)::after {
+    margin-left: .36em;
+  }
+
+  .mo-interlude-opening img {
+    object-position: 54% 54%;
+  }
+
+  .mo-interlude-caption {
+    display: grid;
+    grid-template-columns: 1.65rem minmax(0, 1fr);
+    gap: .35rem .75rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .mo-interlude-caption::before {
+    width: 100%;
+  }
+
+  .mo-interlude-caption p {
+    grid-column: 2;
+    max-width: 29ch;
+  }
+}

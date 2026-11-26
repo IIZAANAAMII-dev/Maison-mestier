@@ -104,13 +104,17 @@ export function useFabricationDialog({ variant = "sheet" }: { variant?: "sheet" 
       onReverseComplete: () => { if (dialog.open) dialog.close(); },
     });
     if (variant === "menu") {
+      // Reveal stationary type with the measured opening of Editorial New's index.
+      const widths = [0, .256, .314, .462, .583, .679, .756, .853, .897, .936, .962, .981, .994, 1];
+      const cut = (ratio: number) => {
+        const progress = Math.max(0, Math.min(1, ratio)) * (widths.length - 1);
+        const low = Math.floor(progress);
+        const high = Math.min(low + 1, widths.length - 1);
+        return widths[low] + (widths[high] - widths[low]) * (progress - low);
+      };
       timeline.fromTo(dialog,
-        { clipPath: "inset(0% 0% 100% 0%)", "--fab-backdrop": 0 },
-        { clipPath: "inset(0% 0% 0% 0%)", "--fab-backdrop": 1, duration: .76, ease: "power3.inOut" }, 0);
-      timeline.fromTo(dialog.querySelectorAll("[data-dialog-enter]"),
-        { y: 38, opacity: 0 }, { y: 0, opacity: 1, duration: .66, stagger: .035 }, .21);
-      const visual = dialog.querySelector("[data-dialog-image]");
-      if (visual) timeline.fromTo(visual, { scale: 1.075, opacity: 0 }, { scale: 1, opacity: 1, duration: .9 }, .27);
+        { clipPath: "inset(0% 100% 0% 0%)" },
+        { clipPath: "inset(0% 0% 0% 0%)", duration: 13 / 30, ease: cut }, 0);
     } else {
       timeline.fromTo(dialog,
         { y: 48, x: 14, rotation: .6, opacity: 0, "--fab-backdrop": 0 },
@@ -136,8 +140,8 @@ export function useFabricationDialog({ variant = "sheet" }: { variant?: "sheet" 
       dialog.close();
       return;
     }
-    score.current.timeScale(1.65).reverse();
-  }, []);
+    score.current.timeScale(variant === "menu" ? 1.28 : 1.65).reverse();
+  }, [variant]);
 
   const cancel = useCallback((event: SyntheticEvent<HTMLDialogElement>) => {
     event.preventDefault();

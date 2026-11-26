@@ -298,6 +298,7 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
   const pointer = new THREE.Vector2(), eased = new THREE.Vector2();
   const position = new THREE.Vector3(), look = new THREE.Vector3(), lookNow = new THREE.Vector3();
   let frame = 0, active = true, disposed = false, last = performance.now(), first = true;
+  let sceneReady = false;
 
   const resize = () => {
     const width = canvas.clientWidth || window.innerWidth, height = canvas.clientHeight || window.innerHeight;
@@ -357,13 +358,26 @@ export function createWorld(canvas: HTMLCanvasElement, options: Options): World 
     first = false;
     frame = requestAnimationFrame(render);
   };
-  const wake = () => { if (!frame && active && !disposed) { last = performance.now(); frame = requestAnimationFrame(render); } };
+  const wake = () => {
+    if (!sceneReady || frame || !active || disposed) return;
+    last = performance.now();
+    frame = requestAnimationFrame(render);
+  };
 
   const lost = (event: Event) => { event.preventDefault(); active = false; options.onLost?.(); };
   canvas.addEventListener("webglcontextlost", lost);
 
   const ready = new Promise<void>((resolve, reject) => {
-    manager.onLoad = () => { if (disposed) return; resize(); try { composer.render(0); } catch (error) { reject(error); return; } wake(); resolve(); };
+    manager.onLoad = () => {
+      if (disposed) return;
+      try {
+        resize();
+        composer.render(0);
+      } catch (error) { reject(error); return; }
+      sceneReady = true;
+      wake();
+      resolve();
+    };
     manager.onError = (url) => reject(new Error("asset " + url));
   });
 

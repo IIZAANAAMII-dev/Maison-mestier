@@ -4,14 +4,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ateliers, atelierPath, image, path, studies } from "../../lib/maison";
-import { contact } from "../fabrication/fabrication-data";
-import { createHeroCanvas, type HeroCanvas } from "./hero-canvas";
+import { ateliers, atelierPath, image, path } from "../../lib/maison";
 import Journey from "./Journey";
 import "./monument.css";
+import AtelierInterlude from "./AtelierInterlude";
+import StudiesLedger from "./StudiesLedger";
+import ProjectInvitation from "./ProjectInvitation";
+import "./parcours-imprime.css";
 
 const letters = "MESTIER".split("");
-let seenAtLoad: boolean | null = null;
+let printedCoverSeen = false;
 const number = (index: number) => String(index + 1).padStart(2, "0");
 
 const scenes = [
@@ -35,20 +37,28 @@ function Words({ text }: { text: string }) {
 
 export default function MonumentHome() {
   const root = useRef<HTMLElement>(null);
-  const canvas = useRef<HTMLCanvasElement>(null);
-  const [room, setRoom] = useState(0);
   const [scene, setScene] = useState(0);
-  const [webgl, setWebgl] = useState(false);
-  const goToRoom = useRef<(index: number) => void>(() => {});
   const [mode, setMode] = useState<"static" | "world" | null>(null);
   const lenisRef = useRef<Lenis | null>(null);
   const fail = useCallback(() => setMode("static"), []);
 
-  // The immersive scene needs motion and WebGL 2; everything else keeps the printed page.
   useEffect(() => {
-    let capable = false;
-    try { capable = window.matchMedia("(prefers-reduced-motion: no-preference)").matches && !!document.createElement("canvas").getContext("webgl2"); } catch {}
-    setMode(capable ? "world" : "static");
+    const motion = window.matchMedia("(prefers-reduced-motion: no-preference)");
+    let supported: boolean | undefined;
+    const chooseCourse = () => {
+      if (!motion.matches) { setMode("static"); return; }
+      if (supported === undefined) {
+        try {
+          const probe = document.createElement("canvas").getContext("webgl2");
+          supported = Boolean(probe);
+          probe?.getExtension("WEBGL_lose_context")?.loseContext();
+        } catch { supported = false; }
+      }
+      setMode(supported ? "world" : "static");
+    };
+    chooseCourse();
+    motion.addEventListener("change", chooseCourse);
+    return () => motion.removeEventListener("change", chooseCourse);
   }, []);
 
   useEffect(() => {
@@ -85,164 +95,76 @@ export default function MonumentHome() {
       const locked = new MutationObserver(() => { if (document.documentElement.style.overflow === "hidden") lenis.stop(); else lenis.start(); });
       locked.observe(document.documentElement, { attributes: true, attributeFilter: ["style"] });
 
-      const staticHero = world ? null : (() => {
-      // Hero: the canvas is the only owner of the photographs, GSAP owns layout and type.
-      const hero = element.querySelector<HTMLElement>(".mo-hero")!;
-      let stage: HeroCanvas | null = null;
-      const lost = () => { setWebgl(false); };
-      if (canvas.current) {
-        stage = createHeroCanvas(canvas.current, scenes.map((item) => item.file), lost);
-        stage?.ready.then(() => setWebgl(true)).catch(lost);
-      }
-      const visible = new IntersectionObserver(([entry]) => stage?.setActive(entry.isIntersecting && !document.hidden));
-      visible.observe(hero);
-      const hidden = () => stage?.setActive(!document.hidden && ScrollTrigger.isInViewport(hero));
-      document.addEventListener("visibilitychange", hidden);
-      const resize = () => stage?.resize();
-      window.addEventListener("resize", resize);
-      const move = (event: PointerEvent) => {
-        if (event.pointerType === "touch") return;
-        stage?.setPointer(event.clientX / window.innerWidth, 1 - event.clientY / window.innerHeight, true);
-      };
-      const leave = () => stage?.setPointer(.5, .5, false);
-      hero.addEventListener("pointermove", move, { passive: true });
-      hero.addEventListener("pointerleave", leave);
-      window.addEventListener("blur", leave);
+      if (!world) {
+        const hero = element.querySelector<HTMLElement>(".mo-hero")!;
+        const photographs = select(".mo-aperture > img");
 
-      // Loader: plays once per session, never when the page is restored mid-scroll.
-      const loader = select(".mo-loader")[0] as HTMLElement | undefined;
-      if (seenAtLoad === null) {
-        seenAtLoad = true;
-        try { seenAtLoad = sessionStorage.getItem("mo-seen") === "1"; sessionStorage.setItem("mo-seen", "1"); } catch {}
-      }
-      const seen = seenAtLoad;
-      const skip = seen || window.scrollY > 8 || !loader;
-      const intro = gsap.timeline({ defaults: { ease: "power4.out" } });
-      let t0 = .1;
-      if (skip) { if (loader) gsap.set(loader, { display: "none" }); }
-      else {
-        const count = { value: 0 };
-        const figure = loader!.querySelector<HTMLElement>(".mo-loader-count")!;
-        lenis.stop();
+        // Loader: plays once per session, never when the page is restored mid-scroll.
+        const loader = select(".mo-loader")[0] as HTMLElement | undefined;
+        let skip = printedCoverSeen || window.scrollY > 8 || Boolean(location.hash) || !loader;
+        try {
+          skip ||= sessionStorage.getItem("mo-seen") === "1";
+          sessionStorage.setItem("mo-seen", "1");
+        } catch { /* The in-memory flag still covers repeat visits. */ }
+        printedCoverSeen = true;
+        const intro = gsap.timeline({ defaults: { ease: "power4.out" } });
+        let t0 = .1;
+        if (skip) { if (loader) gsap.set(loader, { display: "none" }); }
+        else {
+          const count = { value: 0 };
+          const figure = loader!.querySelector<HTMLElement>(".mo-loader-count")!;
+          lenis.stop();
+          intro
+            .from(loader!.querySelectorAll(".mo-loader-word"), { yPercent: 110, duration: .9, stagger: .08 }, 0)
+            .to(count, { value: 100, duration: 1.5, ease: "power2.inOut", onUpdate: () => { figure.textContent = String(Math.round(count.value)).padStart(3, "0"); } }, 0)
+            .to(loader!.querySelector(".mo-loader-bar"), { scaleX: 1, duration: 1.5, ease: "power2.inOut" }, 0)
+            .to(loader!.querySelectorAll(".mo-loader-word"), { yPercent: -110, duration: .6, stagger: .05, ease: "power3.in" }, 1.55)
+            .to(loader!, { clipPath: "inset(0% 0% 100% 0%)", duration: 1, ease: "power4.inOut" }, 1.85)
+            .add(() => { lenis.start(); }, 2.3)
+            .set(loader!, { display: "none" });
+          t0 = 2.15;
+        }
         intro
-          .from(loader!.querySelectorAll(".mo-loader-word"), { yPercent: 110, duration: .9, stagger: .08 }, 0)
-          .to(count, { value: 100, duration: 1.5, ease: "power2.inOut", onUpdate: () => { figure.textContent = String(Math.round(count.value)).padStart(3, "0"); } }, 0)
-          .to(loader!.querySelector(".mo-loader-bar"), { scaleX: 1, duration: 1.5, ease: "power2.inOut" }, 0)
-          .to(loader!.querySelectorAll(".mo-loader-word"), { yPercent: -110, duration: .6, stagger: .05, ease: "power3.in" }, 1.55)
-          .to(loader!, { clipPath: "inset(0% 0% 100% 0%)", duration: 1, ease: "power4.inOut" }, 1.85)
-          .add(() => { lenis.start(); }, 2.3)
-          .set(loader!, { display: "none" });
-        t0 = 2.15;
-      }
-      intro
-        .from(select(".mo-letter"), { yPercent: 108, duration: 1.25, stagger: .06 }, t0)
-        .from(select(".mo-hero-meta > *"), { y: 14, autoAlpha: 0, duration: .8, stagger: .06 }, t0 + .25)
-        .from(select(".mo-aperture"), { clipPath: wide ? "inset(100% 4.6% 8% 52%)" : "inset(100% 5% 6% 5%)", duration: 1.4, ease: "power3.inOut" }, t0 + .2)
-        .from(select(".mo-hero-lead > *"), { y: 26, autoAlpha: 0, duration: .9, stagger: .08 }, t0 + .6);
+          .from(select(".mo-letter"), { yPercent: 108, duration: 1.25, stagger: .06 }, t0)
+          .from(select(".mo-hero-meta > *"), { y: 14, autoAlpha: 0, duration: .8, stagger: .06 }, t0 + .25)
+          .from(select(".mo-aperture"), { clipPath: wide ? "inset(100% 4.6% 8% 52%)" : "inset(100% 5% 6% 5%)", duration: 1.4, ease: "power3.inOut" }, t0 + .2)
+          .from(select(".mo-hero-lead > *"), { y: 26, autoAlpha: 0, duration: .9, stagger: .08 }, t0 + .6);
 
-      const state = { mix: 0 };
-      gsap.set(select(".mo-caption"), { autoAlpha: 0, y: 24 });
-      const score = gsap.timeline({
-        defaults: { ease: "none" },
-        onUpdate: () => { stage?.setProgress(state.mix); setScene(Math.round(state.mix)); },
-        scrollTrigger: { trigger: hero, start: "top top", end: wide ? "+=320%" : "+=240%", pin: select(".mo-hero-pin")[0], scrub: .9, anticipatePin: 1, invalidateOnRefresh: true },
-      });
-      score
-        .to(select(".mo-aperture"), { clipPath: "inset(0% 0% 0% 0%)", duration: 1, ease: "power2.inOut" }, 0)
-        .to(select(".mo-letter"), { yPercent: -112, duration: .6, stagger: .035, ease: "power2.in" }, 0)
-        .to(select(".mo-hero-meta, .mo-hero-lead, .mo-cue"), { autoAlpha: 0, y: -20, duration: .35 }, 0)
-        .to(select(".mo-shade"), { opacity: 1, duration: .5 }, .5)
-        .to(select(".mo-caption")[0], { autoAlpha: 1, y: 0, duration: .3 }, .75)
-        .to(select(".mo-count"), { autoAlpha: 1, duration: .3 }, .75)
-        .to(select(".mo-caption")[0], { autoAlpha: 0, y: -24, duration: .25 }, 1.3)
-        .to(state, { mix: 1, duration: .8 }, 1.2)
-        .to(select(".mo-caption")[1], { autoAlpha: 1, y: 0, duration: .3 }, 1.75)
-        .to(select(".mo-caption")[1], { autoAlpha: 0, y: -24, duration: .25 }, 2.3)
-        .to(state, { mix: 2, duration: .8 }, 2.2)
-        .to(select(".mo-caption")[2], { autoAlpha: 1, y: 0, duration: .3 }, 2.75)
-        .to({}, { duration: .35 }, 3.05);
+        const state = { mix: 0 };
+        gsap.set(photographs.slice(1), { opacity: 0 });
+        gsap.set(select(".mo-caption"), { autoAlpha: 0, y: 24 });
+        const score = gsap.timeline({
+          defaults: { ease: "none" },
+          onUpdate: () => setScene(Math.round(state.mix)),
+          scrollTrigger: { trigger: hero, start: "top top", end: wide ? "+=210%" : "+=150%", pin: select(".mo-hero-pin")[0], scrub: .9, anticipatePin: 1, invalidateOnRefresh: true },
+        });
+        score
+          .to(select(".mo-aperture"), { clipPath: "inset(0% 0% 0% 0%)", duration: 1, ease: "power2.inOut" }, 0)
+          .to(select(".mo-letter"), { yPercent: -112, duration: .6, stagger: .035, ease: "power2.in" }, 0)
+          .to(select(".mo-hero-meta, .mo-hero-lead, .mo-cue"), { autoAlpha: 0, y: -20, duration: .35 }, 0)
+          .to(select(".mo-shade"), { opacity: 1, duration: .5 }, .5)
+          .to(select(".mo-caption")[0], { autoAlpha: 1, y: 0, duration: .3 }, .75)
+          .to(select(".mo-count"), { autoAlpha: 1, duration: .3 }, .75)
+          .to(select(".mo-caption")[0], { autoAlpha: 0, y: -24, duration: .25 }, 1.3)
+          .to(photographs[1], { opacity: 1, duration: .8 }, 1.2)
+          .to(state, { mix: 1, duration: .8 }, 1.2)
+          .to(select(".mo-caption")[1], { autoAlpha: 1, y: 0, duration: .3 }, 1.75)
+          .to(select(".mo-caption")[1], { autoAlpha: 0, y: -24, duration: .25 }, 2.3)
+          .to(photographs[2], { opacity: 1, duration: .8 }, 2.2)
+          .to(state, { mix: 2, duration: .8 }, 2.2)
+          .to(select(".mo-caption")[2], { autoAlpha: 1, y: 0, duration: .3 }, 2.75)
+          .to({}, { duration: .35 }, 3.05);
 
-      // Manifesto: the sentence is inked word by word.
-      gsap.fromTo(select(".mo-manifesto [data-word]"), { opacity: .14 }, { opacity: 1, ease: "none", stagger: .1,
-        scrollTrigger: { trigger: select(".mo-manifesto")[0], start: "top 72%", end: "bottom 62%", scrub: .6 } });
+        // Manifesto: the sentence is inked word by word.
+        gsap.fromTo(select(".mo-manifesto [data-word]"), { opacity: .14 }, { opacity: 1, ease: "none", stagger: .1,
+          scrollTrigger: { trigger: select(".mo-manifesto")[0], start: "top 72%", end: "bottom 62%", scrub: .6 } });
 
-        return () => {
-          window.removeEventListener("resize", resize);
-          window.removeEventListener("blur", leave);
-          document.removeEventListener("visibilitychange", hidden);
-          hero.removeEventListener("pointermove", move);
-          hero.removeEventListener("pointerleave", leave);
-          visible.disconnect();
-          stage?.dispose(); setWebgl(false);
-        };
-      })();
-
-      // Band: the eight names slide against the scroll.
-      gsap.utils.toArray<HTMLElement>(select(".mo-band-row")).forEach((row, index) => {
-        gsap.fromTo(row, { xPercent: index ? -28 : 0 }, { xPercent: index ? 0 : -28, ease: "none",
-          scrollTrigger: { trigger: select(".mo-band")[0], start: "top bottom", end: "bottom top", scrub: .5 } });
-      });
-
-      // Band: fast scrolling slants the names, then they settle.
-      const band = select(".mo-band")[0] as HTMLElement | undefined;
-      const slant = band ? gsap.quickTo(band, "skewX", { duration: .5, ease: "power3.out" }) : null;
-      const onScroll = ({ velocity }: { velocity: number }) => slant?.(gsap.utils.clamp(-9, 9, velocity * -.22));
-      lenis.on("scroll", onScroll);
-
-      // Call: the night floods out of the button while the sentence is inked word by word.
-      const call = select(".mo-call")[0];
-      if (call) {
-        gsap.fromTo(select(".mo-call-flood"), { clipPath: "circle(0% at 86% 78%)" }, { clipPath: "circle(150% at 86% 78%)", ease: "none",
-          scrollTrigger: { trigger: call, start: "top 55%", end: "center 45%", scrub: .6 } });
-        gsap.fromTo(select(".mo-call h2 [data-word]"), { opacity: .14 }, { opacity: 1, ease: "none", stagger: .1,
-          scrollTrigger: { trigger: call, start: "top 80%", end: "center 55%", scrub: .4 } });
       }
 
-      // Call: the button leans toward a fine pointer.
-      const button = select(".mo-call-button")[0] as HTMLElement | undefined;
-      const lean = (event: PointerEvent) => {
-        if (!button || event.pointerType === "touch") return;
-        const box = button.getBoundingClientRect();
-        gsap.to(button, { x: (event.clientX - box.left - box.width / 2) * .28, y: (event.clientY - box.top - box.height / 2) * .28, duration: .6, ease: "power3.out" });
-      };
-      const rest = () => { if (button) gsap.to(button, { x: 0, y: 0, duration: .9, ease: "elastic.out(1, .5)" }); };
-      button?.addEventListener("pointermove", lean);
-      button?.addEventListener("pointerleave", rest);
-
-      // Headings and quiet reveals.
-      gsap.utils.toArray<HTMLElement>(select("[data-split]")).forEach((heading) => {
+      // Reveal the heading when the printed atelier index enters.
+      gsap.utils.toArray<HTMLElement>(select(".mo-ateliers-head [data-split]")).forEach((heading) => {
         gsap.from(heading.querySelectorAll("[data-word]"), { yPercent: 110, duration: 1, ease: "power4.out", stagger: .05,
           scrollTrigger: { trigger: heading, start: "top 86%", once: true } });
-      });
-      gsap.utils.toArray<HTMLElement>(select("[data-rise]")).forEach((item) => {
-        gsap.from(item, { y: 32, autoAlpha: 0, duration: 1, ease: "power3.out", scrollTrigger: { trigger: item, start: "top 88%", once: true } });
-      });
-
-      // Ring of the eight ateliers: scroll turns it, the index follows.
-      if (wide && !world) {
-        const section = element.querySelector<HTMLElement>(".mo-ateliers")!;
-        section.classList.add("is-ring");
-        const ring = select(".mo-ring")[0];
-        const step = 360 / ateliers.length;
-        const turn = gsap.to(ring, { rotateY: -step * (ateliers.length - 1), ease: "none",
-          scrollTrigger: { trigger: section, start: "top top", end: "+=300%", pin: select(".mo-ateliers-pin")[0], scrub: .8, anticipatePin: 1,
-            snap: { snapTo: 1 / (ateliers.length - 1), duration: { min: .2, max: .6 }, delay: .08, ease: "power2.inOut" },
-            onUpdate: (self) => { section.style.setProperty("--turn", self.progress.toFixed(4)); setRoom(Math.round(self.progress * (ateliers.length - 1))); } } });
-        goToRoom.current = (index) => {
-          const trigger = turn.scrollTrigger!;
-          lenis.scrollTo(trigger.start + (trigger.end - trigger.start) * index / (ateliers.length - 1), { duration: 1.1 });
-        };
-      }
-
-      // Studies: each sheet recedes as the next one lands.
-      const cards = gsap.utils.toArray<HTMLElement>(select(".mo-study"));
-      cards.forEach((card, index) => {
-        const next = cards[index + 1];
-        gsap.fromTo(card.querySelector("img"), { scale: 1.3 }, { scale: 1, ease: "none", scrollTrigger: { trigger: card, start: "top bottom", end: "top top", scrub: true } });
-        gsap.fromTo(card.querySelector(".mo-study-picture"), { clipPath: "inset(22% 14% 22% 14%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "none", scrollTrigger: { trigger: card, start: "top 95%", end: "top 25%", scrub: .5 } });
-        gsap.from(card.querySelectorAll(".mo-study-copy > *"), { y: 46, autoAlpha: 0, duration: 1.1, ease: "power4.out", stagger: .07, scrollTrigger: { trigger: card, start: "top 62%", once: true } });
-        if (next) gsap.to(card.querySelector(".mo-study-sheet"), { scale: .93, opacity: .55, ease: "none",
-          scrollTrigger: { trigger: next, start: "top 85%", end: "top 12%", scrub: true } });
       });
 
       const settle = () => ScrollTrigger.refresh();
@@ -250,25 +172,38 @@ export default function MonumentHome() {
 
       return () => {
         window.removeEventListener("load", settle);
-        lenis.off("scroll", onScroll);
-        button?.removeEventListener("pointermove", lean);
-        button?.removeEventListener("pointerleave", rest);
-        staticHero?.();
         locked.disconnect();
         gsap.ticker.remove(raf); lenis.destroy(); lenisRef.current = null;
         element.classList.remove("is-live");
-        element.querySelector(".mo-ateliers")?.classList.remove("is-ring");
-        goToRoom.current = () => {};
       };
     });
 
-    return () => { window.removeEventListener("resize", fit); media.revert(); };
+    const entry = location.hash;
+    const anchor = !world && /^#(?:ateliers|maison|etudes|projet|etude-[\w-]+)$/.test(entry)
+      ? document.getElementById(entry.slice(1)) : null;
+    let cancelled = false;
+    const cancelEntry = () => { cancelled = true; };
+    const gestures = ["wheel", "pointerdown", "touchstart", "keydown"] as const;
+    if (anchor) {
+      for (const gesture of gestures) window.addEventListener(gesture, cancelEntry, { once: true, passive: true });
+      document.fonts.ready.then(() => requestAnimationFrame(() => {
+        if (cancelled || location.hash !== entry || !anchor.isConnected) return;
+        const margin = parseFloat(getComputedStyle(anchor).scrollMarginTop) || 0;
+        const top = anchor.getBoundingClientRect().top + window.scrollY - margin;
+        if (lenisRef.current) lenisRef.current.scrollTo(top, { immediate: true, force: true });
+        else window.scrollTo({ top, behavior: "instant" });
+      }));
+    }
+    return () => {
+      cancelEntry();
+      for (const gesture of gestures) window.removeEventListener(gesture, cancelEntry);
+      window.removeEventListener("resize", fit);
+      media.revert();
+    };
   }, [mode]);
 
-  const active = ateliers[room];
-
   return (
-    <main id="contenu" className={mode === "world" ? "mo is-world" : "mo"} ref={root} tabIndex={-1}>
+    <main id="contenu" className={mode === "world" ? "mo is-world" : "mo"} data-parcours={mode ?? "static"} ref={root} tabIndex={-1}>
       <noscript><style>{".mo-loader{display:none!important}"}</style></noscript>
       <div className="mo-loader" aria-hidden="true">
         <p className="mo-loader-name"><span className="mo-mask"><span className="mo-loader-word mo-loader-logo" style={{ maskImage: `url(${path("/logo-maison-mestier.png")})`, WebkitMaskImage: `url(${path("/logo-maison-mestier.png")})` }} /></span></p>
@@ -280,19 +215,18 @@ export default function MonumentHome() {
       <section className="mo-hero" aria-labelledby="mo-title">
         <div className="mo-hero-pin">
           <div className="mo-hero-meta">
-            <span>Maison de communication</span><span>Sud de la France</span><span>Huit ateliers</span><span>Une direction de création</span>
+            <span>Maison de marketing 360</span><span>Sud de la France</span>
           </div>
           <h1 id="mo-title" className="mo-wordmark" aria-label="Maison Mestier">
             <span aria-hidden="true">{letters.map((letter, index) => <span className="mo-mask" key={index}><span className="mo-letter">{letter}</span></span>)}</span>
           </h1>
           <div className="mo-hero-lead">
             <p className="mo-hero-claim">L’art de faire <em>impression.</em></p>
-            <p className="mo-hero-copy">Une identité, un site, un lieu, un moment. La Maison donne à vos idées toutes leurs dimensions.</p>
+            <p className="mo-hero-copy">On monte vos stands. On développe vos sites et vos applications.</p>
             <a className="mo-link" href="#ateliers"><span>Entrer dans la Maison</span><Arrow /></a>
           </div>
           <figure className="mo-aperture">
-            <img src={scenes[0].file} alt={scenes[0].alt} width="1536" height="1024" fetchPriority="high" decoding="async" />
-            <canvas ref={canvas} aria-hidden="true" data-ready={webgl} />
+            {scenes.map((item, index) => <img key={item.file} src={item.file} alt={index ? "" : item.alt} width="1536" height="1024" fetchPriority={index ? "low" : "high"} decoding="async" />)}
             <span className="mo-shade" aria-hidden="true" />
             <figcaption>
               {scenes.map((item, index) => <p className="mo-caption" key={item.file}><span className="mo-label">{number(index)} — {item.label}</span><strong>{item.line}</strong></p>)}
@@ -303,29 +237,22 @@ export default function MonumentHome() {
         </div>
       </section>
 
-      <section className="mo-manifesto" aria-label="La Maison">
+      <section className="mo-manifesto" id="maison" aria-label="La Maison">
         <p className="mo-label">(01) La Maison</p>
         <p className="mo-manifesto-text" aria-label={manifesto}><Words text={manifesto} /></p>
       </section>
 
       </>}
-      <div className="mo-band" aria-hidden="true">
-        {[0, 1].map((row) => <p className="mo-band-row" key={row}>{[...ateliers, ...ateliers].map((atelier, index) => <span key={index}>{row ? <em>{atelier.name}</em> : atelier.name}<i /></span>)}</p>)}
-      </div>
-
-      {mode !== "world" &&       <section className="mo-ateliers" id="ateliers" aria-labelledby="mo-ateliers-title">
+      {mode !== "world" && <section className="mo-ateliers" id="ateliers" aria-labelledby="mo-ateliers-title">
         <div className="mo-ateliers-pin">
           <header className="mo-ateliers-head">
             <p className="mo-label">(02) Les ateliers</p>
             <h2 id="mo-ateliers-title" data-split aria-label="Huit métiers. Une seule Maison."><Words text="Huit métiers. Une seule Maison." /></h2>
           </header>
-          <ol className="mo-index" aria-label="Aller à un atelier">
-            {ateliers.map((atelier, index) => <li key={atelier.slug}><button type="button" aria-current={room === index} onClick={() => goToRoom.current(index)}><span>{number(index)}</span>{atelier.name}</button></li>)}
-          </ol>
           <div className="mo-ring-stage">
-            <ul className="mo-ring" style={{ "--count": ateliers.length } as React.CSSProperties}>
-              {ateliers.map((atelier, index) => <li key={atelier.slug} style={{ "--i": index } as React.CSSProperties} data-active={room === index}>
-                <a href={atelierPath(atelier.slug)} tabIndex={undefined}>
+            <ul className="mo-ring" aria-label="Les huit ateliers">
+              {ateliers.map((atelier, index) => <li key={atelier.slug}>
+                <a href={atelierPath(atelier.slug)}>
                   <img src={ringImages[index]} alt="" loading="lazy" decoding="async" width="1200" height="800" />
                   <span className="mo-ring-number">{number(index)}</span>
                   <span className="mo-ring-name">{atelier.name}</span>
@@ -334,46 +261,12 @@ export default function MonumentHome() {
               </li>)}
             </ul>
           </div>
-          <span className="mo-ghost" aria-hidden="true" key={"ghost-" + room}>{number(room)}</span>
-          <p className="mo-turn mo-label" aria-hidden="true"><span>Faire défiler</span><i /><span>{number(room)} — {number(ateliers.length - 1)}</span></p>
-          <div className="mo-room" aria-live="polite">
-            <p className="mo-room-number">{number(room)}<span> / {number(ateliers.length - 1)}</span></p>
-            <h3 key={active.slug}>{active.name}</h3>
-            <p key={active.slug + "-summary"}>{active.summary}</p>
-            <a className="mo-link" href={atelierPath(active.slug)}><span>Ouvrir l’atelier</span><Arrow /></a>
-          </div>
         </div>
       </section>}
 
-      <section className="mo-studies" id="etudes" aria-labelledby="mo-studies-title">
-        <header className="mo-studies-head">
-          <p className="mo-label">(03) Les études</p>
-          <h2 id="mo-studies-title" data-split aria-label="Trois recherches, avant tout projet."><Words text="Trois recherches, avant tout projet." /></h2>
-          <p data-rise>Le Portique, L’empreinte et L’entracte sont des études de création de la Maison. Ce ne sont pas des références clients.</p>
-        </header>
-        {studies.map((study, index) => <article className="mo-study" key={study.slug}>
-          <div className="mo-study-sheet">
-            <a className="mo-study-picture" href={path("/recherches/" + study.slug + "/")} aria-label={"Ouvrir l’étude " + study.name}>
-              <img src={image(study.image)} alt={study.alt} loading="lazy" decoding="async" width="1240" height="930" />
-            </a>
-            <div className="mo-study-copy">
-              <p className="mo-label">{number(index)} / {number(studies.length - 1)} · Étude de création</p>
-              <h3>{study.name}</h3>
-              <p className="mo-study-material">{study.material}</p>
-              <p>{study.intro}</p>
-              <a className="mo-link" href={path("/recherches/" + study.slug + "/")}><span>Lire l’étude</span><Arrow /></a>
-            </div>
-          </div>
-        </article>)}
-      </section>
-
-      <section className="mo-call" aria-labelledby="mo-call-title">
-        <span className="mo-call-flood" aria-hidden="true" />
-        <p className="mo-label">(04) Votre projet</p>
-        <h2 id="mo-call-title" aria-label="Un seul interlocuteur, du premier trait au dernier détail."><Words text="Un seul interlocuteur, du premier trait au dernier détail." /></h2>
-        <p className="mo-call-copy" data-rise>Décrivez votre intention : la Maison compose l’équipe, le calendrier et le budget autour d’elle.</p>
-        <button className="mo-call-button" type="button" onClick={() => contact()}><span>Composer votre projet</span><Arrow /></button>
-      </section>
+      <AtelierInterlude />
+      <StudiesLedger />
+      <ProjectInvitation />
     </main>
   );
 }

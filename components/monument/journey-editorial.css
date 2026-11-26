@@ -1,0 +1,114 @@
+.mo.is-world > .mo-loader { display: none; }
+.jo.jo-edition {
+  --journey-ink: #141a17;
+  --journey-white: #f3f0ea;
+  --journey-light: #d9d4c8;
+  --journey-brass: #dec29c;
+  height: 775vh;
+  height: 775svh;
+  color: var(--journey-white);
+}
+.jo-edition .jo-anchor { scroll-margin-block-start: calc(-1 * var(--head-height)); }
+.jo-edition .jo-stage { isolation: isolate; }
+.jo-edition .jo-hero, .jo-edition .jo-ateliers, .jo-edition .jo-manifesto {
+  padding-block-start: calc(var(--head-height) + clamp(.4rem, 1.7svh, 1.3rem));
+  padding-block-end: clamp(1.35rem, 4.6svh, 3.4rem);
+}
+.jo-edition .jo-hero {
+  grid-template-rows: auto auto 1fr;
+  background: radial-gradient(ellipse 53% 58% at 0% 100%, rgb(12 17 15 / .89), rgb(16 21 18 / .5) 50%, transparent 90%);
+}
+.jo-edition .jo-hero-meta { display: flex; justify-content: space-between; align-items: center; color: var(--journey-light); padding-bottom: .7rem; border-color: rgb(239 234 223 / .26); }
+.jo-edition .jo-wordmark { margin-top: .052em; color: #f7f2e8; }
+.jo-edition .jo-lead {
+  grid-row: 3;
+  grid-column: 1 / span 5;
+  align-self: end;
+  gap: clamp(.55rem, 1.5svh, 1rem);
+  max-width: 31rem;
+}
+.jo-edition .jo-claim { max-width: 11em; font-size: clamp(2.45rem, 4.1vw, 4.85rem); line-height: 1; letter-spacing: -.05em; }
+.jo-edition .jo-claim em { white-space: nowrap; }
+.jo-edition .jo-copy { max-width: 27em; color: var(--journey-white); font-size: clamp(.99rem, 1.11vw, 1.18rem); line-height: 1.48; text-wrap: pretty; }
+.jo-edition .mo-link { min-height: 44px; color: var(--journey-white); border-bottom-color: rgb(243 240 234 / .66); }
+.jo-edition .jo-cue { grid-column: 11 / -1; grid-row: 3; align-self: end; justify-self: end; margin: 0; color: #e2ddd0; }
+.jo-edition .jo-cue::after { width: 1.55rem; animation: none; }
+.jo-edition .jo-caption {
+  bottom: clamp(2.2rem, 12svh, 8rem);
+  width: min(37vw, 34rem);
+  gap: clamp(.55rem, 1.3svh, .95rem);
+  isolation: isolate;
+}
+.jo-edition .jo-caption::before { inset: -42% -17%; background: radial-gradient(ellipse at 44% 55%, rgb(12 17 15 / .9), rgb(16 21 18 / .35) 56%, transparent 75%); }
+.jo-edition .jo-caption .mo-label { color: var(--journey-brass); }
+.jo-edition .jo-caption strong { font-size: clamp(2.8rem, 5.3vw, 6.4rem); line-height: .99; letter-spacing: -.05em; }
+.jo-edition .jo-manifesto {
+  row-gap: clamp(1rem, 2.1svh, 1.8rem);
+  background: radial-gradient(ellipse at 41% 54%, rgb(15 20 17 / .95), rgb(15 20 17 / .78) 54%, rgb(15 20 17 / .37));
+}
+.jo-edition .jo-manifesto .mo-label, .jo-edition .jo-manifesto-text { grid-column: 3 / span 8; }
+.jo-edition .jo-manifesto .mo-label, .jo-edition .jo-ateliers-head .mo-label, .jo-edition .jo-room-number { color: var(--journey-brass); }
+.jo-edition .jo-manifesto-text { font-size: clamp(2rem, 3.85vw, 4.9rem); line-height: 1.085; letter-spacing: -.048em; text-wrap: pretty; }
+.jo-edition .jo-manifesto-text em { display: block; margin-bottom: .32em; color: #e5d0af; font-weight: 400; }
+.jo-edition .jo-manifesto-follow { display: block; }
+.jo-edition .jo-ateliers {
+  background: linear-gradient(90deg, rgb(15 20 18 / .96) 1%, rgb(15 20 18 / .77) 20%, transparent 38%, transparent 60%, rgb(15 20 18 / .82) 79%, rgb(15 20 18 / .9)),
+    linear-gradient(180deg, rgb(17 22 19 / .48), transparent 30%);
+}
+.jo-edition .jo-ateliers-head { grid-column: 1 / span 4; align-content: start; gap: .55rem; padding-top: .3rem; }
+.jo-edition .jo-ateliers-head h2 { font-size: clamp(2.05rem, 3.3vw, 4.3rem); line-height: 1.01; max-width: 11em; letter-spacing: -.05em; text-wrap: balance; }
+.jo-edition .jo-index { grid-column: 1 / span 3; max-width: 17rem; min-width: 0; }
+.jo-edition .jo-index button { min-height: clamp(2.12rem, 4.55svh, 2.95rem); align-items: center; padding: .23rem 0; color: #cfcbbe; gap: .8rem; }
+.jo-edition .jo-index button[aria-current="true"] { padding-left: .7rem; color: #fffaf0; }
+.jo-edition .jo-index button[aria-current="true"] span { color: var(--journey-brass); }
+.jo-edition .jo-index button:focus-visible, .jo-edition :is(.mo-link, .jo-choice select):focus-visible { outline: 2px solid #f3f0ea; outline-offset: 4px; }
+.jo-edition .jo-room { grid-column: 10 / -1; min-width: 0; gap: .62rem; }
+.jo-edition .jo-room h3 { line-height: 1.02; letter-spacing: -.04em; animation-duration: .32s; }
+.jo-edition .jo-room .jo-room-summary { min-height: 2.9em; color: var(--journey-light); line-height: 1.46; animation: none; }
+.jo-edition .jo-choice { display: none; }
+.jo-edition .jo-turn { grid-column: 1 / span 3; width: min(100%,17rem); }
+.jo-edition .jo-turn i { max-width: 13rem; }
+
+@media (max-width: 860px) {
+  .jo.jo-edition { height: 745vh; height: 745svh; }
+  .jo-edition .jo-hero, .jo-edition .jo-ateliers, .jo-edition .jo-manifesto { grid-template-columns: repeat(4, minmax(0,1fr)); column-gap: .8rem; }
+  .jo-edition .jo-hero { background: linear-gradient(0deg, rgb(12 17 15 / .94) 3%, rgb(15 20 18 / .68) 27%, transparent 56%); }
+  .jo-edition .jo-hero-meta { gap: .45rem; font-size: .6rem; letter-spacing: .04em; }
+  .jo-edition .jo-lead { grid-column: 1 / -1; width: min(92%, 27.5rem); }
+  .jo-edition .jo-claim { font-size: clamp(2.18rem, 7.7vw, 3.35rem); }
+  .jo-edition .jo-copy { max-width: 25em; font-size: 1rem; }
+  .jo-edition .jo-cue { display: none; }
+  .jo-edition .jo-caption, .jo-edition .jo-caption[data-side="right"] { left: var(--gutter); right: var(--gutter); bottom: max(2rem, 7.4svh); width: auto; }
+  .jo-edition .jo-caption strong { max-width: 12em; font-size: clamp(2.45rem, 8.4vw, 4.15rem); }
+  .jo-edition .jo-manifesto .mo-label, .jo-edition .jo-manifesto-text { grid-column: 1 / -1; }
+  .jo-edition .jo-manifesto-text { max-width: 18em; font-size: clamp(1.85rem, 6.45vw, 3.3rem); line-height: 1.11; }
+  .jo-edition .jo-ateliers { grid-template-rows: auto 1fr auto; background: linear-gradient(0deg,rgb(12 17 15 / .98) 2%,rgb(12 17 15 / .89) 24%,transparent 55%),linear-gradient(180deg,rgb(12 17 15 / .84),transparent 38%); }
+  .jo-edition .jo-ateliers-head { grid-column: 1 / -1; }
+  .jo-edition .jo-ateliers-head h2 { font-size: clamp(1.8rem, 5.9vw, 3.3rem); max-width: 14.2em; text-wrap: pretty; }
+  .jo-edition .jo-index { display: none; }
+  .jo-edition .jo-room { grid-column: 1 / -1; grid-row: 3; align-self: end; gap: .42rem; padding: 0; }
+  .jo-edition .jo-room h3, .jo-edition .jo-turn { display: none; }
+  .jo-edition .jo-room .jo-room-summary { min-height: 0; max-width: 34em; font-size: .95rem; }
+  .jo-edition .jo-choice { display: inline-flex; position: relative; align-items: center; max-width: 100%; }
+  .jo-edition .jo-choice::after { content: ""; position: absolute; right: .35rem; top: calc(50% - .28rem); width: .47rem; height: .47rem; border: solid currentColor; border-width: 0 1px 1px 0; transform: rotate(45deg); pointer-events: none; }
+  .jo-edition .jo-choice select {
+    appearance: none; min-height: 44px; max-width: 100%; padding: 0 1.65rem 0 0; border: 0; border-bottom: 1px solid rgb(243 240 234 / .42);
+    border-radius: 0; background: transparent; color: #f3f0ea; font: 400 clamp(1.75rem,6.8vw,2.8rem)/1.1 var(--display);
+    letter-spacing: -.035em; cursor: pointer;
+  }
+  .jo-edition .jo-choice option { background: #f3f0ea; color: #141a17; font: 1rem var(--sans); }
+}
+@media (min-width: 861px) and (max-height: 690px) {
+  .jo-edition .jo-ateliers { padding-block-end: .75rem; }
+  .jo-edition .jo-ateliers-head h2 { font-size: clamp(1.8rem, 2.6vw, 2.8rem); }
+  .jo-edition .jo-index button { min-height: 1.85rem; }
+}
+@media (max-width: 860px) and (max-height: 500px) and (orientation: landscape) {
+  .jo-edition .jo-stage .jo-hero, .jo-edition .jo-stage .jo-ateliers { padding-top: calc(var(--head-height) + .25rem); padding-bottom: .55rem; }
+  .jo-edition .jo-wordmark { max-width: 64%; }
+  .jo-edition .jo-lead { grid-column: 2 / -1; justify-self: end; width: 57%; gap: .18rem; }
+  .jo-edition .jo-claim { font-size: 1.7rem; }
+  .jo-edition .jo-copy, .jo-edition .jo-room .jo-room-summary { font-size: .83rem; line-height: 1.32; }
+  .jo-edition .jo-ateliers-head { grid-column: 1 / span 2; }
+  .jo-edition .jo-room { grid-column: 3 / span 2; grid-row: 2 / span 2; align-self: end; }
+}

@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type FormEvent, type MouseEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent } from "react";
 import { usePathname } from "next/navigation";
 import { gsap } from "gsap";
-import { ateliers, atelierPath, image, path } from "../../lib/maison";
+import { ateliers, atelierPath, path } from "../../lib/maison";
 import { chapters, contact, getSelection, setSelection, toggleAtelier } from "./fabrication-data";
 import { useFabricationDialog } from "./useFabricationDialog";
 import "./shell.css";
@@ -13,10 +13,16 @@ type SelectionDetail = { slugs: string[] };
 type ContactValues = { name: string; email: string; slugs: string[]; message: string };
 const emptyValues: ContactValues = { name: "", email: "", slugs: [], message: "" };
 const draftKey = "mestier:fabrication:contact";
-const contactEmail = (process.env.NEXT_PUBLIC_CONTACT_EMAIL || "").trim();
-const hasContactEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail);
-const roomNotes = ["Le lieu de la rencontre", "L’instant partagé", "Le signe de reconnaissance", "Votre premier rendez-vous", "Être trouvé, être choisi", "Un lieu, pour un moment", "Ce qui reste et se raconte", "Le fil qui relie tout"];
-const roomImages = [path("/galerie/pavilion.webp"), path("/galerie/night.webp"), path("/galerie/editorial.webp"), image("etude"), image("empreinte"), image("atelier"), image("entracte"), image("correspondance")];
+const configuredEmail = (process.env.NEXT_PUBLIC_CONTACT_EMAIL || "").trim();
+const contactEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(configuredEmail) ? configuredEmail : "discutons@maisonmestier.fr";
+
+const sections = [
+  { id: "maison", label: "La Maison" },
+  { id: "ateliers", label: "Les ateliers" },
+  { id: "etudes", label: "Les études" },
+  { id: "projet", label: "Votre projet" },
+] as const;
+
 const number = (index: number) => String(index + 1).padStart(2, "0");
 
 function Arrow({ diagonal = false, className = "" }: { diagonal?: boolean; className?: string }) {
@@ -38,50 +44,16 @@ function contactLink(event: MouseEvent<HTMLAnchorElement>, detail: ContactDetail
   contact(detail.atelier);
 }
 
-function MenuPreview({ active }: { active: number }) {
-  const stack = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const elements = stack.current?.querySelectorAll<HTMLImageElement>("img");
-    if (!elements?.length) return;
-    const incoming = elements[active];
-    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const settle = () => {
-      gsap.killTweensOf(elements);
-      gsap.set(elements, { opacity: 0 });
-      gsap.set(incoming, { opacity: 1, clearProps: "transform,clipPath" });
-    };
-    const quiet = () => { if (preference.matches) settle(); };
-    preference.addEventListener("change", quiet);
-    gsap.killTweensOf(elements);
-    if (preference.matches) settle();
-    else {
-      gsap.to(elements, { opacity: 0, duration: .3, ease: "power2.out" });
-      gsap.fromTo(incoming, { opacity: 1, x: 18, scale: 1.04, clipPath: "inset(0% 0% 0% 100%)" }, { x: 0, scale: 1, clipPath: "inset(0% 0% 0% 0%)", duration: .6, ease: "power3.inOut", overwrite: true });
-    }
-    return () => { preference.removeEventListener("change", quiet); gsap.killTweensOf(elements); };
-  }, [active]);
-
-  return <figure className="fab-menu-preview" data-dialog-image>
-    <div className="fab-menu-image-stack" ref={stack}>{ateliers.map((atelier, index) => <img src={roomImages[index]} alt="" key={atelier.slug} width="1200" height="800" loading="lazy" style={{ opacity: index === active ? 1 : 0 }} />)}</div>
-    <figcaption><span>{number(active)} / 08</span><p>{roomNotes[active]}</p><span className="fab-menu-preview-credit">Étude de création</span></figcaption>
-  </figure>;
-}
-
 export function FabricationNav() {
   const menu = useFabricationDialog({ variant: "menu" });
   const pathname = usePathname();
   const home = pathname === "/" || pathname === path("/") || pathname === path("");
   const header = useRef<HTMLElement>(null);
   const [scrolled, setScrolled] = useState(false);
-  const [activeRoom, setActiveRoom] = useState(0);
+  const [interactive, setInteractive] = useState(false);
+  const [currentSection, setCurrentSection] = useState("");
   const [chapter, setChapter] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
-
-  useEffect(() => {
-    const current = ateliers.findIndex(atelier => pathname?.includes(`/ateliers/${atelier.slug}`));
-    if (current >= 0) setActiveRoom(current);
-  }, [pathname]);
 
   useEffect(() => {
     let frame = 0;
@@ -93,6 +65,7 @@ export function FabricationNav() {
   }, [pathname]);
 
   useEffect(() => {
+    setInteractive(true);
     setSelected(getSelection());
     const select = (event: Event) => setSelected((event as CustomEvent<SelectionDetail>).detail.slugs);
     const pick = (event: Event) => {
@@ -115,15 +88,60 @@ export function FabricationNav() {
     };
   }, []);
 
-  function navigate(event: MouseEvent<HTMLAnchorElement>, href: string, targetChapter?: number, toContact = false) {
+  function openMenu() {
+    let current = "";
+    if (home) {
+      for (const section of sections) {
+        const landmark = document.getElementById(section.id);
+        if (landmark && landmark.getBoundingClientRect().top < window.innerHeight * .5) current = section.id;
+      }
+    }
+    setCurrentSection(current);
+    menu.show();
+    const contents = menu.ref.current?.querySelector<HTMLElement>(".fab-index-scroll");
+    if (contents) contents.scrollTop = 0;
+  }
+
+  function navigate(event: MouseEvent<HTMLAnchorElement>) {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const destination = new URL(event.currentTarget.href);
     event.preventDefault();
     menu.dismiss(() => {
-      if (toContact) contact();
-      else if (home && typeof targetChapter === "number") window.dispatchEvent(new CustomEvent("mestier:navigate", { detail: { chapter: targetChapter } }));
-      else window.location.assign(href);
+      if (!home || destination.pathname !== window.location.pathname || !destination.hash) {
+        window.location.assign(destination.href);
+        return;
+      }
+      const target = document.getElementById(destination.hash.slice(1));
+      if (!target) {
+        window.location.assign(destination.href);
+        return;
+      }
+      if (window.location.hash !== destination.hash) {
+        window.history.pushState(window.history.state, "", destination.href);
+      }
+      target.scrollIntoView({ behavior: "instant", block: "start" });
+      const focus = target.querySelector<HTMLElement>("h1,h2") ?? target;
+      focus.setAttribute("tabindex", "-1");
+      focus.focus({ preventScroll: true });
     });
   }
+
+  function keepMenuFocus(event: ReactKeyboardEvent<HTMLDialogElement>) {
+    if (event.key !== "Tab") return;
+    const first = event.currentTarget.querySelector<HTMLAnchorElement>(".fab-index-bar a");
+    const last = event.currentTarget.querySelector<HTMLAnchorElement>(".fab-index-compose");
+    if (document.activeElement !== (event.shiftKey ? first : last)) return;
+    event.preventDefault();
+    (event.shiftKey ? last : first)?.focus({ preventScroll: true });
+  }
+
+  function compose(event: MouseEvent<HTMLAnchorElement>) {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    menu.dismiss(() => contact());
+  }
+
+  const menuLabel = <><span>Menu</span><span className="fab-nav-plan" aria-hidden="true"><i /><i /><i /><i /></span></>;
 
   return <>
     <header ref={header} className={`fab-nav${scrolled || !home ? " is-scrolled" : ""}`} data-mood={home ? chapters[chapter].mood : "paper"}>
@@ -132,32 +150,44 @@ export function FabricationNav() {
         <a className="fab-nav-fabrication" href={path("/#ateliers")}><span className="fab-nav-live" aria-hidden="true" /><span>Les ateliers</span></a>
         <a href={path("/#etudes")}>Les études <Arrow diagonal className="fab-inline-arrow" /></a>
       </nav>
-      <div className="fab-nav-actions"><a className="fab-nav-contact" href={path("/#contact")} onClick={(event) => contactLink(event)}><span>Votre projet</span><span className="fab-nav-count" aria-label={`${selected.length} atelier${selected.length > 1 ? "s" : ""} sélectionné${selected.length > 1 ? "s" : ""}`}>{selected.length ? String(selected.length).padStart(2, "0") : <Arrow diagonal />}</span></a>
-        <button className="fab-nav-toggle" type="button" aria-label="Ouvrir le plan de la Maison" aria-expanded={menu.isOpen} aria-controls="fab-navigation" aria-haspopup="dialog" onClick={menu.show}><span>Menu</span><span className="fab-nav-plan" aria-hidden="true"><i /><i /><i /><i /></span></button>
+      <div className="fab-nav-actions">
+        <a className="fab-nav-contact" href={interactive ? path("/#contact") : `mailto:${contactEmail}`} onClick={(event) => contactLink(event)}>
+          <span>Votre projet</span>
+          <span className="fab-nav-count" aria-label={`${selected.length} atelier${selected.length > 1 ? "s" : ""} sélectionné${selected.length > 1 ? "s" : ""}`}>{selected.length ? String(selected.length).padStart(2, "0") : <Arrow diagonal />}</span>
+        </a>
+        {interactive
+          ? <button className="fab-nav-toggle" type="button" aria-label="Ouvrir le sommaire de la Maison" aria-expanded={menu.isOpen} aria-controls="fab-navigation" aria-haspopup="dialog" onClick={openMenu}>{menuLabel}</button>
+          : <a className="fab-nav-toggle" href="#fab-annuaire" aria-label="Parcourir le sommaire de la Maison">{menuLabel}</a>}
       </div>
-      
     </header>
 
-    <dialog ref={menu.ref} id="fab-navigation" className="fab-menu" aria-labelledby="fab-menu-title" onCancel={menu.cancel} onClose={menu.finish} data-lenis-prevent>
-      <div className="fab-menu-top"><a href={path("/")} aria-label="Maison Mestier, accueil" onClick={(event) => navigate(event, path("/"))}><Wordmark /></a><span className="fab-shell-label fab-menu-top-label">Le plan de la Maison</span><button className="fab-shell-close" type="button" data-dialog-focus onClick={() => menu.dismiss()}><span>Fermer</span><Cross /></button></div>
-      <div className="fab-menu-body">
-        <div className="fab-menu-aside">
-          <p className="fab-shell-label" data-dialog-enter>Une direction. Huit ateliers.</p>
-          <h2 id="fab-menu-title" data-dialog-enter>Entrez par<br /><em>votre idée.</em></h2>
-          <MenuPreview active={activeRoom} />
-          <div className="fab-menu-routes" data-dialog-enter><a href={path("/#ateliers")} onClick={(event) => navigate(event, path("/#ateliers"))}>Parcourir les ateliers <Arrow /></a><a href={path("/#etudes")} onClick={(event) => navigate(event, path("/#etudes"))}>Ouvrir les études <Arrow /></a></div>
-        </div>
-        <div className="fab-menu-plan-wrap">
-          <div className="fab-menu-plan-caption" data-dialog-enter><span>Plan libre / 01 — 08</span><span>Choisissez votre entrée <Arrow className="fab-inline-arrow fab-arrow-down" /></span></div>
-          <nav className="fab-menu-plan" aria-label="Les huit ateliers">
-            {ateliers.map((atelier, index) => <a className={`fab-menu-room fab-menu-room-${index + 1}`} href={atelierPath(atelier.slug)} key={atelier.slug} aria-current={pathname?.includes(`/ateliers/${atelier.slug}`) ? "page" : undefined} data-active={activeRoom === index} data-dialog-enter onMouseEnter={() => setActiveRoom(index)} onFocus={() => setActiveRoom(index)} onClick={(event) => navigate(event, atelierPath(atelier.slug))}>
-              <span className="fab-room-index">{number(index)}</span><span className="fab-room-name">{atelier.name}</span><span className="fab-room-note">{roomNotes[index]}</span><Arrow diagonal /><span className="fab-room-threshold" aria-hidden="true" />
-            </a>)}
-          </nav>
-          <div className="fab-menu-plan-key" data-dialog-enter><span className="fab-menu-north" aria-hidden="true"><Arrow className="fab-arrow-up" /><span>M</span></span><p>Des métiers qui se parlent.<br />Une Maison qui les relie.</p><a href={path("/#contact")} onClick={(event) => navigate(event, path("/#contact"), undefined, true)}>Composons votre projet <Arrow diagonal /></a></div>
-        </div>
+    <dialog ref={menu.ref} id="fab-navigation" className="fab-menu" aria-labelledby="fab-menu-title" onCancel={menu.cancel} onClose={menu.finish} onKeyDown={keepMenuFocus} onClick={menu.backdrop} data-lenis-prevent>
+      <header className="fab-index-bar">
+        <a href={path("/")} aria-label="Maison Mestier, accueil" onClick={navigate}><Wordmark /></a>
+        <button className="fab-shell-close" type="button" data-dialog-focus onClick={() => menu.dismiss()}>Fermer <Cross /></button>
+      </header>
+      <div className="fab-index-scroll" data-lenis-prevent>
+        <h2 id="fab-menu-title">Sommaire</h2>
+        <nav className="fab-index-chapters" aria-label="Les chapitres de la Maison">
+          {sections.map((section, index) => (
+            <a href={path(`/#${section.id}`)} key={section.id} onClick={navigate} aria-current={currentSection === section.id ? "location" : undefined}>
+              <span className="fab-index-number" aria-hidden="true">{number(index)}</span>
+              <span>{section.label}</span>
+              <Arrow diagonal />
+            </a>
+          ))}
+        </nav>
+        <nav className="fab-index-ateliers" aria-label="Les huit fiches d’atelier">
+          <h3>Les huit ateliers</h3>
+          <ul>{ateliers.map(atelier => (
+            <li key={atelier.slug}>
+              <a href={atelierPath(atelier.slug)} onClick={navigate} aria-current={pathname?.includes(`/ateliers/${atelier.slug}`) ? "page" : undefined}>{atelier.name}</a>
+            </li>
+          ))}</ul>
+        </nav>
+        <a className="fab-index-lab" href={path("/laboratoire/")} onClick={navigate}>Le laboratoire <Arrow diagonal /></a>
       </div>
-      <div className="fab-menu-bottom" data-dialog-enter><span>Maison de communication</span><span>Sud de la France</span><a href={path("/laboratoire/")} onClick={(event) => navigate(event, path("/laboratoire/"))}>Le laboratoire <Arrow diagonal className="fab-inline-arrow" /></a></div>
+      <a className="fab-index-compose" href={path("/#contact")} onClick={compose}>Composer votre projet <Arrow diagonal /></a>
     </dialog>
   </>;
 }
@@ -209,7 +239,7 @@ export function FabricationFooter() {
         <div className="fab-letter-flap" aria-hidden="true" /><div className="fab-letter-seal" aria-hidden="true">M.</div>
       </div><button className="fab-letter-toggle" type="button" aria-expanded={letterOpen} aria-controls="fab-footer-letter" onClick={() => setLetterOpen((open) => !open)} data-cursor={letterOpen ? "Refermer" : "Ouvrir"}><span>{letterOpen ? "Refermer la lettre" : "Une lettre vous attend"}</span><span aria-hidden="true">{letterOpen ? "−" : "+"}</span></button></div>
     </div>
-    <div className="fab-footer-directory"><div className="fab-footer-address"><span className="fab-shell-label">Maison Mestier</span><p>Une direction de création.<br />Toutes les dimensions de votre marque.</p><span>Sud de la France</span></div><nav className="fab-footer-pages" aria-label="Explorer la Maison"><span className="fab-shell-label">À parcourir</span><a href={path("/#maison")}>La fabrication</a><a href={path("/#etudes")}>Les études</a><a href={path("/laboratoire/")}>Le laboratoire <Arrow diagonal className="fab-inline-arrow" /></a></nav><nav className="fab-footer-ateliers" aria-label="Tous les ateliers"><span className="fab-shell-label">Huit ateliers, un même regard</span><div>{ateliers.map((atelier, index) => <a key={atelier.slug} href={atelierPath(atelier.slug)}><span>{number(index)}</span>{atelier.name}</a>)}</div></nav></div>
+    <div id="fab-annuaire" tabIndex={-1} className="fab-footer-directory"><div className="fab-footer-address"><span className="fab-shell-label">Maison Mestier</span><p>Une direction de création.<br />Toutes les dimensions de votre marque.</p><span>Sud de la France</span></div><nav className="fab-footer-pages" aria-label="Explorer la Maison"><span className="fab-shell-label">À parcourir</span><a href={path("/#maison")}>La Maison</a><a href={path("/#ateliers")}>Les ateliers</a><a href={path("/#etudes")}>Les études</a><a href={path("/#projet")}>Votre projet</a><a href={path("/laboratoire/")}>Le laboratoire <Arrow diagonal className="fab-inline-arrow" /></a></nav><nav className="fab-footer-ateliers" aria-label="Tous les ateliers"><span className="fab-shell-label">Huit ateliers, un même regard</span><div>{ateliers.map((atelier, index) => <a key={atelier.slug} href={atelierPath(atelier.slug)}><span>{number(index)}</span>{atelier.name}</a>)}</div></nav></div>
     <a className="fab-footer-signature" href={path("/")} aria-label="Maison Mestier, accueil"><span>Maison</span><em>Mestier.</em></a>
     <div className="fab-footer-bottom"><span>© {new Date().getFullYear()} Maison Mestier</span><span>De l’idée à ce qui reste.</span><a href="#haut">Retour en haut <Arrow className="fab-inline-arrow fab-arrow-up" /></a></div>
   </footer>;
@@ -318,7 +348,7 @@ export function FabricationContact() {
         {error && <p className="fab-contact-error" role="alert">{error}</p>}
         <div className="fab-contact-actions" data-dialog-enter><p>Votre brouillon reste dans cet onglet.<br />Ce formulaire prépare un message à copier.</p><button className="fab-contact-button" type="submit"><span>Préparer mon message</span><Arrow /></button></div>
       </form>
-      {prepared && <div className="fab-contact-ready" ref={ready} tabIndex={-1} aria-labelledby="fab-message-title"><div><span className="fab-shell-label">Votre correspondance</span><span className="fab-shell-label">Prête à partager</span></div><h3 id="fab-message-title">Les premiers <em>mots.</em></h3><label className="fab-shell-sr" htmlFor="fab-message-draft">Votre message préparé</label><textarea id="fab-message-draft" ref={draft} value={message} readOnly rows={8} /><div className="fab-contact-copy"><button className="fab-contact-button" type="button" onClick={copy}><span>{copied ? "Message copié" : "Copier mon message"}</span><span aria-hidden="true">{copied ? "✓" : "⧉"}</span></button>{hasContactEmail && <a href={`mailto:${contactEmail}?subject=${encodeURIComponent("Un projet avec la Maison")}&body=${encodeURIComponent(message)}`}>Ouvrir ma messagerie <Arrow diagonal /></a>}</div><p className="fab-contact-notice" role="status" aria-live="polite">{notice || "Le message n’a pas encore été envoyé. Copiez-le dans votre messagerie."}</p></div>}
+      {prepared && <div className="fab-contact-ready" ref={ready} tabIndex={-1} aria-labelledby="fab-message-title"><div><span className="fab-shell-label">Votre correspondance</span><span className="fab-shell-label">Prête à partager</span></div><h3 id="fab-message-title">Les premiers <em>mots.</em></h3><label className="fab-shell-sr" htmlFor="fab-message-draft">Votre message préparé</label><textarea id="fab-message-draft" ref={draft} value={message} readOnly rows={8} /><div className="fab-contact-copy"><button className="fab-contact-button" type="button" onClick={copy}><span>{copied ? "Message copié" : "Copier mon message"}</span><span aria-hidden="true">{copied ? "✓" : "⧉"}</span></button><a href={`mailto:${contactEmail}?subject=${encodeURIComponent("Un projet avec la Maison")}&body=${encodeURIComponent(message)}`}>Ouvrir ma messagerie <Arrow diagonal /></a></div><p className="fab-contact-notice" role="status" aria-live="polite">{notice || "Vous pouvez relire et envoyer votre message depuis votre messagerie."}</p></div>}
       </div>
     </div>
   </dialog>;
