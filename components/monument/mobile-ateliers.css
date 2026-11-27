@@ -191,7 +191,7 @@
   align-items: center;
   justify-content: center;
   gap: clamp(.5rem, 3.8vw, 1.2rem);
-  margin: -.12rem auto .7rem;
+  margin: .45rem auto .7rem;
 }
 
 .mobile-ateliers__controls button {
@@ -219,7 +219,7 @@
 }
 
 .mobile-ateliers__counter {
-  font: 400 .66rem/1.4 var(--mono);
+  font: 400 .72rem/1.4 var(--mono);
   letter-spacing: .065em;
   text-transform: uppercase;
 }
