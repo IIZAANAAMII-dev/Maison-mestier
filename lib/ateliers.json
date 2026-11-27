@@ -4,10 +4,10 @@
     "name": "Stands & Salons",
     "summary": "Votre stand, du dossier exposant au dernier contact relancé.",
     "image": "atelier",
-    "title": "Stand de salon sur mesure dans le Sud de la France · Maison Mestier",
-    "description": "Conception, fabrication et montage de stands pour vos salons à Cannes, Monaco, Marseille et Nice. Un seul interlocuteur, du dossier exposant au suivi des contacts.",
+    "title": "Stand de salon sur mesure, en France et à l’étranger · Maison Mestier",
+    "description": "Conception, fabrication et montage de stands sur mesure, en France et à l’étranger. Nous sommes sur chaque montage, du dossier exposant au suivi des contacts.",
     "headline": "Votre stand, du dossier exposant au dernier contact relancé.",
-    "intro": "Un salon dure trois jours et engage une grande partie du budget annuel. La Maison prend en charge tout ce qui se passe avant, pendant et après. Votre équipe se consacre aux rendez-vous.",
+    "intro": "Un salon dure trois jours et engage une grande partie du budget annuel. La Maison s’occupe de tout ce qui l’entoure, de la réservation au suivi des contacts, pour que votre équipe se consacre aux rendez-vous.",
     "chapters": [
       {
         "title": "Choisir le bon salon",
@@ -30,7 +30,7 @@
         "body": "Le stand est photographié et filmé. Ces images alimentent votre site, vos réseaux et votre prochaine campagne. Le salon continue de travailler pour vous après la fermeture."
       }
     ],
-    "cta": "Vous exposez cette année ? Parlons de votre stand.",
+    "cta": "Dites-nous sur quel salon vous exposez, et quand.",
     "related": [
       "Événement",
       "Contenu",
@@ -43,10 +43,10 @@
     "name": "Événement",
     "summary": "Lancements, soirées clients et conventions, conçus pour être mesurés.",
     "image": "entracte",
-    "title": "Agence événementielle B2B dans le Sud de la France · Maison Mestier",
-    "description": "Lancements, soirées clients, conventions et séminaires dans le Sud de la France. Maison Mestier conçoit et produit vos événements professionnels, de l’idée au bilan.",
-    "headline": "Un événement réussi se mesure le lendemain.",
-    "intro": "Lancement, soirée clients, convention ou conférence de presse : la Maison conçoit l’événement, le produit et vous montre ce qu’il a rapporté.",
+    "title": "Agence événementielle premium · Maison Mestier",
+    "description": "Lancements, soirées clients, conventions et journées presse, pour les marques techniques comme pour le luxe et la mode. Conçus, produits et mesurés, de l’idée au bilan.",
+    "headline": "Une soirée se prépare comme un montage de salon.",
+    "intro": "Le lieu n’est souvent disponible que quelques heures avant l’arrivée des invités, et l’heure d’ouverture ne bouge pas. Ce rythme, nous l’avons appris sur les salons. Nous l’appliquons aujourd’hui aux lancements de produit comme aux soirées clients.",
     "chapters": [
       {
         "title": "Partir d'un objectif",
@@ -65,7 +65,7 @@
         "body": "Vous recevez un bilan chiffré, la liste des contacts à relancer et une galerie privée. Les images et les films alimentent ensuite votre site et vos réseaux."
       }
     ],
-    "cta": "Parlons de votre prochain événement.",
+    "cta": "Envoyez-nous la date et le nombre d’invités, c’est assez pour commencer.",
     "related": [
       "Stands & Salons",
       "Contenu",
@@ -77,10 +77,10 @@
     "name": "Identité",
     "summary": "Une marque claire, déclinée jusqu’au carton d’invitation.",
     "image": "empreinte",
-    "title": "Agence d’identité de marque B2B dans le Sud de la France · Maison Mestier",
-    "description": "Stratégie de marque, logo, charte graphique et imprimés soignés pour les entreprises B2B. De la plateforme de marque au carton d’invitation.",
+    "title": "Agence d’identité de marque et packaging · Maison Mestier",
+    "description": "Stratégie de marque, logo, charte graphique, packaging et imprimés soignés, pour les marques techniques comme pour le luxe et la mode. De la plateforme de marque au carton d’invitation.",
     "headline": "Une marque se reconnaît avant qu’on lise son nom.",
-    "intro": "Votre identité est ce que vos clients voient en premier, sur un site, un stand ou une enveloppe. La Maison la construit et veille à ce qu’elle reste la même partout.",
+    "intro": "Sur un salon, le visiteur décide en passant dans l’allée s’il s’arrête. Votre identité fait une grande partie de ce travail, sur le stand comme sur votre site. Chez nous, elle est dessinée en interne, par notre directrice artistique, formée au design à KEDGE puis à Milan.",
     "chapters": [
       {
         "title": "Savoir ce que vous voulez dire",
@@ -99,7 +99,7 @@
         "body": "Coffrets, emballages et objets à votre marque, pour un lancement, un salon ou la fin d’année."
       }
     ],
-    "cta": "Votre marque mérite-t-elle mieux ? Parlons-en.",
+    "cta": "Montrez-nous votre logo actuel. On vous dira franchement ce qu’on en pense.",
     "related": [
       "Digital",
       "Stands & Salons",
@@ -111,10 +111,10 @@
     "name": "Digital",
     "summary": "Des sites sur mesure, rapides, pensés pour vendre en B2B.",
     "image": "etude",
-    "title": "Création de site internet sur mesure B2B · Sud de la France · Maison Mestier",
-    "description": "Sites sur mesure, expériences 3D et espaces clients pour les entreprises B2B. Rapides, accessibles et conçus pour générer des demandes.",
+    "title": "Création de sites, e-commerce et applications · Maison Mestier",
+    "description": "Sites sur mesure reliés à votre CRM et à vos logiciels internes, boutiques en ligne, applications web et mobiles, expériences 3D. Conçus pour générer des demandes et des ventes.",
     "headline": "Un site qui travaille pendant que vous êtes en rendez-vous.",
-    "intro": "Pour un acheteur B2B, votre site est souvent le premier rendez-vous. Il doit expliquer vite ce que vous faites, rassurer et donner envie de vous écrire.",
+    "intro": "Après un salon, beaucoup de visiteurs passent par votre site avant de vous rappeler. En quelques secondes, il doit confirmer ce qu’ils ont vu sur le stand. Pour une marque de mode, c’est souvent là que se fait la vente. Notre développeur web et notre directrice artistique le conçoivent ensemble, en interne.",
     "chapters": [
       {
         "title": "Un site dessiné pour vous",
@@ -133,7 +133,7 @@
         "body": "Rapide sur mobile, accessible, conforme au RGPD, hébergé de façon sécurisée. Après la mise en ligne, nous pouvons assurer les mises à jour et la maintenance, en option."
       }
     ],
-    "cta": "Votre site vous ressemble-t-il encore ? Parlons-en.",
+    "cta": "Envoyez-nous l’adresse de votre site actuel. Nous vous dirons ce qui freine vos visiteurs.",
     "related": [
       "Visibilité",
       "Identité",
@@ -145,7 +145,7 @@
     "name": "Visibilité",
     "summary": "Être trouvé sur Google et cité par les IA, au bon moment.",
     "image": "empreinte",
-    "title": "Agence SEO, GEO et Google Ads B2B · Sud de la France · Maison Mestier",
+    "title": "Agence SEO, GEO et Google Ads · Maison Mestier",
     "description": "Référencement naturel, présence dans ChatGPT et Perplexity, campagnes Google Ads et LinkedIn Ads. Plus de demandes qualifiées, mesurées chaque mois.",
     "headline": "Être trouvé par ceux qui cherchent déjà.",
     "intro": "Vos futurs clients cherchent sur Google et posent de plus en plus leurs questions aux IA. La Maison fait en sorte qu’ils vous trouvent, et mesure ce que cela rapporte.",
@@ -167,7 +167,7 @@
         "body": "Un rapport mensuel clair : demandes reçues, coût par contact, ventes. Les données sont reliées à votre CRM."
       }
     ],
-    "cta": "Vos clients vous trouvent-ils ? Vérifions ensemble.",
+    "cta": "Tapez votre métier dans Google, puis dans ChatGPT. Si vous n’apparaissez pas, écrivez-nous.",
     "related": [
       "Digital",
       "Stands & Salons",
@@ -179,10 +179,10 @@
     "name": "Éphémère",
     "summary": "Pop-up, corners et boutiques temporaires, du bail au démontage.",
     "image": "atelier",
-    "title": "Pop-up store et boutique éphémère · Sud de la France · Maison Mestier",
+    "title": "Pop-up store et boutique éphémère · Maison Mestier",
     "description": "Pop-up stores, corners en grand magasin ou en hôtel, boutiques itinérantes. Recherche du lieu, design, équipe de vente et soirée d’ouverture.",
-    "headline": "Ouvrir un lieu pour quelques semaines, et qu’on s’en souvienne.",
-    "intro": "Un pop-up permet de tester une ville, lancer un produit ou rencontrer vos clients autrement. Sur la Côte d’Azur, la saison d’été s’y prête particulièrement. La Maison s’occupe de tout, du bail au démontage.",
+    "headline": "Un pop-up, c’est un stand qu’on laisse ouvert plus longtemps.",
+    "intro": "Il faut un lieu, une autorisation, et un mobilier qui se monte vite puis repart sans abîmer les murs. C’est notre métier depuis le début, appliqué cette fois à une boutique de quelques semaines. À Paris, sur la Côte d’Azur l’été, ou dans une ville où vous voulez voir si votre marque prend.",
     "chapters": [
       {
         "title": "Trouver le lieu",
@@ -201,7 +201,7 @@
         "body": "Le lieu est démonté et rendu en l’état. Vous recevez un bilan : fréquentation, ventes, contacts."
       }
     ],
-    "cta": "Un lieu à ouvrir cette saison ? Parlons-en.",
+    "cta": "Une ville en tête et une période ? C’est assez pour qu’on commence à chercher.",
     "related": [
       "Événement",
       "Identité",
@@ -213,10 +213,10 @@
     "name": "Contenu",
     "summary": "Photos, films et posts qui font vivre chaque événement des mois durant.",
     "image": "empreinte",
-    "title": "Production photo et vidéo d’entreprise B2B · Sud de la France · Maison Mestier",
-    "description": "Photos, films de marque, captation de salons et d’événements, gestion LinkedIn et Instagram. Des contenus qui font vivre votre marque toute l’année.",
+    "title": "Production photo et vidéo de marque · Maison Mestier",
+    "description": "Photos, films de marque, captation et post-production de salons et d’événements, publications LinkedIn et Instagram autour de vos temps forts.",
     "headline": "Chaque salon, chaque soirée devient des mois de contenus.",
-    "intro": "Vos événements sont vos meilleurs sujets. La Maison les photographie, les filme et les transforme en publications pour votre site et vos réseaux.",
+    "intro": "Un stand monté pour trois jours peut nourrir vos réseaux pendant des mois, à condition que quelqu’un soit là pour le capter. Nous connaissons bien les salons, et nous savons à quel moment un stand est le plus beau : souvent juste avant l’ouverture, quand le hall est encore vide.",
     "chapters": [
       {
         "title": "Photo et film de marque",
@@ -235,7 +235,7 @@
         "body": "Communiqués, relations avec les journalistes de votre secteur, partenariats avec des créateurs de contenu."
       }
     ],
-    "cta": "Un salon ou un événement à faire durer ? Parlons-en.",
+    "cta": "Prévenez-nous avant votre prochain salon, pas après.",
     "related": [
       "Stands & Salons",
       "Événement",
@@ -247,10 +247,10 @@
     "name": "L’Intendance",
     "summary": "Un seul chef de projet pour tout coordonner.",
     "image": "etude",
-    "title": "Direction de projet communication 360 · Sud de la France · Maison Mestier",
+    "title": "Direction de projet communication 360 · Maison Mestier",
     "description": "Un seul chef de projet pour votre site, vos salons, vos événements et vos contenus. Budget consolidé, calendrier partagé, prestataires coordonnés.",
     "headline": "Un seul numéro à appeler.",
-    "intro": "Un site, deux salons, une soirée clients, un film : d’habitude, autant de prestataires et de réunions. Avec la Maison, un chef de projet suit tout.",
+    "intro": "Un site, deux salons, une soirée clients, un film : d’habitude, autant de prestataires et de réunions. Chez Maison Mestier, la même personne suit l’ensemble, et elle est sur place à chaque montage.",
     "chapters": [
       {
         "title": "Un interlocuteur unique",
@@ -269,7 +269,7 @@
         "body": "Un projet : un atelier, un besoin précis. Un parcours : plusieurs ateliers liés, par exemple un stand, sa campagne et ses contenus. Une résidence : la Maison vous accompagne toute l’année."
       }
     ],
-    "cta": "Plusieurs projets à mener cette année ? Parlons-en.",
+    "cta": "Listez vos projets de l’année, même en vrac. On vous propose une façon de les mener ensemble.",
     "related": [
       "Stands & Salons",
       "Événement",

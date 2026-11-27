@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { path } from "../lib/maison";
-import { FabricationNav, FabricationFooter, FabricationContact, FabricationPointer } from "../components/fabrication/FabricationShell";
+import { FabricationContact } from "../components/fabrication/FabricationShell";
+import ChromeFiches from "../components/partition/ChromeFiches";
 import "./globals.css";
 import "./galerie.css";
 
@@ -15,10 +16,10 @@ const sans = localFont({ src: "./fonts/instrument-sans.woff2", weight: "400 700"
 const mono = localFont({ src: "./fonts/ibm-plex-mono.woff2", variable: "--font-mono", display: "swap", preload: false });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://iizaanaamii-dev.github.io"),
+  metadataBase: new URL("https://maison-mestier.vercel.app"),
   title: { default: "Maison Mestier — L’art de faire impression", template: "%s · Maison Mestier" },
-  description: "Stands de salon, événements professionnels, identité et sites sur mesure. Huit ateliers, une direction de création dans le Sud de la France.",
-  icons: { icon: path("/cachet.png") },
+  description: "Stands de salon, événements professionnels, identité et sites sur mesure. Maison Mestier réunit huit ateliers pour vos projets en France et à l’étranger.",
+  icons: { icon: path("/charte/monogramme-cachet.svg") },
   robots: { index: false, follow: false },
   applicationName: "Maison Mestier",
   openGraph: {
@@ -26,13 +27,13 @@ export const metadata: Metadata = {
     title: "Maison Mestier — L’art de faire impression",
     description: "Une maison. Huit ateliers. De l’idée à la matière, nous donnons forme aux marques.",
     url: path("/"),
-    images: [{ url: path("/galerie/pavilion.webp"), width: 1536, height: 1024, alt: "Le pli monumental, étude de création Maison Mestier" }],
+    images: [{ url: path("/partition/partage.jpg"), width: 1200, height: 630, alt: "Le pli, sculpture de papier de Maison Mestier" }],
   },
-  twitter: { card: "summary_large_image", title: "Maison Mestier — L’art de faire impression", images: [path("/galerie/pavilion.webp")] },
+  twitter: { card: "summary_large_image", title: "Maison Mestier — L’art de faire impression", images: [path("/partition/partage.jpg")] },
 };
-export const viewport: Viewport = { themeColor: "#e9e6de", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#1C2333", width: "device-width", initialScale: 1 };
 
-// Both documents register before the browser captures the shared photograph.
+// The selected print keeps its position as the visitor opens or leaves a study.
 const studyTransition = `
   function nameStudyTransition(event) {
     const transition = event.viewTransition;
@@ -58,11 +59,10 @@ export default function Layout({ children }: Readonly<{children: React.ReactNode
       </head>
       <body id="haut">
         <a className="skip" href="#contenu">Aller au contenu</a>
-        <FabricationNav />
+        <ChromeFiches position="debut" />
         {children}
-        <FabricationFooter />
+        <ChromeFiches position="fin" />
         <FabricationContact />
-        <FabricationPointer />
       </body>
     </html>
   );
