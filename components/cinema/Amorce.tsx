@@ -87,7 +87,7 @@ export default function Amorce() {
       racine.dataset.mmAmorce = "entree";
       police = !document.fonts || document.fonts.status === "loaded";
       plan = Boolean(document.querySelector("[data-plateau][data-first-frame]"));
-      surfaces = Array.from(document.querySelectorAll<HTMLElement>("body > .skip, body > header, #contenu, body > footer")).filter(el => !el.inert);
+      surfaces = Array.from(document.querySelectorAll<HTMLElement>("body > .skip, body > header, #contenu, #projet, body > footer")).filter(el => !el.inert);
       surfaces.forEach(el => { el.inert = true; });
       actualiser();
       if (!police) void document.fonts.ready.then(() => {

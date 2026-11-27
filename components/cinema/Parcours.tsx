@@ -175,7 +175,7 @@ export default function Parcours() {
       <div className={styles.impressions}>
         {plans.map((plan, index) => {
           const Titre = index === 0 ? "h1" : "h2";
-          return <article className={styles.plan} key={plan.id} data-cine-plan={index} aria-labelledby={`cine-titre-${plan.id}`}>
+          return <article className={styles.plan} key={plan.id} id={index > 0 && presentation.reduced ? plan.id : undefined} data-cine-plan={index} aria-labelledby={`cine-titre-${plan.id}`}>
             <picture className={styles.tirage}>
               <source media="(orientation: portrait)" srcSet={path(`/film/tableau-${index}-mobile.webp`)} />
               <img src={path(`/film/tableau-${index}.webp`)} alt="" width={1440} height={900}
@@ -204,7 +204,7 @@ export default function Parcours() {
       </nav>
       <div className={styles.lisiere} aria-hidden="true" />
     </div>
-    {plans.slice(1).map((plan, index) => <span key={plan.id} id={plan.id} className={styles.borne} data-station={index + 1}
+    {plans.slice(1).map((plan, index) => <span key={plan.id} id={presentation.reduced ? undefined : plan.id} className={styles.borne} data-station={index + 1}
       tabIndex={-1} aria-label={`La visite de l’atelier, ${plan.etiquette}`} />)}
   </section>;
 }

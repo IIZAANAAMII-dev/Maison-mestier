@@ -80,7 +80,7 @@ export default function Layout({ children }: Readonly<{children: React.ReactNode
     <html lang="fr" suppressHydrationWarning className={[display.variable, sans.variable, mono.variable].join(" ")}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: amorceInitiale + studyTransition }} />
-        <style>{"@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }"}</style>
+        <style>{"html:not([data-mm-amorce]) [data-ouverture] { display: none; } @media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }"}</style>
       </head>
       <body id="haut">
         <a className="skip" href="#contenu">Aller au contenu</a>

@@ -51,6 +51,7 @@
     linear-gradient(90deg, rgb(21 19 19 / .57), rgb(28 24 22 / .24) 38%, transparent 61%),
     linear-gradient(0deg, rgb(16 14 16 / .65), transparent 18%, transparent 90%, rgb(28 24 24 / .24));
 }
+.plan[id] { scroll-margin-top: calc(0px - var(--head-height, 4.5rem)); }
 .plan::before { content: ""; z-index: 1; }
 .legende {
   position: absolute;
