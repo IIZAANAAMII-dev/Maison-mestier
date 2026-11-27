@@ -62,7 +62,7 @@
 
   function preparePaper() {
     if (closed) return;
-    const poster = page?.querySelector(".trace-poster img");
+    const poster = page?.querySelector("[data-intro-poster]");
     const ready = () => {
       paperReady = true;
       if (performance.now() - entry >= hold) registerMark();

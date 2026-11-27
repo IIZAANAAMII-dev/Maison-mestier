@@ -1,6 +1,6 @@
 # Maison Mestier · Le Trait
 
-Site de présentation Maison Mestier. Une sculpture de métal laqué se déplie en stand d’exposition, puis trois études de création se parcourent sur une pellicule horizontale. Le projet Vercel du site complet est `maison-mestier`.
+Site de présentation Maison Mestier. Quatre familles de métiers s’explorent dans un carrousel en perspective, puis le montage d’un stand se découvre en 3D. Le projet Vercel du site complet est `maison-mestier`.
 
 ## Développement
 
@@ -21,7 +21,9 @@ La scène source se trouve dans `art/trace/le-trait.blend`. Le générateur `art
 
 À la première visite, une lumière traverse le papier rouge et révèle le M ivoire. Le monogramme réagit au pointeur puis s’ouvre sur l’accueil. Le lien « Revoir l’introduction » en pied de page rejoue la séquence. La préférence de mouvement réduit donne directement accès au site.
 
-Le défilement, les trois boutons d’étape et la lecture guidée conduisent le montage du stand. Les images fixes prennent le relais en mode économie de données. Les visuels des offres Événements et Identités sont des illustrations originales.
+Le carrousel d’accueil utilise les photographies de démonstration générées dans `public/metiers/`. Chaque scène reprend une lumière latérale chaude, un grain 35 mm et les matières ivoire et rouge cachet. Le défilement, le glissement et les boutons donnent accès aux stands, aux événements, aux identités et au digital.
+
+Le défilement, les trois boutons d’étape et la lecture guidée conduisent le montage de la maquette Blender dans `art/portique/`. Les deux cadrages, les films et leurs tirages sont dans `public/portique/`. Les images fixes prennent le relais lorsque la vidéo tarde ou que l’économie de données est active.
 
 La galerie horizontale projette les tirages et leurs relevés sur une pellicule courbe en Canvas 2D. Le défilement natif gère le tactile et le trackpad. Les commandes, le glissement à la souris et le clavier donnent accès aux trois études. Les dessins et les textures se chargent à proximité de la galerie.
 
