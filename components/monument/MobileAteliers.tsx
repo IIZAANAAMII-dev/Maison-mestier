@@ -1,20 +1,24 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
-import { ateliers, atelierPath, mobileEditionMedia, path } from "../../lib/maison";
+import { carnetAteliers, atelierPath, mobileEditionMedia, path } from "../../lib/maison";
 import { getSelection, toggleAtelier } from "../fabrication/fabrication-data";
 import "./mobile-ateliers.css";
 
-const papers = [
-  { slug: "stands-salons", colour: "#e6d8bb", ink: "#282820", photo: "atelier-mobile", alt: "Maquette d’un stand en papier ivoire et en laiton." },
-  { slug: "digital", colour: "#2f4453", ink: "#fff4dc", photo: "tirage-trame", alt: "Une fine trame de points se soulève au-dessus d’un socle." },
-  { slug: "evenement", colour: "#873d32", ink: "#fff0d6", photo: "entracte", alt: "Un portique éclairé apparaît derrière une tenture sombre." },
-  { slug: "ephemere", colour: "#cfaa72", ink: "#332a22", photo: "tirage-pli", alt: "Un pli de papier montre son revers métallique." },
-  { slug: "identite", colour: "#405448", ink: "#fff3d9", photo: "empreinte-mobile", alt: "Un monogramme gaufré dans le papier, à côté de sa matrice." },
-  { slug: "visibilite", colour: "#d2cbb7", ink: "#292d29", photo: "etude-mobile", alt: "Une feuille se relève dans la lumière." },
-  { slug: "contenu", colour: "#a85a45", ink: "#fff5de", photo: "tirage-scene", alt: "Un décor miniature, entre deux rideaux de papier." },
-  { slug: "intendance", colour: "#343d40", ink: "#fff4d9", photo: "tirage-sceau", alt: "Un cachet et son empreinte sur un courrier prêt à partir." },
-].map((paper) => ({ ...paper, atelier: ateliers.find((item) => item.slug === paper.slug)! }));
+const swatches: Record<string, { colour: string; ink: string; photo: string; alt: string }> = {
+  "stands-salons": { colour: "#e6d8bb", ink: "#282820", photo: "atelier-mobile", alt: "Maquette d’un stand en papier ivoire et en laiton." },
+  "digital": { colour: "#2f4453", ink: "#fff4dc", photo: "tirage-trame", alt: "Une fine trame de points se soulève au-dessus d’un socle." },
+  "evenement": { colour: "#873d32", ink: "#fff0d6", photo: "entracte", alt: "Un portique éclairé apparaît derrière une tenture sombre." },
+  "ephemere": { colour: "#cfaa72", ink: "#332a22", photo: "tirage-pli", alt: "Un pli de papier montre son revers métallique." },
+  "identite": { colour: "#405448", ink: "#fff3d9", photo: "empreinte-mobile", alt: "Un monogramme gaufré dans le papier, à côté de sa matrice." },
+  "visibilite": { colour: "#d2cbb7", ink: "#292d29", photo: "etude-mobile", alt: "Une feuille se relève dans la lumière." },
+  "contenu": { colour: "#a85a45", ink: "#fff5de", photo: "tirage-scene", alt: "Un décor miniature, entre deux rideaux de papier." },
+  "intendance": { colour: "#343d40", ink: "#fff4d9", photo: "tirage-sceau", alt: "Un cachet et son empreinte sur un courrier prêt à partir." },
+};
+const papers = carnetAteliers.map(atelier => ({
+  ...swatches[atelier.slug], slug: atelier.slug, atelier,
+}));
 
 const count = papers.length;
 const format = (number: number) => String(number).padStart(2, "0");
@@ -33,6 +37,8 @@ export default function MobileAteliers() {
   const kept = selection.includes(current.slug);
 
   useEffect(() => {
+    const savedPage = papers.findIndex(paper => paper.slug === window.history.state?.feuilletAtelier);
+    if (savedPage >= 0) setBook({ page: savedPage, previous: -1, direction: 1 });
     const sync = () => setSelection(getSelection());
     sync();
     setLive(true);
@@ -187,7 +193,9 @@ export default function MobileAteliers() {
           <span className="sr-only" role="status" aria-atomic="true">{current.atelier.name}, feuillet {book.page + 1} sur {count}.</span>
           <p className="mobile-ateliers__summary">{current.atelier.summary}</p>
           <div className="mobile-ateliers__actions">
-            <a className="mobile-ateliers__open" href={atelierPath(current.slug)} aria-label={`Voir l’atelier ${current.atelier.name}`}>Voir l’atelier</a>
+            <Link className="mobile-ateliers__open" href={`/ateliers/${current.slug}/`} prefetch={false}
+              onNavigate={() => window.history.replaceState({ ...window.history.state, feuilletAtelier: current.slug }, "")}
+              aria-label={`Voir l’atelier ${current.atelier.name}`}>Voir l’atelier</Link>
             {live && (
               <button type="button" className="mobile-ateliers__save" aria-pressed={kept} aria-label={kept ? `Retirer ${current.atelier.name} du projet` : `Garder ${current.atelier.name} pour le projet`} onClick={() => toggleAtelier(current.slug)}>
                 <span aria-hidden="true" />{kept ? "Retirer du projet" : "Garder pour le projet"}

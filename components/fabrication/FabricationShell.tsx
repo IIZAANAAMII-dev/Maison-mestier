@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type FormEvent, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent } from "react";
 import { usePathname } from "next/navigation";
 import { gsap } from "gsap";
-import { ateliers, atelierPath, path } from "../../lib/maison";
+import { ateliers, atelierPath, carnetAteliers, mobileEditionMedia, path } from "../../lib/maison";
 import { chapters, contact, getSelection, selectionKey, setSelection, toggleAtelier } from "./fabrication-data";
 import { useFabricationDialog } from "./useFabricationDialog";
 import "./shell.css";
@@ -25,6 +25,16 @@ const sections = [
 
 const number = (index: number) => String(index + 1).padStart(2, "0");
 
+// Printed folios follow the mobile swatch book everywhere a visitor can select a workshop.
+function subscribeToEdition(update: () => void) {
+  const edition = window.matchMedia(mobileEditionMedia);
+  edition.addEventListener("change", update);
+  return () => edition.removeEventListener("change", update);
+}
+const currentDirectory = () => window.matchMedia(mobileEditionMedia).matches ? carnetAteliers : ateliers;
+const printedDirectory = () => carnetAteliers;
+const useAtelierDirectory = () => useSyncExternalStore(subscribeToEdition, currentDirectory, printedDirectory);
+
 function Arrow({ diagonal = false, className = "" }: { diagonal?: boolean; className?: string }) {
   return <svg className={`fab-shell-arrow ${className}`} viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g transform={diagonal ? "rotate(-45 16 16)" : undefined}><path d="M5 16h21M17 7l9 9-9 9" stroke="currentColor" strokeWidth="1.3" /></g></svg>;
 }
@@ -45,6 +55,7 @@ function contactLink(event: MouseEvent<HTMLAnchorElement>, detail: ContactDetail
 }
 
 export function FabricationNav() {
+  const directory = useAtelierDirectory();
   const menu = useFabricationDialog({ variant: "menu" });
   const pathname = usePathname();
   const home = pathname === "/" || pathname === path("/") || pathname === path("");
@@ -184,7 +195,7 @@ export function FabricationNav() {
         </nav>
         <nav className="fab-index-ateliers" aria-label="Les huit fiches d’atelier">
           <h3>Les huit ateliers</h3>
-          <ul>{ateliers.map(atelier => (
+          <ul>{directory.map(atelier => (
             <li key={atelier.slug}>
               <a href={atelierPath(atelier.slug)} onClick={navigate} aria-current={pathname?.includes(`/ateliers/${atelier.slug}`) ? "page" : undefined}>{atelier.name}</a>
             </li>
@@ -198,6 +209,7 @@ export function FabricationNav() {
 }
 
 export function FabricationFooter() {
+  const directory = useAtelierDirectory();
   const footer = useRef<HTMLElement>(null);
   const letter = useRef<HTMLDivElement>(null);
   const letterScore = useRef<gsap.core.Timeline | null>(null);
@@ -244,13 +256,14 @@ export function FabricationFooter() {
         <div className="fab-letter-flap" aria-hidden="true" /><div className="fab-letter-seal" aria-hidden="true">M.</div>
       </div><button className="fab-letter-toggle" type="button" aria-expanded={letterOpen} aria-controls="fab-footer-letter" onClick={() => setLetterOpen((open) => !open)} data-cursor={letterOpen ? "Refermer" : "Ouvrir"}><span>{letterOpen ? "Refermer la lettre" : "Une lettre vous attend"}</span><span aria-hidden="true">{letterOpen ? "−" : "+"}</span></button></div>
     </div>
-    <div id="fab-annuaire" tabIndex={-1} className="fab-footer-directory"><div className="fab-footer-address"><span className="fab-shell-label">Maison Mestier</span><p>Une direction de création.<br />Toutes les dimensions de votre marque.</p><span>Sud de la France</span></div><nav className="fab-footer-pages" aria-label="Explorer la Maison"><span className="fab-shell-label">À parcourir</span><a href={path("/#maison")}>La Maison</a><a href={path("/#ateliers")}>Les ateliers</a><a href={path("/#etudes")}>Les études</a><a href={path("/#projet")}>Votre projet</a><a href={path("/laboratoire/")}>Le laboratoire <Arrow diagonal className="fab-inline-arrow" /></a></nav><nav className="fab-footer-ateliers" aria-label="Tous les ateliers"><span className="fab-shell-label">Huit ateliers, un même regard</span><div>{ateliers.map((atelier, index) => <a key={atelier.slug} href={atelierPath(atelier.slug)}><span>{number(index)}</span>{atelier.name}</a>)}</div></nav></div>
+    <div id="fab-annuaire" tabIndex={-1} className="fab-footer-directory"><div className="fab-footer-address"><span className="fab-shell-label">Maison Mestier</span><p>Une direction de création.<br />Toutes les dimensions de votre marque.</p><span>Sud de la France</span></div><nav className="fab-footer-pages" aria-label="Explorer la Maison"><span className="fab-shell-label">À parcourir</span><a href={path("/#maison")}>La Maison</a><a href={path("/#ateliers")}>Les ateliers</a><a href={path("/#etudes")}>Les études</a><a href={path("/#projet")}>Votre projet</a><a href={path("/laboratoire/")}>Le laboratoire <Arrow diagonal className="fab-inline-arrow" /></a></nav><nav className="fab-footer-ateliers" aria-label="Tous les ateliers"><span className="fab-shell-label">Huit ateliers, un même regard</span><div>{directory.map((atelier, index) => <a key={atelier.slug} href={atelierPath(atelier.slug)}><span>{number(index)}</span>{atelier.name}</a>)}</div></nav></div>
     <a className="fab-footer-signature" href={path("/")} aria-label="Maison Mestier, accueil"><span>Maison</span><em>Mestier.</em></a>
     <div className="fab-footer-bottom"><span>© {new Date().getFullYear()} Maison Mestier</span><span>De l’idée à ce qui reste.</span><a href="#haut">Retour en haut <Arrow className="fab-inline-arrow fab-arrow-up" /></a></div>
   </footer>;
 }
 
 export function FabricationContact() {
+  const directory = useAtelierDirectory();
   const dialog = useFabricationDialog();
   const [values, setValues] = useState<ContactValues>(emptyValues);
   const [restored, setRestored] = useState(false);
@@ -333,7 +346,7 @@ export function FabricationContact() {
     setValues(previous => ({ ...previous, [key]: value }));
     setPrepared(false); setCopied(false); setNotice(""); setError("");
   }
-  const selectedAteliers = ateliers.filter(atelier => values.slugs.includes(atelier.slug));
+  const selectedAteliers = directory.filter(atelier => values.slugs.includes(atelier.slug));
   const atelierNames = selectedAteliers.length ? selectedAteliers.map(atelier => atelier.name).join(" · ") : "À composer ensemble";
   const message = `Bonjour Maison Mestier,\n\n${values.message.trim()}\n\nAteliers à réunir : ${atelierNames}\n\n${values.name.trim()}\n${values.email.trim()}`;
 
@@ -371,7 +384,7 @@ export function FabricationContact() {
     <div className="fab-contact-top"><span className="fab-shell-label">Maison Mestier / Correspondance</span><button className="fab-shell-close" type="button" onClick={() => dialog.dismiss()}><span>Fermer</span><Cross /></button></div>
     <div className="fab-contact-layout"><aside className="fab-contact-intro" data-dialog-enter><span className="fab-shell-label">Votre idée, en quelques mots.</span><h2 id="fab-contact-title" tabIndex={-1} data-dialog-focus>Faisons<br /><em>Maison.</em></h2><p id="fab-contact-description">Racontez-nous l’idée.<br />Nous relierons les bons ateliers.</p><div className="fab-contact-composition"><span className="fab-shell-label">Votre composition</span><span className="fab-contact-count">{String(selectedAteliers.length).padStart(2, "0")}<small>/ 08</small></span>{selectedAteliers.length ? <ul>{selectedAteliers.map(atelier => <li key={atelier.slug}><span>{atelier.name}</span><button type="button" onClick={() => toggleAtelier(atelier.slug)} aria-label={`Retirer ${atelier.name}`}><Cross /></button></li>)}</ul> : <p>Un atelier ou plusieurs.<br />Nous pouvons aussi composer ensemble.</p>}</div><span className="fab-contact-signature">À bientôt,<br /><em>la Maison.</em></span></aside>
       <div className="fab-contact-content"><form className="fab-contact-form" onSubmit={prepare}>
-        <fieldset className="fab-contact-choices" data-dialog-enter><legend><span className="fab-contact-step">01</span> Les ateliers à réunir</legend><p>Choisissez les métiers dont vous avez envie. Plusieurs choix sont possibles.</p><div>{ateliers.map((atelier, index) => <label key={atelier.slug} className="fab-contact-choice"><input type="checkbox" name="ateliers" value={atelier.slug} checked={values.slugs.includes(atelier.slug)} onChange={() => toggleAtelier(atelier.slug)} /><span className="fab-choice-index">{number(index)}</span><span>{atelier.name}</span><span className="fab-choice-mark" aria-hidden="true">{values.slugs.includes(atelier.slug) ? "−" : "+"}</span></label>)}</div></fieldset>
+        <fieldset className="fab-contact-choices" data-dialog-enter><legend><span className="fab-contact-step">01</span> Les ateliers à réunir</legend><p>Choisissez les métiers dont vous avez envie. Plusieurs choix sont possibles.</p><div>{directory.map((atelier, index) => <label key={atelier.slug} className="fab-contact-choice"><input type="checkbox" name="ateliers" value={atelier.slug} checked={values.slugs.includes(atelier.slug)} onChange={() => toggleAtelier(atelier.slug)} /><span className="fab-choice-index">{number(index)}</span><span>{atelier.name}</span><span className="fab-choice-mark" aria-hidden="true">{values.slugs.includes(atelier.slug) ? "−" : "+"}</span></label>)}</div></fieldset>
         <div className="fab-contact-identity" data-dialog-enter><span className="fab-contact-section"><span className="fab-contact-step">02</span> Faisons connaissance</span><div className="fab-contact-row"><label className="fab-contact-field"><span>Votre nom <small>obligatoire</small></span><input name="name" autoComplete="name" required minLength={2} maxLength={120} value={values.name} onChange={event => change("name", event.target.value)} placeholder="Prénom et nom" /></label><label className="fab-contact-field"><span>Votre e-mail <small>obligatoire</small></span><input name="email" type="email" autoComplete="email" inputMode="email" required maxLength={254} value={values.email} onChange={event => change("email", event.target.value)} placeholder="vous@entreprise.fr" /></label></div></div>
         <label className="fab-contact-field fab-contact-project" data-dialog-enter><span className="fab-contact-section"><span className="fab-contact-step">03</span> Le début de l’histoire <small>obligatoire</small></span><textarea name="message" required minLength={10} maxLength={4000} rows={4} value={values.message} onChange={event => change("message", event.target.value)} placeholder="L’idée, le lieu, les envies, le calendrier… Quelques mots suffisent pour commencer." /></label>
         {error && <p className="fab-contact-error" role="alert">{error}</p>}

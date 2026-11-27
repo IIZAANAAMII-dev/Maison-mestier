@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore, type CSSProperties, type MouseEvent } from "react";
-import { ateliers, path } from "../../lib/maison";
+import { carnetAteliers, path } from "../../lib/maison";
 import { contact, getSelection } from "../fabrication/fabrication-data";
 import "./project-invitation.css";
 
@@ -14,7 +14,7 @@ function subscribeToSelection(notify: () => void) {
 
 export default function ProjectInvitation() {
   const slugs = useSyncExternalStore<string[] | null>(subscribeToSelection, getSelection, serverSelection);
-  const selection = ateliers.filter(atelier => slugs?.includes(atelier.slug));
+  const selection = carnetAteliers.filter(atelier => slugs?.includes(atelier.slug));
   const interactive = slugs !== null;
 
   function openLetter(event: MouseEvent<HTMLAnchorElement>) {
