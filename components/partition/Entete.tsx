@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { atelierPath, carnetAteliers, path } from "../../lib/maison";
 import { useFabricationDialog } from "../fabrication/useFabricationDialog";
 import { mailLink, menuHash, openProject, panelEntry, regularClick, useProjectSelection, writeToMaison } from "./projet";
@@ -8,6 +8,7 @@ import styles from "./entete.module.css";
 
 const sections = [
   { id: "maison", title: "La Maison" },
+  { id: "regards", title: "Le regard" },
   { id: "ateliers", title: "Les ateliers" },
   { id: "etudes", title: "Les études" },
   { id: "projet", title: "Votre projet" },
@@ -27,8 +28,10 @@ function Signature() {
 export default function Entete({ section }: { section?: "ateliers" | "etudes" }) {
   const menu = useFabricationDialog({ variant: "menu" });
   const { ref, show, dismiss } = menu;
+  const header = useRef<HTMLElement>(null);
   const selected = useProjectSelection();
   const [chapter, setChapter] = useState<Chapter>("maison");
+  const [lightInk, setLightInk] = useState(false);
   const interactive = selected !== null;
   const current = section ?? chapter;
   const chapterLink = (id: Chapter) => section ? path(`/#${id}`) : `#${id}`;
@@ -36,22 +39,28 @@ export default function Entete({ section }: { section?: "ateliers" | "etudes" })
   useEffect(() => {
     if (section) return;
     const landmarks = sections.map(({ id }) => ({ id, node: document.getElementById(id) }));
+    const darkSurfaces = Array.from(document.querySelectorAll<HTMLElement>("[data-encre-claire]"));
     let observer: IntersectionObserver | undefined;
+    let line = 1;
     const update = () => {
       let visible: Chapter = "maison";
-      const line = Math.min(132, window.innerHeight * .25);
       for (const { id, node } of landmarks) {
         if (node && node.getBoundingClientRect().top <= line) visible = id;
       }
       setChapter(visible);
+      setLightInk(darkSurfaces.some(surface => {
+        const bounds = surface.getBoundingClientRect();
+        return bounds.top <= line && bounds.bottom > line;
+      }));
     };
     const watch = () => {
       observer?.disconnect();
-      const line = Math.min(132, Math.round(window.innerHeight * .25));
+      line = Math.max(1, Math.round((header.current?.offsetHeight ?? 68) * .55));
       observer = new IntersectionObserver(update, {
         rootMargin: `-${line - 1}px 0px -${Math.max(0, window.innerHeight - line - 1)}px 0px`,
       });
       for (const { node } of landmarks) if (node) observer.observe(node);
+      for (const node of darkSurfaces) observer.observe(node);
       update();
     };
     watch();
@@ -137,10 +146,11 @@ export default function Entete({ section }: { section?: "ateliers" | "etudes" })
 
   return (
     <>
-      <header className={styles.bar} data-paper={current === "maison" ? undefined : ""}>
+      <header ref={header} className={styles.bar} data-paper={section ? "" : undefined}
+        data-landing={section ? undefined : current} data-light-ink={lightInk ? "" : undefined}>
         <a className={styles.brand} href={section ? path("/") : "#haut"} aria-label={section ? "Maison Mestier, accueil" : "Maison Mestier, retour en haut"}><Signature /></a>
         <nav className={styles.chapters} aria-label="Navigation principale">
-          {sections.slice(1, 3).map(({ id, title }) => (
+          {sections.slice(1, -1).map(({ id, title }) => (
             <a href={chapterLink(id)} key={id} aria-current={current === id ? "location" : undefined}>{title}</a>
           ))}
         </nav>

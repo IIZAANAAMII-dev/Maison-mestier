@@ -1,0 +1,214 @@
+.regards {
+  --verge: #f3f0ea;
+  --encre: #1c2333;
+  --cachet: #8e2a23;
+  --bord-regard: clamp(1.3rem, 6.3vw, 7.8rem);
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  color: var(--encre);
+  background-color: var(--verge);
+}
+
+.planche {
+  display: grid;
+  grid-template-columns: minmax(0, 3.1fr) minmax(0, 6.9fr);
+  align-items: center;
+  gap: clamp(1rem, 3.2vw, 4.5rem);
+  padding: clamp(3.5rem, 5.8vw, 7rem) var(--bord-regard) clamp(4rem, 7.6vw, 8.5rem);
+}
+
+.notice { position: relative; z-index: 1; }
+.legende {
+  font: 500 clamp(.68rem, .8vw, .77rem)/1.4 var(--sans);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.lieu {
+  margin-block: clamp(1.1rem, 2.5vw, 2.6rem) .72rem;
+  font: 400 clamp(2.7rem, 4.95vw, 6.65rem)/.99 var(--display);
+  letter-spacing: -.063em;
+}
+.lieu em, .titreAffiche em { display: block; font-weight: inherit; }
+.lieuDate { font: 400 clamp(.9rem, 1.18vw, 1.12rem)/1.55 var(--sans); }
+.sourcePhoto, .sourceGravure {
+  display: inline-block;
+  color: #53525a;
+  font: 400 clamp(.75rem, .9vw, .85rem)/1.5 var(--sans);
+  text-decoration-color: transparent;
+  text-underline-offset: .22em;
+}
+.sourcePhoto { margin-top: clamp(1.4rem, 3.1vw, 3.5rem); }
+.fleche {
+  position: relative;
+  display: inline-block;
+  width: .67em;
+  height: .67em;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  vertical-align: .03em;
+}
+.fleche::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 135%;
+  height: 1px;
+  background: currentColor;
+  transform: rotate(-45deg);
+  transform-origin: top right;
+}
+.sourcePhoto .fleche, .sourceGravure .fleche { margin-left: .14em; color: var(--cachet); }
+.sourcePhoto:hover, .sourceGravure:hover { text-decoration-color: currentColor; }
+
+.architecture { min-width: 0; }
+.verriere {
+  overflow: clip;
+  padding-block: .5%;
+  mix-blend-mode: multiply;
+}
+.verriere img {
+  width: 100%;
+  height: auto;
+  transform-origin: 64% 72%;
+}
+.architecture figcaption { margin-top: .8rem; text-align: right; }
+
+.affiche {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr);
+  align-items: center;
+  column-gap: clamp(1rem, 5.7vw, 6.5rem);
+  min-height: min(40rem, 70svh);
+  padding: clamp(3rem, 5.5vw, 6.5rem) var(--bord-regard);
+  color: #ede6d8;
+  background: radial-gradient(ellipse at 65% 32%, #963027 0%, #8e2a23 54%, #802a25 100%);
+}
+.affiche::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: auto 0 calc(100% - 1px);
+  height: clamp(14px, 2.2vw, 44px);
+  background: #8e2a23;
+  clip-path: polygon(0 100%, 100% 0, 100% 100%);
+  transform: scaleY(var(--biseau, .25));
+  transform-origin: center bottom;
+}
+.affiche::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: repeating-linear-gradient(94deg, transparent 0 6px, #27150e0a 6.25px 6.85px);
+  opacity: .54;
+  pointer-events: none;
+}
+.edition { align-self: center; }
+.titreAffiche {
+  margin-block: clamp(1.5rem, 2.7vw, 3rem) clamp(1.7rem, 3.3vw, 4rem);
+  font: 400 clamp(3.45rem, 6.95vw, 8.4rem)/.98 var(--display);
+  letter-spacing: -.067em;
+}
+.titreAffiche em { white-space: nowrap; }
+.visiter {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(.75rem, 1.15vw, 1.4rem);
+  min-height: 44px;
+  color: inherit;
+  font: 500 clamp(.87rem, 1.05vw, 1rem)/1.25 var(--sans);
+  text-underline-offset: .36em;
+  text-decoration-thickness: 1px;
+  text-decoration-color: #ede6d893;
+}
+.visiter span { display: inline-block; font-size: 1.1em; }
+.visiter:focus-visible { outline-color: currentColor; }
+.tirage {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  row-gap: clamp(1rem, 2.4vw, 3rem);
+}
+.monogramme { display: block; width: min(86%, 33rem); height: auto; }
+.plume { stroke-dasharray: 1; stroke-dashoffset: var(--plume-restante, 0); }
+.encre { opacity: var(--encre-pleine, 1); }
+.tirage time {
+  font: 400 clamp(.68rem, .84vw, .85rem)/1.5 var(--mono);
+  letter-spacing: .14em;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 1600px) {
+  .planche, .affiche { padding-inline: max(var(--bord-regard), calc((100vw - 100rem) / 2)); }
+}
+
+@media (max-width: 690px) {
+  .planche {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.1rem;
+    padding: clamp(2rem, 7vw, 3rem) var(--bord-regard) clamp(2.8rem, 8vw, 4rem);
+  }
+  .notice {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    column-gap: .65rem;
+  }
+  .notice .legende, .lieu { grid-column: 1 / -1; }
+  .lieu { margin-block: .7rem .55rem; font-size: clamp(2.45rem, 8.6vw, 3.65rem); }
+  .lieu em { display: inline; }
+  .lieuDate { align-self: start; font-size: clamp(.78rem, 2.6vw, .98rem); }
+  .sourcePhoto { margin-top: 0; font-size: .72rem; text-align: right; }
+  .architecture { overflow: visible; }
+  .verriere { margin-inline: -.72rem; }
+  .architecture figcaption { margin-top: .35rem; }
+  .affiche {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.6rem;
+    min-height: 0;
+    padding: clamp(2.2rem, 8.8vw, 4.2rem) var(--bord-regard) clamp(2.5rem, 10vw, 4.5rem);
+  }
+  .edition { display: contents; }
+  .affiche .legende { grid-row: 1; }
+  .titreAffiche {
+    grid-row: 2;
+    margin-block: -.65rem 0;
+    font-size: clamp(2.85rem, 10.8vw, 4.8rem);
+  }
+  .titreAffiche em { display: inline; }
+  .tirage {
+    grid-row: 3;
+    width: 82%;
+    justify-self: end;
+    row-gap: .8rem;
+  }
+  .visiter { grid-row: 4; justify-self: start; min-height: 40px; margin-top: -.75rem; }
+}
+
+@media (max-width: 359px) {
+  .notice { grid-template-columns: minmax(0, 1fr); }
+  .sourcePhoto { margin-top: .55rem; text-align: left; }
+  .sourcePhoto br { display: none; }
+  .lieu { font-size: 2.45rem; }
+  .titreAffiche { font-size: 2.68rem; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .visiter span { transition: transform .24s ease; }
+  .visiter:is(:hover, :focus-visible) span { transform: translate(.13em, -.13em); }
+  @supports (animation-timeline: view()) {
+    .verriere img {
+      animation: relever linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 80%;
+    }
+  }
+}
+@keyframes relever {
+  from { transform: translate3d(.65%, 0, 0) scale(1.035); }
+  to { transform: none; }
+}

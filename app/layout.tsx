@@ -27,9 +27,9 @@ export const metadata: Metadata = {
     title: "Maison Mestier — L’art de faire impression",
     description: "Une maison. Huit ateliers. De l’idée à la matière, nous donnons forme aux marques.",
     url: path("/"),
-    images: [{ url: path("/partition/partage.jpg"), width: 1200, height: 630, alt: "Le pli, sculpture de papier de Maison Mestier" }],
+    images: [{ url: path("/regards/partage.jpg"), width: 1200, height: 630, alt: "L’art de faire impression. Un tirage en accordéon révèle la Galerie des Machines." }],
   },
-  twitter: { card: "summary_large_image", title: "Maison Mestier — L’art de faire impression", images: [path("/partition/partage.jpg")] },
+  twitter: { card: "summary_large_image", title: "Maison Mestier — L’art de faire impression", images: [path("/regards/partage.jpg")] },
 };
 export const viewport: Viewport = { themeColor: "#1C2333", width: "device-width", initialScale: 1 };
 
