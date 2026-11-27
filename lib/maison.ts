@@ -1,7 +1,6 @@
 import ateliers from "./ateliers.json";
 
 export { ateliers };
-export const mobileEditionMedia = "(max-width: 849px), (max-height: 540px) and (pointer: coarse)";
 const carnetOrder = ["stands-salons", "digital", "evenement", "ephemere", "identite", "visibilite", "contenu", "intendance"];
 export const carnetAteliers = carnetOrder.map(slug => ateliers.find(atelier => atelier.slug === slug)!);
 export const basePath = (process.env.NEXT_PUBLIC_BASE_PATH || "").replace(/\/$/, "");
@@ -32,40 +31,3 @@ export const studies = [
     alt: "Maquette de scénographie avec parois de papier ivoire, portique courbe en laiton, arche dorée, assise rouge et tenture vert sombre.", workshop: "evenement", scene: "scene",
   },
 ] as const;
-
-export const materials = [
-  {
-    id: "pli",
-    name: "Le pli",
-    title: "Du pli au portique.",
-    copy: "Le vergé se soulève. Son revers de laiton capte la lumière, puis deux plis donnent à la feuille la forme d’un stand.",
-    step: "Pli de la feuille",
-    detail: "Papier vergé, laiton et pierre",
-  },
-  {
-    id: "sceau",
-    name: "Le sceau",
-    title: "Le poids d’une empreinte.",
-    copy: "Le cachet descend sur la cire. Il se relève et laisse apparaître les deux initiales. Une étude pour la signature de la Maison.",
-    step: "Pression du cachet",
-    detail: "Matrice en laiton et cire cachet",
-  },
-  {
-    id: "trame",
-    name: "La trame",
-    title: "Du relief au pixel.",
-    copy: "Une lumière rasante révèle les lignes du papier. Le relief se réduit à ses points et devient une surface numérique.",
-    step: "Transformation de la trame",
-    detail: "Papier, points et lignes d’encre",
-  },
-  {
-    id: "scene",
-    name: "La scène",
-    title: "À la levée du rideau.",
-    copy: "Le rideau s’écarte. La lumière entre par le portique et découvre une maquette d’espace pour une soirée.",
-    step: "Ouverture de la scène",
-    detail: "Textile nuit et lignes de laiton",
-  },
-] as const;
-
-export type MaterialId = (typeof materials)[number]["id"];
