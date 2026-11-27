@@ -19,13 +19,15 @@ Next.js exporte les pages statiques dans `out/`. La variable facultative `NEXT_P
 
 La scène source se trouve dans `art/trace/le-trait.blend`. Le générateur `art/trace/trace.py` documente les commandes Blender de construction, de rendu et d’export de la maquette glTF. `art/trace/edition.py` compose les ombres et les fonds puis encode les deux films. Les quatre tirages, les montages pour ordinateur et téléphone et la maquette de visite sont dans `public/trace/`.
 
-À la première visite, le poinçon de laiton pivote puis son empreinte ouvre le premier écran en trois secondes environ. Le modèle Blender et sa source se trouvent dans `art/empreinte/`. Le lien « Revoir l’introduction » en pied de page rejoue la séquence. Le défilement, les trois boutons d’étape et la lecture guidée conduisent la même séquence. Les images fixes prennent le relais en mode économie de données. La préférence de mouvement réduit donne directement accès à l’offre, aux trois études et aux ateliers. Les visuels des offres Événements et Identités sont des illustrations originales.
+À la première visite, une lumière traverse le papier rouge et révèle le M ivoire. Le monogramme réagit au pointeur puis s’ouvre sur l’accueil. Le lien « Revoir l’introduction » en pied de page rejoue la séquence. La préférence de mouvement réduit donne directement accès au site.
+
+Le défilement, les trois boutons d’étape et la lecture guidée conduisent le montage du stand. Les images fixes prennent le relais en mode économie de données. Les visuels des offres Événements et Identités sont des illustrations originales.
 
 La galerie horizontale projette les tirages et leurs relevés sur une pellicule courbe en Canvas 2D. Le défilement natif gère le tactile et le trackpad. Les commandes, le glissement à la souris et le clavier donnent accès aux trois études. Les dessins et les textures se chargent à proximité de la galerie.
 
 ## Références
 
-Dans la [capture de l’arrivée sur Lusion](https://www.landing.love/sites/lusion/), la barre pivote vers 2,8 s et la lettre découvre le premier plan vers 4,2 s. Maison Mestier reprend ce raccord avec le poinçon, son empreinte et le ruban vermillon du premier écran.
+Dans la [capture de l’arrivée sur Lusion](https://www.landing.love/sites/lusion/), la barre pivote vers 2,8 s et la lettre découvre le premier plan vers 4,2 s. Maison Mestier reprend le principe du raccord en ouvrant le papier rouge à travers son monogramme.
 
 Les minutages analysés et les liens vers les films de Lusion et Siena Film Foundation figurent à `/reperages/`. L’éclairage de la maquette Three.js suit les [guides de matériaux et lumière](https://github.com/CloudAI-X/threejs-skills/tree/0e181866f095b5f06d005133876e926515390d95/skills). Le défilement et la gestion du cycle de vie des animations s’appuient sur les [guides officiels GSAP](https://github.com/greensock/gsap-skills/tree/aed9cfd3277740755f6bfc1155c7aa645403b760/skills).
 
