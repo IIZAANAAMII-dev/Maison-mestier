@@ -68,8 +68,7 @@ export function useTravelling() {
     };
     const choose = (n: number, restoring = false) => {
       measure();
-      const y = window.scrollY;
-      if (travel && !restoring && y >= start - 1 && y <= start + travel + 1) {
+      if (travel && !restoring) {
         anchor = null;
         window.scrollTo({top: start + n/last * travel, behavior:"instant"});
       } else {
