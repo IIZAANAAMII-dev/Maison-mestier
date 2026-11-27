@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState, type FormEvent, type Keyboard
 import { usePathname } from "next/navigation";
 import { gsap } from "gsap";
 import { ateliers, atelierPath, path } from "../../lib/maison";
-import { chapters, contact, getSelection, setSelection, toggleAtelier } from "./fabrication-data";
+import { chapters, contact, getSelection, selectionKey, setSelection, toggleAtelier } from "./fabrication-data";
 import { useFabricationDialog } from "./useFabricationDialog";
 import "./shell.css";
 
@@ -17,10 +17,10 @@ const configuredEmail = (process.env.NEXT_PUBLIC_CONTACT_EMAIL || "").trim();
 const contactEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(configuredEmail) ? configuredEmail : "discutons@maisonmestier.fr";
 
 const sections = [
-  { id: "maison", label: "La Maison" },
-  { id: "ateliers", label: "Les ateliers" },
-  { id: "etudes", label: "Les études" },
-  { id: "projet", label: "Votre projet" },
+  { id: "maison", label: "La Maison", mobileLabel: "Le carnet" },
+  { id: "ateliers", label: "Les ateliers", mobileLabel: "Les ateliers" },
+  { id: "etudes", label: "Les études", mobileLabel: "Les études" },
+  { id: "projet", label: "Votre projet", mobileLabel: "La lettre" },
 ] as const;
 
 const number = (index: number) => String(index + 1).padStart(2, "0");
@@ -52,6 +52,7 @@ export function FabricationNav() {
   const [scrolled, setScrolled] = useState(false);
   const [interactive, setInteractive] = useState(false);
   const [currentSection, setCurrentSection] = useState("");
+  const [mobileChapter, setMobileChapter] = useState("");
   const [chapter, setChapter] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
 
@@ -78,10 +79,13 @@ export function FabricationNav() {
       setChapter(Math.max(0, Math.min(chapters.length - 1, Math.round(detail.chapter))));
       header.current?.style.setProperty("--fab-nav-progress", String(Math.max(0, Math.min(1, detail.progress))));
     };
+    const readChapter = (event: Event) => setMobileChapter((event as CustomEvent<string>).detail);
+    window.addEventListener("mestier:carnet", readChapter);
     window.addEventListener("mestier:selection", select);
     window.addEventListener("mestier:pick", pick);
     window.addEventListener("mestier:chapter", progress);
     return () => {
+      window.removeEventListener("mestier:carnet", readChapter);
       window.removeEventListener("mestier:selection", select);
       window.removeEventListener("mestier:pick", pick);
       window.removeEventListener("mestier:chapter", progress);
@@ -141,10 +145,11 @@ export function FabricationNav() {
     menu.dismiss(() => contact());
   }
 
-  const menuLabel = <><span>Menu</span><span className="fab-nav-plan" aria-hidden="true"><i /><i /><i /><i /></span></>;
+  const mobileLabel = sections.find(section => section.id === mobileChapter)?.mobileLabel;
+  const menuLabel = <><span>Menu</span>{home && mobileLabel && <span className="fab-nav-chapter" aria-hidden="true">{mobileLabel}</span>}<span className="fab-nav-plan" aria-hidden="true"><i /><i /><i /><i /></span></>;
 
   return <>
-    <header ref={header} className={`fab-nav${scrolled || !home ? " is-scrolled" : ""}`} data-mood={home ? chapters[chapter].mood : "paper"}>
+    <header ref={header} className={`fab-nav${scrolled || !home ? " is-scrolled" : ""}`} data-mood={home ? chapters[chapter].mood : "paper"} data-carnet={home && mobileChapter || undefined}>
       <a className="fab-nav-brand" href={path("/")} aria-label="Maison Mestier, accueil"><Wordmark /></a>
       <nav className="fab-nav-links" aria-label="Navigation principale">
         <a className="fab-nav-fabrication" href={path("/#ateliers")}><span className="fab-nav-live" aria-hidden="true" /><span>Les ateliers</span></a>
@@ -257,12 +262,32 @@ export function FabricationContact() {
   const ready = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let saved: Partial<ContactValues> & { atelier?: string } = {};
-    try { saved = JSON.parse(sessionStorage.getItem(draftKey) || sessionStorage.getItem("mestier:galerie:contact") || "{}"); } catch { /* The draft remains usable in memory. */ }
-    if (!saved || typeof saved !== "object") saved = {};
-    let selected = getSelection();
-    if (!selected.length && typeof saved.atelier === "string" && ateliers.some(atelier => atelier.slug === saved.atelier)) selected = setSelection([saved.atelier]);
-    setValues({ name: typeof saved.name === "string" ? saved.name.slice(0, 120) : "", email: typeof saved.email === "string" ? saved.email.slice(0, 254) : "", slugs: selected, message: typeof saved.message === "string" ? saved.message.slice(0, 4000) : "" });
+    const readDraft = (resuming = false) => {
+      let saved: Partial<ContactValues> & { atelier?: string } = {};
+      try {
+        const stored = sessionStorage.getItem(draftKey) || sessionStorage.getItem("mestier:galerie:contact");
+        if (resuming && stored === null) return;
+        saved = JSON.parse(stored || "{}");
+      } catch { if (resuming) return; }
+      if (!saved || typeof saved !== "object") saved = {};
+      let selected = getSelection();
+      if (!selected.length && typeof saved.atelier === "string" && ateliers.some(atelier => atelier.slug === saved.atelier)) selected = setSelection([saved.atelier]);
+      setValues({ name: typeof saved.name === "string" ? saved.name.slice(0, 120) : "", email: typeof saved.email === "string" ? saved.email.slice(0, 254) : "", slugs: selected, message: typeof saved.message === "string" ? saved.message.slice(0, 4000) : "" });
+    };
+    const resume = (event: PageTransitionEvent) => {
+      if (!event.persisted) return;
+      // A restored page can hold an older brief than the workshop page just visited.
+      try {
+        const stored = sessionStorage.getItem(selectionKey);
+        if (stored !== null && stored !== JSON.stringify(getSelection())) {
+          const slugs: unknown = JSON.parse(stored);
+          if (Array.isArray(slugs)) setSelection(slugs.filter((slug): slug is string => typeof slug === "string"));
+        }
+      } catch { /* Keep the selection in memory if storage is unavailable. */ }
+      readDraft(true);
+      setPrepared(false); setCopied(false); setNotice(""); setError("");
+    };
+    readDraft();
     setRestored(true);
     const selection = (event: Event) => {
       const slugs = (event as CustomEvent<SelectionDetail>).detail?.slugs;
@@ -271,7 +296,11 @@ export function FabricationContact() {
       setPrepared(false); setCopied(false);
     };
     window.addEventListener("mestier:selection", selection);
-    return () => window.removeEventListener("mestier:selection", selection);
+    window.addEventListener("pageshow", resume);
+    return () => {
+      window.removeEventListener("mestier:selection", selection);
+      window.removeEventListener("pageshow", resume);
+    };
   }, []);
 
   useEffect(() => {

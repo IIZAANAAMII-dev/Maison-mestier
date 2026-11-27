@@ -1,6 +1,7 @@
 import ateliers from "./ateliers.json";
 
 export { ateliers };
+export const mobileEditionMedia = "(max-width: 849px), (max-height: 540px) and (pointer: coarse)";
 export const basePath = (process.env.NEXT_PUBLIC_BASE_PATH || "").replace(/\/$/, "");
 export const path = (location: string) => basePath + location;
 export const image = (name: string) => path("/images/" + name + ".webp");

@@ -1,17 +1,20 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ateliers, atelierPath, image, path } from "../../lib/maison";
+import { ateliers, atelierPath, image, mobileEditionMedia, path } from "../../lib/maison";
 import "./monument.css";
 import AtelierInterlude from "./AtelierInterlude";
 import StudiesLedger from "./StudiesLedger";
 import ProjectInvitation from "./ProjectInvitation";
+import MobileCover from "./MobileCover";
+import MobileAteliers from "./MobileAteliers";
 import "./parcours-imprime.css";
 
 type JourneyComponent = typeof import("./Journey").default;
+type Course = JourneyComponent | "mobile" | "static" | null;
 
+// A mobile opening should never fetch the desktop gallery hidden by its media query.
+const transparentPixel = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 const letters = "MESTIER".split("");
 
 const number = (index: number) => String(index + 1).padStart(2, "0");
@@ -35,19 +38,87 @@ function Words({ text }: { text: string }) {
   return <>{text.split(" ").map((word, index) => <span aria-hidden="true" key={index}><span className="mo-mask"><span className="mo-word-item" data-word>{word}</span></span>{" "}</span>)}</>;
 }
 
+function PrintedCover({ scene }: { scene: number }) {
+  return (
+    <section className="mo-hero mo-desktop-edition" aria-labelledby="mo-title">
+      <div className="mo-hero-pin">
+        <div className="mo-hero-meta">
+          <span>Maison de marketing 360</span><span>Sud de la France</span>
+        </div>
+        <h1 id="mo-title" className="mo-wordmark" aria-label="Maison Mestier">
+          <span aria-hidden="true">{letters.map((letter, index) => <span className="mo-mask" key={index}><span className="mo-letter">{letter}</span></span>)}</span>
+        </h1>
+        <div className="mo-hero-lead">
+          <p className="mo-hero-claim">L’art de faire <em>impression.</em></p>
+          <p className="mo-hero-copy">On monte vos stands. On développe vos sites et vos applications.</p>
+          <a className="mo-link" href="#ateliers"><span>Entrer dans la Maison</span><Arrow /></a>
+        </div>
+        <figure className="mo-aperture">
+          {scenes.map((item, index) => <picture key={item.file}>
+            <source media={mobileEditionMedia} srcSet={transparentPixel} />
+            <img src={item.file} alt={index ? "" : item.alt} width="1536" height="1024"
+              fetchPriority={index ? "low" : "high"} decoding="async" />
+          </picture>)}
+          <span className="mo-shade" aria-hidden="true" />
+          <figcaption>
+            {scenes.map((item, index) => <p className="mo-caption" key={item.file}><span className="mo-label">{number(index)} — {item.label}</span><strong>{item.line}</strong></p>)}
+            <span className="mo-count mo-label" aria-hidden="true">{number(scene)} / {number(scenes.length - 1)} · Étude de création</span>
+          </figcaption>
+        </figure>
+        <span className="mo-cue mo-label" aria-hidden="true">Défiler</span>
+      </div>
+    </section>
+  );
+}
+
+function PrintedAteliers() {
+  return (
+    <section className="mo-ateliers mo-desktop-edition" aria-labelledby="mo-ateliers-title">
+      <div className="mo-ateliers-pin">
+        <header className="mo-ateliers-head">
+          <p className="mo-label">(02) Les ateliers</p>
+          <h2 id="mo-ateliers-title" data-split aria-label="Huit métiers. Une seule Maison."><Words text="Huit métiers. Une seule Maison." /></h2>
+        </header>
+        <div className="mo-ring-stage">
+          <ul className="mo-ring" aria-label="Les huit ateliers">
+            {ateliers.map((atelier, index) => <li key={atelier.slug}>
+              <a href={atelierPath(atelier.slug)}>
+                <picture>
+                  <source media={mobileEditionMedia} srcSet={transparentPixel} />
+                  <img src={ringImages[index]} alt="" loading="lazy" decoding="async" width="1200" height="800" />
+                </picture>
+                <span className="mo-ring-number">{number(index)}</span>
+                <span className="mo-ring-name">{atelier.name}</span>
+                <span className="mo-ring-summary">{atelier.summary}</span>
+              </a>
+            </li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function MonumentHome() {
   const root = useRef<HTMLElement>(null);
   const [scene, setScene] = useState(0);
-  const [course, setCourse] = useState<JourneyComponent | "static" | null>(null);
+  const [course, setCourse] = useState<Course>(null);
   const Journey = typeof course === "function" ? course : null;
-  const mode = Journey ? "world" : course === "static" ? "static" : null;
-  const fail = useCallback(() => setCourse("static"), []);
+  const mode = typeof course === "function" ? "world" : course;
+  const desktop = mode !== "mobile";
+  const mobile = mode === null || mode === "mobile";
+  const fail = useCallback(() => {
+    setCourse(window.matchMedia(mobileEditionMedia).matches ? "mobile" : "static");
+  }, []);
 
   useEffect(() => {
+    const phone = window.matchMedia(mobileEditionMedia);
     const motion = window.matchMedia("(prefers-reduced-motion: no-preference)");
     let disposed = false;
     let supported: boolean | undefined;
-    const chooseCourse = () => {
+
+    function chooseCourse() {
+      if (phone.matches) { setCourse("mobile"); return; }
       if (!motion.matches) { setCourse("static"); return; }
       if (supported === undefined) {
         try {
@@ -57,177 +128,105 @@ export default function MonumentHome() {
         } catch { supported = false; }
       }
       if (!supported) { setCourse("static"); return; }
+      setCourse((previous: Course) => typeof previous === "function" ? previous : null);
       import("./Journey").then(({ default: Component }) => {
-        if (!disposed && motion.matches) setCourse(() => Component);
-      }).catch(() => { if (!disposed) setCourse("static"); });
-    };
+        if (!disposed && !phone.matches && motion.matches) setCourse(() => Component);
+      }).catch(() => { if (!disposed && !phone.matches) setCourse("static"); });
+    }
+
     chooseCourse();
+    phone.addEventListener("change", chooseCourse);
     motion.addEventListener("change", chooseCourse);
-    return () => { disposed = true; motion.removeEventListener("change", chooseCourse); };
+    return () => {
+      disposed = true;
+      phone.removeEventListener("change", chooseCourse);
+      motion.removeEventListener("change", chooseCourse);
+    };
   }, []);
 
   useEffect(() => {
     const element = root.current;
-    if (!element || !mode) return;
-    const world = mode === "world";
-    gsap.registerPlugin(ScrollTrigger);
-    const media = gsap.matchMedia();
-    const select = gsap.utils.selector(element);
+    if (!element || mode !== "static") return;
+    let disposed = false;
+    let stop: (() => void) | undefined;
+    import("./printed-opening").then(({ animatePrintedOpening }) => {
+      if (!disposed) stop = animatePrintedOpening(element, setScene);
+    }).catch(() => { /* The printed chapters are complete before motion loads. */ });
+    return () => { disposed = true; stop?.(); };
+  }, [mode]);
 
-    const fit = () => {
-      const word = element.querySelector<HTMLElement>(".mo-wordmark");
-      const inner = word?.firstElementChild as HTMLElement | null;
-      if (!word || !inner) return;
-      word.style.fontSize = "";
-      const size = parseFloat(getComputedStyle(word).fontSize);
-      word.style.fontSize = (size * word.clientWidth / inner.scrollWidth * .975).toFixed(2) + "px";
-    };
-    fit();
-    document.fonts?.ready.then(() => { fit(); ScrollTrigger.refresh(); });
-    window.addEventListener("resize", fit);
-
-    media.add({ motion: "(prefers-reduced-motion: no-preference)", wide: "(min-width: 861px)" }, (context) => {
-      const { motion, wide } = context.conditions as { motion: boolean; wide: boolean };
-      if (!motion) return;
-      element.classList.add("is-live");
-
-      if (!world) {
-        const hero = element.querySelector<HTMLElement>(".mo-hero")!;
-        const photographs = select(".mo-aperture > img");
-
-        const intro = gsap.timeline({ defaults: { ease: "power4.out" } });
-        const t0 = 0;
-        intro
-          .from(select(".mo-letter"), { yPercent: 108, duration: 1.25, stagger: .06 }, t0)
-          .from(select(".mo-hero-meta > *"), { y: 14, autoAlpha: 0, duration: .8, stagger: .06 }, t0 + .25)
-          .from(select(".mo-aperture"), { clipPath: wide ? "inset(100% 4.6% 8% 52%)" : "inset(100% 5% 6% 5%)", duration: 1.4, ease: "power3.inOut" }, t0 + .2)
-          .from(select(".mo-hero-lead > *"), { y: 26, autoAlpha: 0, duration: .9, stagger: .08 }, t0 + .6);
-
-        const state = { mix: 0 };
-        gsap.set(photographs.slice(1), { opacity: 0 });
-        gsap.set(select(".mo-caption"), { autoAlpha: 0, y: 24 });
-        const score = gsap.timeline({
-          defaults: { ease: "none" },
-          onUpdate: () => setScene(Math.round(state.mix)),
-          scrollTrigger: { trigger: hero, start: "top top", end: wide ? "+=210%" : "+=150%", pin: select(".mo-hero-pin")[0], scrub: .9, anticipatePin: 1, invalidateOnRefresh: true },
-        });
-        score
-          .to(select(".mo-aperture"), { clipPath: "inset(0% 0% 0% 0%)", duration: 1, ease: "power2.inOut" }, 0)
-          .to(select(".mo-letter"), { yPercent: -112, duration: .6, stagger: .035, ease: "power2.in" }, 0)
-          .to(select(".mo-hero-meta, .mo-hero-lead, .mo-cue"), { autoAlpha: 0, y: -20, duration: .35 }, 0)
-          .to(select(".mo-shade"), { opacity: 1, duration: .5 }, .5)
-          .to(select(".mo-caption")[0], { autoAlpha: 1, y: 0, duration: .3 }, .75)
-          .to(select(".mo-count"), { autoAlpha: 1, duration: .3 }, .75)
-          .to(select(".mo-caption")[0], { autoAlpha: 0, y: -24, duration: .25 }, 1.3)
-          .to(photographs[1], { opacity: 1, duration: .8 }, 1.2)
-          .to(state, { mix: 1, duration: .8 }, 1.2)
-          .to(select(".mo-caption")[1], { autoAlpha: 1, y: 0, duration: .3 }, 1.75)
-          .to(select(".mo-caption")[1], { autoAlpha: 0, y: -24, duration: .25 }, 2.3)
-          .to(photographs[2], { opacity: 1, duration: .8 }, 2.2)
-          .to(state, { mix: 2, duration: .8 }, 2.2)
-          .to(select(".mo-caption")[2], { autoAlpha: 1, y: 0, duration: .3 }, 2.75)
-          .to({}, { duration: .35 }, 3.05);
-
-        // Manifesto: the sentence is inked word by word.
-        gsap.fromTo(select(".mo-manifesto [data-word]"), { opacity: .14 }, { opacity: 1, ease: "none", stagger: .1,
-          scrollTrigger: { trigger: select(".mo-manifesto")[0], start: "top 72%", end: "bottom 62%", scrub: .6 } });
-
-      }
-
-      // Reveal the heading when the printed atelier index enters.
-      gsap.utils.toArray<HTMLElement>(select(".mo-ateliers-head [data-split]")).forEach((heading) => {
-        gsap.from(heading.querySelectorAll("[data-word]"), { yPercent: 110, duration: 1, ease: "power4.out", stagger: .05,
-          scrollTrigger: { trigger: heading, start: "top 86%", once: true } });
-      });
-
-      const settle = () => ScrollTrigger.refresh();
-      window.addEventListener("load", settle);
-
-      return () => {
-        window.removeEventListener("load", settle);
-        element.classList.remove("is-live");
+  useEffect(() => {
+    if (mode !== "mobile") return;
+    const chapters = ["maison", "ateliers", "etudes", "projet"].map(id => document.getElementById(id)!);
+    let observer: IntersectionObserver | undefined;
+    let previous = "";
+    function watchChapters() {
+      observer?.disconnect();
+      const masthead = document.querySelector("header.fab-nav");
+      const readingLine = Math.min(innerHeight - 2, (masthead?.clientHeight || 64) + 16);
+      const markChapter = () => {
+        const current = chapters.filter(chapter => chapter.getBoundingClientRect().top <= readingLine + 1).at(-1) ?? chapters[0];
+        if (current.id === previous) return;
+        previous = current.id;
+        window.dispatchEvent(new CustomEvent("mestier:carnet", { detail: current.id }));
       };
-    });
-
-    const entry = location.hash;
-    const anchor = !world && /^#(?:ateliers|maison|etudes|projet|etude-[\w-]+)$/.test(entry)
-      ? document.getElementById(entry.slice(1)) : null;
-    let cancelled = false;
-    const cancelEntry = () => { cancelled = true; };
-    const gestures = ["wheel", "pointerdown", "touchstart", "keydown"] as const;
-    if (anchor) {
-      for (const gesture of gestures) window.addEventListener(gesture, cancelEntry, { once: true, passive: true });
-      document.fonts.ready.then(() => requestAnimationFrame(() => {
-        if (cancelled || location.hash !== entry || !anchor.isConnected) return;
-        const margin = parseFloat(getComputedStyle(anchor).scrollMarginTop) || 0;
-        const top = anchor.getBoundingClientRect().top + window.scrollY - margin;
-        window.scrollTo({ top, behavior: "instant" });
-      }));
+      observer = new IntersectionObserver(markChapter, {
+        rootMargin: `-${readingLine}px 0px -${innerHeight - readingLine - 2}px 0px`,
+      });
+      chapters.forEach(chapter => observer!.observe(chapter));
+      markChapter();
     }
+    watchChapters();
+    window.addEventListener("resize", watchChapters);
     return () => {
-      cancelEntry();
-      for (const gesture of gestures) window.removeEventListener(gesture, cancelEntry);
-      window.removeEventListener("resize", fit);
-      media.revert();
+      observer?.disconnect();
+      window.removeEventListener("resize", watchChapters);
+      window.dispatchEvent(new CustomEvent("mestier:carnet", { detail: "" }));
     };
+  }, [mode]);
+
+  useEffect(() => {
+    if (mode !== "mobile" && mode !== "static") return;
+    const entry = location.hash;
+    if (!/^#(?:ateliers|maison|etudes|projet|etude-[\w-]+)$/.test(entry)) return;
+    const navigation = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+    if (navigation?.type === "back_forward") return;
+
+    // Font loading and the enhanced swatch book can resize the page after a deep link.
+    const cancel = new AbortController();
+    const release = () => cancel.abort();
+    for (const event of ["wheel", "touchstart", "pointerdown", "keydown"]) {
+      window.addEventListener(event, release, { signal: cancel.signal, passive: true, once: true });
+    }
+    document.fonts.ready.then(() => requestAnimationFrame(() => {
+      if (cancel.signal.aborted || entry !== location.hash) return;
+      document.getElementById(entry.slice(1))?.scrollIntoView({ behavior: "instant", block: "start" });
+      release();
+    }));
+    return release;
   }, [mode]);
 
   return (
     <main id="contenu" className={mode === "world" ? "mo is-world" : "mo"} data-parcours={mode ?? "static"} ref={root} tabIndex={-1}>
-      {Journey ? <Journey scenes={scenes} ringImages={ringImages} manifesto={manifesto} onFail={fail} /> : <>
-      <section className="mo-hero" aria-labelledby="mo-title">
-        <div className="mo-hero-pin">
-          <div className="mo-hero-meta">
-            <span>Maison de marketing 360</span><span>Sud de la France</span>
+      {Journey ? (
+        <Journey scenes={scenes} ringImages={ringImages} manifesto={manifesto} onFail={fail} />
+      ) : (
+        <>
+          {desktop && <PrintedCover scene={scene} />}
+          <div id="maison">
+            {mobile && <div className="mo-mobile-edition"><MobileCover /></div>}
+            {desktop && <section className="mo-manifesto mo-desktop-edition" aria-label="La Maison">
+              <p className="mo-label">(01) La Maison</p>
+              <p className="mo-manifesto-text" aria-label={manifesto}><Words text={manifesto} /></p>
+            </section>}
           </div>
-          <h1 id="mo-title" className="mo-wordmark" aria-label="Maison Mestier">
-            <span aria-hidden="true">{letters.map((letter, index) => <span className="mo-mask" key={index}><span className="mo-letter">{letter}</span></span>)}</span>
-          </h1>
-          <div className="mo-hero-lead">
-            <p className="mo-hero-claim">L’art de faire <em>impression.</em></p>
-            <p className="mo-hero-copy">On monte vos stands. On développe vos sites et vos applications.</p>
-            <a className="mo-link" href="#ateliers"><span>Entrer dans la Maison</span><Arrow /></a>
+          <div id="ateliers">
+            {mobile && <div className="mo-mobile-edition"><MobileAteliers /></div>}
+            {desktop && <PrintedAteliers />}
           </div>
-          <figure className="mo-aperture">
-            {scenes.map((item, index) => <img key={item.file} src={item.file} alt={index ? "" : item.alt} width="1536" height="1024" fetchPriority={index ? "low" : "high"} decoding="async" />)}
-            <span className="mo-shade" aria-hidden="true" />
-            <figcaption>
-              {scenes.map((item, index) => <p className="mo-caption" key={item.file}><span className="mo-label">{number(index)} — {item.label}</span><strong>{item.line}</strong></p>)}
-              <span className="mo-count mo-label" aria-hidden="true">{number(scene)} / {number(scenes.length - 1)} · Étude de création</span>
-            </figcaption>
-          </figure>
-          <span className="mo-cue mo-label" aria-hidden="true">Défiler</span>
-        </div>
-      </section>
-
-      <section className="mo-manifesto" id="maison" aria-label="La Maison">
-        <p className="mo-label">(01) La Maison</p>
-        <p className="mo-manifesto-text" aria-label={manifesto}><Words text={manifesto} /></p>
-      </section>
-
-      </>}
-      {mode !== "world" && <section className="mo-ateliers" id="ateliers" aria-labelledby="mo-ateliers-title">
-        <div className="mo-ateliers-pin">
-          <header className="mo-ateliers-head">
-            <p className="mo-label">(02) Les ateliers</p>
-            <h2 id="mo-ateliers-title" data-split aria-label="Huit métiers. Une seule Maison."><Words text="Huit métiers. Une seule Maison." /></h2>
-          </header>
-          <div className="mo-ring-stage">
-            <ul className="mo-ring" aria-label="Les huit ateliers">
-              {ateliers.map((atelier, index) => <li key={atelier.slug}>
-                <a href={atelierPath(atelier.slug)}>
-                  <img src={ringImages[index]} alt="" loading="lazy" decoding="async" width="1200" height="800" />
-                  <span className="mo-ring-number">{number(index)}</span>
-                  <span className="mo-ring-name">{atelier.name}</span>
-                  <span className="mo-ring-summary">{atelier.summary}</span>
-                </a>
-              </li>)}
-            </ul>
-          </div>
-        </div>
-      </section>}
-
-      <AtelierInterlude />
+        </>
+      )}
+      {desktop && <div className="mo-desktop-edition"><AtelierInterlude /></div>}
       <StudiesLedger />
       <ProjectInvitation />
     </main>

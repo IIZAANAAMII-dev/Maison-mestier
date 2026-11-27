@@ -230,7 +230,7 @@
   100% { opacity: 0; transform: none; }
 }
 
-@media (max-width: 849px) {
+@media (max-width: 849px), (max-height: 540px) and (pointer: coarse) {
   .studies-ledger__head { display: block; padding-block: 2.5rem 2rem; }
   .studies-ledger__head h2 { margin: .65rem 0 .8rem; font-size: clamp(2.7rem, 8vw, 4.9rem); }
   .studies-ledger__statement { justify-self: auto; max-width: 43ch; }
@@ -251,6 +251,6 @@
   .studies-ledger__details { margin-top: .9rem; }
   .studies-ledger__intro { font-size: 1.04rem; max-width: 43ch; line-height: 1.5; }
 }
-@media (max-width: 849px) and (orientation: landscape) {
+@media (max-width: 849px) and (orientation: landscape), (max-height: 540px) and (pointer: coarse) and (orientation: landscape) {
   .studies-ledger__study { --photo-height: clamp(14rem, 75svh, 29rem); }
 }

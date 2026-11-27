@@ -10,7 +10,7 @@
   justify-content: space-between;
 }
 
-.mo-aperture > img:not(:first-child) {
+.mo-aperture > picture:not(:first-child) img {
   opacity: 0;
 }
 
@@ -97,4 +97,29 @@
   .mo-ateliers .mo-ring a { min-height: 5.8rem; gap: .25rem .9rem; }
   .mo-ateliers .mo-ring-name { font-size: clamp(1.35rem, 6.5vw, 1.9rem); }
   .mo-ateliers .mo-ring-summary { font-size: .85rem; }
+}
+
+
+.mo-mobile-edition { display: none; }
+.mo-aperture > picture, .mo-ring a > picture { display: contents; }
+
+@media (max-width: 849px), (max-height: 540px) and (pointer: coarse) {
+  .mo-mobile-edition { display: block; }
+  .mo-desktop-edition { display: none; }
+}
+
+.fab-nav-chapter { display: none; }
+@media (max-width: 849px), (max-height: 540px) and (pointer: coarse) {
+  body:has(.mo-mobile-edition) :is(.fab-nav, .fab-menu, .fab-footer, .fab-contact) {
+    --fab-ink: #1c2333;
+    --fab-paper: #f3f0ea;
+    --fab-accent: #8e2a23;
+  }
+  body:has(.mo-mobile-edition) .fab-nav { background: var(--fab-paper); }
+  .fab-nav[data-carnet] { gap: .75rem; }
+  .fab-nav[data-carnet] .fab-nav-links, .fab-nav[data-carnet] .fab-nav-toggle > span:first-child { display: none; }
+  .fab-nav[data-carnet] .fab-nav-actions { gap: clamp(.5rem, 3.8vw, 1.5rem); }
+  .fab-nav[data-carnet] .fab-nav-toggle { min-height: 44px; min-width: 44px; gap: .6rem; padding-block: .5rem; }
+  .fab-nav[data-carnet] .fab-nav-chapter { display: inline; font: 500 .8rem/1.2 var(--sans); }
+  .fab-nav[data-carnet] .fab-nav-contact { min-height: 44px; }
 }

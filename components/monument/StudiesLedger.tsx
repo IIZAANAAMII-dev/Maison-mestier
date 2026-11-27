@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { atelierPath, ateliers, image, path, studies } from "../../lib/maison";
+import MobileStudyGesture from "./MobileStudyGesture";
 import "./studies-ledger.css";
 
 type Study = (typeof studies)[number];
@@ -106,6 +107,7 @@ export default function StudiesLedger() {
                 aria-label={"Ouvrir l’étude " + study.name}>
                 <Photograph study={study} />
               </a>
+              <MobileStudyGesture slug={study.slug} />
               <div className="studies-ledger__cue" id={anchor(study)}>
                 <div className="studies-ledger__caption">
                   <div className="studies-ledger__titles">
