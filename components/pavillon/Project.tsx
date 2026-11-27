@@ -78,9 +78,10 @@ export default function Project({ entries }: { entries: Entry[] }) {
     catch { compose.current?.focus(); compose.current?.select(); setCopyStatus("Le texte est sélectionné. Vous pouvez le copier."); }
   }
   return <section className="project" id="contact" aria-labelledby="project-title"><div className="shell">
-    <p className="eyebrow rule-label">Correspondance</p>
-    <div className="project-intro"><h2 id="project-title" data-reveal>Parlons de<br /><i>votre projet.</i></h2>
-      <div><p>Un salon en vue, une marque à dessiner, un lieu à inventer. Écrivez-nous quelques mots.</p><a className="text-link" href={"mailto:" + studioEmail}>{studioEmail}</a></div>
+    <svg className="project-thread" viewBox="0 0 950 260" preserveAspectRatio="none" aria-hidden="true"><path className="footer-ink" d="M-35 220C91 116 198 265 310 154S477 13 532 98S471 228 475 156S643 54 746 94S931 107 1000 -5" fill="none" pathLength="1" /></svg>
+    <p className="trace-label"><span className="thread-swatch" aria-hidden="true" />Correspondance</p>
+    <div className="project-intro"><h2 id="project-title" data-reveal>Quel est<br /><i>votre projet&nbsp;?</i></h2>
+      <div><p>Un lieu, une date ou simplement une idée de départ. Dites-nous ce que vous préparez.</p><a className="text-link" href={"mailto:" + studioEmail}>{studioEmail}</a></div>
     </div>
     <details className="brief" id="projet" ref={details}><summary>Préparer mon message <span aria-hidden="true">+</span></summary>
       <form onSubmit={prepare} action={"mailto:" + studioEmail} method="get">

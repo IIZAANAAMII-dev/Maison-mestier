@@ -1,8 +1,8 @@
-# Maison Mestier · Le pavillon
+# Maison Mestier · Le Trait
 
-Le site de présentation réunit la visite du pavillon, huit ateliers, trois études de création, un laboratoire 3D et la correspondance. Le projet Vercel est `maison-mestier`.
+Site de présentation Maison Mestier. Une sculpture de métal laqué se déplie en stand d’exposition, puis trois études de création se parcourent sur une pellicule horizontale. Le projet Vercel du site complet est `maison-mestier`.
 
-## Lancer le site
+## Développement
 
 Node.js 22 ou ultérieur.
 
@@ -13,14 +13,18 @@ npm run typecheck
 npm run build
 ```
 
-Next.js exporte les pages statiques dans `out/`. La variable facultative `NEXT_PUBLIC_BASE_PATH` permet de monter le site sous un préfixe. Le formulaire prépare un courriel dans la messagerie du visiteur et conserve son brouillon et sa sélection d’ateliers dans la session. L’adresse par défaut est `discutons@maisonmestier.fr`. Elle peut être remplacée avec `NEXT_PUBLIC_CONTACT_EMAIL`.
+Next.js exporte les pages statiques dans `out/`. La variable facultative `NEXT_PUBLIC_BASE_PATH` permet un montage sous préfixe. Le formulaire conserve la sélection d’ateliers dans la session et prépare un message dans la messagerie du visiteur. L’adresse peut être configurée via `NEXT_PUBLIC_CONTACT_EMAIL`.
 
-## Scène et mouvement
+## Le Trait
 
-La source éditable du pavillon et son générateur se trouvent dans `art/pavillon/`. Les caméras, le plissé du voile, l’ossature de laiton et les matériaux font partie de la scène. Les tirages et travellings pour le navigateur sont dans `public/pavillon/`. Le laboratoire importe la maquette glTF à la demande, calcule une image lors d’un changement de vue et propose trois tirages lorsque WebGL est indisponible.
+La scène source se trouve dans `art/trace/le-trait.blend`. Le générateur `art/trace/trace.py` documente les commandes Blender de construction, de rendu et d’export de la maquette glTF. `art/trace/edition.py` compose les ombres et les fonds puis encode les deux films. Les quatre tirages, les montages pour ordinateur et téléphone et la maquette de visite sont dans `public/trace/`.
 
-Le défilement est natif. Le premier travelling suit le mouvement de la page. À la section suivante, un cadre portrait s’ouvre sur l’intérieur du pavillon. La pellicule des études accepte le balayage, les flèches et le clavier. La préférence de mouvement réduit conserve une lecture directe de toutes les sections.
+L’ouverture dure environ 1,4 seconde à la première visite. Le défilement, les trois boutons d’étape et la lecture guidée conduisent la même séquence. Les images fixes prennent le relais en mode économie de données. La préférence de mouvement réduit donne directement accès à l’offre, aux trois études et aux ateliers. Les visuels des offres Événements et Identités sont des illustrations originales.
 
-Les timelines utilisent une portée GSAP locale, une configuration par préférence de mouvement et un nettoyage à la sortie. Les principes de mise en œuvre viennent des [skills officiels de GreenSock](https://github.com/greensock/gsap-skills/tree/aed9cfd3277740755f6bfc1155c7aa645403b760/skills). Les réglages de rugosité, de métal et de lumière du laboratoire suivent les [guides Three.js sur les matériaux et l’éclairage](https://github.com/CloudAI-X/threejs-skills/tree/0e181866f095b5f06d005133876e926515390d95/skills). Les références de mouvement et leur interprétation sont consultables à `/reperages/`.
+La galerie horizontale projette les tirages et leurs relevés sur une pellicule courbe en Canvas 2D. Le défilement natif gère le tactile et le trackpad. Les commandes, le glissement à la souris et le clavier donnent accès aux trois études. Les dessins et les textures se chargent à proximité de la galerie.
 
-Les textes des ateliers et le monogramme reprennent le [dossier de marque](https://www.notion.so/40bf46178928814f8801f51e1aa5c5ed) et les [pages ateliers](https://www.notion.so/41af46178928812496cece45434d7041). Junicode et Geist sont auto-hébergées. Leurs licences se trouvent dans `public/licences/pavillon/`.
+## Références
+
+Les minutages analysés et les liens vers les films de Lusion et Siena Film Foundation figurent à `/reperages/`. L’éclairage de la maquette Three.js suit les [guides de matériaux et lumière](https://github.com/CloudAI-X/threejs-skills/tree/0e181866f095b5f06d005133876e926515390d95/skills). Le défilement et la gestion du cycle de vie des animations s’appuient sur les [guides officiels GSAP](https://github.com/greensock/gsap-skills/tree/aed9cfd3277740755f6bfc1155c7aa645403b760/skills).
+
+Les textes des ateliers et le monogramme proviennent du [dossier de marque](https://www.notion.so/40bf46178928814f8801f51e1aa5c5ed) et des [pages ateliers](https://www.notion.so/41af46178928812496cece45434d7041). Junicode et Geist sont auto-hébergées avec leurs licences dans `public/licences/pavillon/`.

@@ -4,6 +4,7 @@ import { path } from "../lib/maison";
 import Header from "../components/pavillon/Header";
 import Footer from "../components/pavillon/Footer";
 import "./globals.css";
+import "./trace.css";
 
 const serif = localFont({
   src: [
@@ -13,7 +14,7 @@ const serif = localFont({
 });
 const sans = localFont({ src: "./fonts/pavillon/geist.woff2", weight: "100 900", variable: "--sans", display: "swap" });
 
-const title = "Maison Mestier — L’art de la rencontre";
+const title = "Maison Mestier — Stands, événements et identités de marque";
 const description = "Stands de salon, événements, identités et expériences digitales. Huit ateliers et un seul interlocuteur, de la première idée au jour du montage.";
 export const metadata: Metadata = {
   metadataBase: new URL("https://maison-mestier.vercel.app"),
@@ -21,10 +22,10 @@ export const metadata: Metadata = {
   description, applicationName: "Maison Mestier",
   icons: { icon: path("/charte/monogramme-cachet.svg") },
   robots: { index: false, follow: false },
-  openGraph: { title, description, locale: "fr_FR", type: "website", siteName: "Maison Mestier", images: [{ url: path("/pavillon/salle.webp"), alt: "Le voile suspendu du Pavillon Mestier." }] },
-  twitter: { card: "summary_large_image", title, description, images: [path("/pavillon/salle.webp")] },
+  openGraph: { title, description, locale: "fr_FR", type: "website", siteName: "Maison Mestier", images: [{ url: path("/trace/stand.webp"), alt: "Le stand signature de Maison Mestier, formé par un ruban vermillon." }] },
+  twitter: { card: "summary_large_image", title, description, images: [path("/trace/stand.webp")] },
 };
-export const viewport: Viewport = { themeColor: "#282522", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#f4f0e7", width: "device-width", initialScale: 1 };
 export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="fr" className={serif.variable + " " + sans.variable}>
     <body id="haut"><a className="skip" href="#contenu">Aller au contenu</a><Header />{children}<Footer /></body>

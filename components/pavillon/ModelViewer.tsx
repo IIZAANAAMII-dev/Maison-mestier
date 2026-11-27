@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { pavillon } from "../../lib/pavillon";
+import { path } from "../../lib/maison";
+
+const art = (file: string) => path("/trace/" + file);
 
 const views = [
-  { name: "Ensemble", file: "salle.webp", alt: "Vue du pavillon, voile de taffetas rouge et structure de laiton sur un socle clair." },
-  { name: "Intérieur", file: "interieur.webp", alt: "Au pied du voile, à l’intérieur de la salle." },
-  { name: "Détail", file: "detail.webp", alt: "La couture et le tissage du voile en lumière rasante." },
+  { name: "Le stand", file: "stand.webp", alt: "Le stand assemblé, ses portiques en laque vermillon et son comptoir d’accueil." },
+  { name: "Le trait", file: "sculpture.webp", alt: "Le ruban calligraphique avant sa transformation." },
+  { name: "Le pli", file: "pli.webp", alt: "Détail du pli, entre les deux étapes du montage." },
 ];
 type Action = "left" | "right" | "near" | "far" | "reset";
 
@@ -31,7 +33,7 @@ export default function ModelViewer() {
         import("three"), import("three/examples/jsm/loaders/GLTFLoader.js"), import("three/examples/jsm/controls/OrbitControls.js"), import("three/examples/jsm/environments/RoomEnvironment.js"),
       ]);
       if (controller.signal.aborted) return;
-      const response = await fetch(pavillon("maquette.glb"), { signal: controller.signal });
+      const response = await fetch(art("stand.glb"), { signal: controller.signal });
       if (!response.ok) throw new Error("Maquette indisponible");
       const bytes = await response.arrayBuffer();
       if (controller.signal.aborted) return;
@@ -40,9 +42,9 @@ export default function ModelViewer() {
       renderer.setPixelRatio(Math.min(devicePixelRatio, 1.6));
       renderer.toneMapping = T.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1.06;
-      renderer.domElement.setAttribute("aria-label", "Maquette du pavillon orientable à la souris, au toucher ou avec les commandes de vue.");
+      renderer.domElement.setAttribute("aria-label", "Maquette du stand orientable à la souris, au toucher ou avec les commandes de vue.");
       const scene = new T.Scene();
-      scene.background = new T.Color("#d6cabb");
+      scene.background = new T.Color("#f4f0e7");
       const studio = new RoomEnvironment();
       const pmrem = new T.PMREMGenerator(renderer);
       const lighting = pmrem.fromScene(studio, 0.04);
@@ -87,7 +89,7 @@ export default function ModelViewer() {
         const halfFov = T.MathUtils.degToRad(camera.fov / 2);
         const angle = Math.min(halfFov, Math.atan(Math.tan(halfFov) * camera.aspect));
         const distance = sphere.radius * .96 / Math.sin(angle);
-        camera.position.copy(controls.target).addScaledVector(new T.Vector3(.32,.19,1).normalize(), distance);
+        camera.position.copy(controls.target).addScaledVector(new T.Vector3(.58,.36,1).normalize(), distance);
         controls.update();
         draw();
       }
@@ -119,11 +121,11 @@ export default function ModelViewer() {
     return () => { controller.abort(); action.current = () => {}; release.reverse().forEach(dispose => dispose()); };
   }, [open]);
 
-  return <section className="viewer" aria-label="Visite du pavillon">
-    <div className="viewer-image"><img src={pavillon(views[view].file)} alt={views[view].alt} width="1920" height="1152" /></div>
+  return <section className="viewer" aria-label="Visite du stand">
+    <div className="viewer-image"><img src={art(views[view].file)} alt={views[view].alt} width="1920" height="1152" /></div>
     {open && <div className="viewer-canvas" ref={host} data-ready={status === "ready" ? "" : undefined} />}
     <div className="viewer-toolbar">
-      {!open && status === "error" ? <div className="viewer-tools" role="group" aria-label="Cadrages du pavillon">
+      {!open && status === "error" ? <div className="viewer-tools" role="group" aria-label="Cadrages du stand">
         {views.map((item, i) => <button key={item.file} type="button" aria-pressed={view === i} onClick={() => setView(i)}>{item.name}</button>)}
       </div> : !open ? <button className="pill" type="button" onClick={() => { setStatus("loading"); setOpen(true); }}>Explorer en 3D</button>
         : status === "ready" ? <div className="viewer-tools"><button type="button" onClick={() => action.current("left")} aria-label="Tourner à gauche">↶</button><button type="button" onClick={() => action.current("right")} aria-label="Tourner à droite">↷</button><button type="button" onClick={() => action.current("near")} aria-label="Rapprocher">+</button><button type="button" onClick={() => action.current("far")} aria-label="Éloigner">−</button><button type="button" onClick={() => action.current("reset")}>Recentrer</button><button type="button" onClick={() => { setStatus("idle"); setOpen(false); }}>Revoir le tirage</button></div> : null}
