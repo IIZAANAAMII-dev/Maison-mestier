@@ -1,45 +1,12 @@
+import Impression from "./Impression";
 import { path } from "../../lib/maison";
 
 const art = (file: string) => path("/trace/" + file);
 
-// Run before the opening paints. A deep link or return visit goes straight to the page.
-const startIntro = `(() => {
-  try {
-    if (location.hash || location.search || sessionStorage.getItem('mestier:trait:vu') || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    sessionStorage.setItem('mestier:trait:vu','1');
-    const overlay = document.currentScript.previousElementSibling;
-    if (!overlay) return;
-    const page = overlay.closest('main');
-    if (page) page.dataset.arrival = 'opening';
-    const finish = event => {
-      overlay.hidden = true;
-      if (event && page) delete page.dataset.arrival;
-      window.removeEventListener('wheel', finish);
-      window.removeEventListener('touchstart', finish);
-      window.removeEventListener('keydown', finish);
-      window.removeEventListener('pagehide', finish);
-    };
-    overlay.hidden = false;
-    overlay.querySelector('button').addEventListener('click', finish, {once:true});
-    ['wheel','touchstart','keydown','pagehide'].forEach(type => window.addEventListener(type,finish,{passive:true,once:true}));
-    setTimeout(finish, 1430);
-  } catch {}
-})()`;
-
-function Introduction() {
-  return <><div className="trait-intro" hidden suppressHydrationWarning>
-    <svg className="intro-gesture" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <path pathLength="1" d="M-50 470 C180 505 236 504 384 336 S642 65 706 176 C775 291 438 460 482 344 S828 195 1280 80" />
-    </svg>
-    <div className="intro-type" aria-hidden="true"><span>Maison</span> <i>Mestier</i></div>
-    <button type="button" className="intro-skip">Passer l’introduction</button>
-  </div><script dangerouslySetInnerHTML={{ __html: startIntro }} /></>;
-}
-
 const inkPath = "M475 -85 C482 54 559 103 662 132 C803 171 882 221 854 298 C829 372 712 344 732 269 C759 170 975 246 991 402 C1003 518 860 547 790 589 C710 639 675 627 679 566 C684 475 905 520 935 680 C950 769 852 780 842 862";
 
 export default function Cinema() {
-  return <><Introduction /><section className="trace-cinema" id="seuil" aria-labelledby="titre-maison">
+  return <><Impression /><section className="trace-cinema" id="seuil" aria-labelledby="titre-maison">
     <div className="trace-sticky"><div className="trace-stage">
       <div className="trace-film-mat" aria-hidden="true" />
       <div className="trace-aperture-guide" aria-hidden="true" />
