@@ -36,16 +36,13 @@ html:has(.bar) { scroll-padding-top: 6.125rem; }
   background: linear-gradient(to bottom, rgb(243 240 234 / .98), rgb(243 240 234 / .92) 78%, rgb(243 240 234 / .0));
   box-shadow: none;
 }
-.bar[data-landing="maison"] {
-  background: linear-gradient(to bottom, rgb(243 240 234 / .88), rgb(243 240 234 / 0));
-}
-html:has(#maison[data-cadre-plein]) .bar[data-landing="maison"] {
-  background: linear-gradient(to bottom, rgb(243 240 234 / .94), rgb(243 240 234 / .76) 44%, transparent);
-}
+.bar[data-landing="maison"],
 .bar[data-landing][data-light-ink] {
   color: var(--verge);
-  background: linear-gradient(to bottom, rgb(114 32 27 / .78), rgb(142 42 35 / .35) 68%, transparent);
+  background: linear-gradient(to bottom, rgb(25 23 20 / .76), rgb(25 23 20 / .42) 57%, transparent);
+  text-shadow: 0 1px 5px rgb(22 19 15 / .4);
 }
+.bar[data-landing] { transition: color .2s; }
 .bar[data-landing] .longMark { width: 105px; }
 .bar[data-landing] .shortMark { width: 36px; }
 html:has(.bar[data-landing]) { scroll-padding-top: 4.55rem; }
@@ -268,3 +265,7 @@ html:has(.bar[data-landing]) { scroll-padding-top: 4.55rem; }
 @media (prefers-reduced-motion: reduce) {
   .bar, .bar *, .dialog * { transition-duration: 0s !important; }
 }
+
+.revoir { padding: .3rem 0; border: 0; background: transparent; color: inherit; min-height: 44px; font: inherit; text-underline-offset: .26em; }
+.revoir:hover { text-decoration: underline; }
+@media (prefers-reduced-motion: reduce) { .revoir { display: none; } }

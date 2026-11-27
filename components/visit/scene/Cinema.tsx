@@ -11,10 +11,16 @@ export type CinemaProps = {
   visible: boolean;
   onReady: () => void;
   onFailure: () => void;
+  introBreath?: boolean;
 };
 const cameraOptions = { position: [0,2.6,10] as [number,number,number], fov:40, near:.08, far:100 };
 const renderOptions = { antialias:true, alpha:false, powerPreference:"low-power" as const };
-const pixelRatio = (w:number): [number,number] => [1, w<720 ? 1.25 : 1.5];
+function pixelRatio() {
+  if (typeof window === "undefined") return 1;
+  const { innerWidth: width, innerHeight: height, devicePixelRatio } = window;
+  const budget = Math.sqrt(1_800_000 / Math.max(1, width * height));
+  return Math.min(devicePixelRatio || 1, width < 720 ? 1.25 : 1.5, Math.max(.5, budget));
+}
 
 class LensBoundary extends Component<{children:ReactNode;onFailure:()=>void},{failed:boolean}> {
   state = {failed:false};
@@ -23,7 +29,7 @@ class LensBoundary extends Component<{children:ReactNode;onFailure:()=>void},{fa
   render() { return this.state.failed ? null : this.props.children; }
 }
 
-function Take({playhead,visible,onReady,onFailure}:CinemaProps) {
+function Take({playhead,visible,onReady,onFailure,introBreath=true}:CinemaProps) {
   const {scene,gl,camera,size,invalidate}=useThree();
   const lens=useRef<ReturnType<typeof chamber>|null>(null);
   const timing=useRef({began:0, rendered:0, x:0,y:0, tx:0,ty:0, p:0});
@@ -72,20 +78,29 @@ function Take({playhead,visible,onReady,onFailure}:CinemaProps) {
       latest.current.onFailure();
     };
     const fine=matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+    const leave=()=>{
+      const s=timing.current;
+      if(s.tx===0 && s.ty===0) return;
+      s.tx=0;s.ty=0;draw();
+    };
     const move=(event:PointerEvent)=>{
-      if(!fine.matches || !latest.current.visible || document.hidden || event.pointerType==="touch") return;
+      if(!latest.current.visible || document.hidden) return;
+      const control=event.target instanceof Element && event.target.closest("a,button,header,nav,input,select,textarea,summary,dialog,[role='slider'],[role='button']");
+      if(!fine.matches || event.pointerType!=="mouse" || event.buttons || control) { leave();return; }
       const rect=canvas.getBoundingClientRect();
       const x=(event.clientX-rect.left)/rect.width*2-1, y=(event.clientY-rect.top)/rect.height*2-1;
       const inside=Math.abs(x)<=1 && Math.abs(y)<=1;
       timing.current.tx=inside ? x:0; timing.current.ty=inside ? -y:0;
       draw();
     };
-    const leave=()=>{
-      timing.current.tx=0;timing.current.ty=0;draw();
-    };
     canvas.addEventListener("webglcontextlost",lost);
     window.addEventListener("mestier:draw",draw);
+    window.addEventListener("mestier:camera",draw);
     window.addEventListener("pointermove",move,{passive:true});
+    window.addEventListener("blur",leave);
+    window.addEventListener("mestier:dialog",leave);
+    window.addEventListener("keydown",leave);
+    fine.addEventListener("change",leave);
     document.addEventListener("pointerleave",leave);
     document.addEventListener("visibilitychange",draw);
     draw();
@@ -97,7 +112,12 @@ function Take({playhead,visible,onReady,onFailure}:CinemaProps) {
       delete canvas.dataset.visitMaterials;
       canvas.removeEventListener("webglcontextlost",lost);
       window.removeEventListener("mestier:draw",draw);
+      window.removeEventListener("mestier:camera",draw);
       window.removeEventListener("pointermove",move);
+      window.removeEventListener("blur",leave);
+      window.removeEventListener("mestier:dialog",leave);
+      window.removeEventListener("keydown",leave);
+      fine.removeEventListener("change",leave);
       document.removeEventListener("pointerleave",leave);
       document.removeEventListener("visibilitychange",draw);
       scene.onAfterRender=previous;
@@ -112,7 +132,7 @@ function Take({playhead,visible,onReady,onFailure}:CinemaProps) {
     const dt=s.rendered ? Math.min(48,now-s.rendered):16;s.rendered=now;
     const mix=1-Math.exp(-dt/120);
     s.x=THREE.MathUtils.lerp(s.x,s.tx,mix);s.y=THREE.MathUtils.lerp(s.y,s.ty,mix);
-    const t=Math.min(1,(now-s.began)/1250);
+    const t=introBreath ? Math.min(1,(now-s.began)/1250) : 1;
     const breath=t<1 ? Math.sin(t*Math.PI)*Math.sin(t*Math.PI) : 0;
     const p=THREE.MathUtils.clamp(playhead.current,0,1);
     s.p=p;
@@ -124,14 +144,20 @@ function Take({playhead,visible,onReady,onFailure}:CinemaProps) {
 
 export default function Cinema(props:CinemaProps) {
   const [foreground,setForeground]=useState(true);
+  const [resolution,setResolution]=useState(pixelRatio);
   useEffect(()=>{
     const sync=()=>setForeground(!document.hidden);
+    const resize=()=>setResolution(pixelRatio());
     sync();document.addEventListener("visibilitychange",sync);
-    return ()=>document.removeEventListener("visibilitychange",sync);
+    window.addEventListener("resize",resize,{passive:true});
+    return ()=>{
+      document.removeEventListener("visibilitychange",sync);
+      window.removeEventListener("resize",resize);
+    };
   },[]);
   const visible=props.visible && foreground;
   return <LensBoundary onFailure={props.onFailure}>
-    <Canvas camera={cameraOptions} dpr={pixelRatio(typeof window!=="undefined" ? window.innerWidth:1200)}
+    <Canvas camera={cameraOptions} dpr={resolution}
       gl={renderOptions} shadows="percentage" frameloop={visible ? "demand":"never"} aria-hidden="true"
       style={{width:"100%",height:"100%",pointerEvents:"none"}}>
       <Take {...props} visible={visible} />

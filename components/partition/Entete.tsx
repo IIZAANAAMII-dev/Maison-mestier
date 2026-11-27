@@ -7,8 +7,7 @@ import { mailLink, menuHash, openProject, panelEntry, regularClick, useProjectSe
 import styles from "./entete.module.css";
 
 const sections = [
-  { id: "maison", title: "La Maison" },
-  { id: "regards", title: "Le regard" },
+  { id: "maison", title: "La visite" },
   { id: "ateliers", title: "Les ateliers" },
   { id: "etudes", title: "Les études" },
   { id: "projet", title: "Votre projet" },
@@ -138,6 +137,15 @@ export default function Entete({ section }: { section?: "ateliers" | "etudes" })
     });
   }
 
+  function rejouerOuverture() {
+    menu.dismiss(() => {
+      const state = { ...history.state };
+      delete state[panelEntry];
+      history.replaceState(state, "", location.pathname + location.search);
+      window.dispatchEvent(new Event("mestier:rejouer-ouverture"));
+    });
+  }
+
   function composeFromMenu(event: MouseEvent<HTMLAnchorElement>) {
     if (!regularClick(event)) return;
     event.preventDefault();
@@ -150,7 +158,7 @@ export default function Entete({ section }: { section?: "ateliers" | "etudes" })
         data-landing={section ? undefined : current} data-light-ink={lightInk ? "" : undefined}>
         <a className={styles.brand} href={section ? path("/") : "#haut"} aria-label={section ? "Maison Mestier, accueil" : "Maison Mestier, retour en haut"}><Signature /></a>
         <nav className={styles.chapters} aria-label="Navigation principale">
-          {sections.slice(1, -1).map(({ id, title }) => (
+          {sections.slice(0, -1).map(({ id, title }) => (
             <a href={chapterLink(id)} key={id} aria-current={current === id ? "location" : undefined}>{title}</a>
           ))}
         </nav>
@@ -193,7 +201,7 @@ export default function Entete({ section }: { section?: "ateliers" | "etudes" })
           </div>
         </div>
         <div className={styles.menuFoot}>
-          <span>Maison Mestier</span>
+          {section ? <span>Maison Mestier</span> : <button type="button" className={styles.revoir} onClick={rejouerOuverture}>Revoir l’ouverture</button>}
           <a href={interactive ? "#contact" : mailLink} onClick={composeFromMenu}>Écrire à la Maison</a>
         </div>
       </dialog>

@@ -121,6 +121,7 @@ function engravedLines() {
   const locations:[string,number,number,number][]=[
     ["Film",.21,.34,.52],["Page",.53,.61,.92],["Relance",.73,.26,.55],
   ];
+  const face = getComputedStyle(document.documentElement).getPropertyValue("--font-display").trim() || "Georgia,serif";
   for(const [name,u,v,height] of locations) {
     const base=engraving(u,v,new THREE.Vector3());base.y+=.040;
     const shoulder=base.clone();shoulder.y+=height;
@@ -128,7 +129,7 @@ function engravedLines() {
     leaders.push(...base.toArray(),...shoulder.toArray(),...shoulder.toArray(),...end.toArray());
     const label=document.createElement("canvas");label.width=256;label.height=64;
     const c=label.getContext("2d")!;
-    c.fillStyle="#f3d7aa";c.font='italic 49px Georgia,serif';c.fillText(name,2,48);
+    c.fillStyle="#f3d7aa";c.font="italic 49px "+face;c.fillText(name,2,48);
     const map=new THREE.CanvasTexture(label);map.colorSpace=THREE.SRGBColorSpace;
     const caption=new THREE.Sprite(new THREE.SpriteMaterial({map,transparent:true,depthTest:false,opacity:0,toneMapped:false}));
     caption.center.set(0,.48);caption.position.copy(end);caption.position.x+=.045;

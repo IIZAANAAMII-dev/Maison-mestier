@@ -16,7 +16,7 @@ async function getAtelier(params: Props["params"]) {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const atelier = await getAtelier(params);
-  const image = { url: path("/partition/partage.jpg"), width: 1200, height: 630, alt: "Maison Mestier, maison de marketing et événementiel" };
+  const image = { url: path("/film/la-galerie.jpg"), width: 1200, height: 630, alt: "L’atelier de pierre de Maison Mestier" };
   return {
     title: { absolute: atelier.title },
     description: atelier.description,
@@ -54,10 +54,10 @@ export default async function AtelierPage({ params }: Props) {
           <AtelierChoice slug={atelier.slug} />
         </div>
         <figure className={s.plate}>
-          <InspectSpecimen title={specimenPapers[atelier.slug].title}>
+          <InspectSpecimen title={specimenPapers[atelier.slug].title} slug={atelier.slug} atelier={atelier.name}>
             <AtelierSpecimen slug={atelier.slug} className={s.drawing} />
           </InspectSpecimen>
-          <figcaption><span>{specimenPapers[atelier.slug].title}</span><span>Estampe {number}</span></figcaption>
+          <figcaption><span>{specimenPapers[atelier.slug].title}</span><span>Atelier {number}</span></figcaption>
         </figure>
       </header>
       <section className={s.reading} aria-label={`Le travail de l’atelier ${atelier.name}`}>

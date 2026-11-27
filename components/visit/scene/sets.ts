@@ -1,18 +1,24 @@
 import * as THREE from "three";
-import { image } from "../../../lib/maison";
-import { box, contactShadow, cylinder, ease, mesh, ring, vector, type Palette } from "./materials";
+import { SVGLoader } from "three/addons/loaders/SVGLoader.js";
+import { image, path } from "../../../lib/maison";
+import { box, contactShadow, cylinder, ease, mesh, ring, type Palette } from "./materials";
 
-function invitationInk() {
+function invitationInk(redraw: () => void) {
   const canvas=document.createElement("canvas");canvas.width=1024;canvas.height=640;
   const c=canvas.getContext("2d")!;
   c.strokeStyle="rgba(119,88,49,.75)";c.lineWidth=1.6;c.strokeRect(28,28,968,584);
-  c.fillStyle="#4c4036";
-  c.font='italic 90px Georgia,serif';c.fillText("Maison",70,208);
-  c.font='italic 95px Georgia,serif';c.fillText("Mestier",67,301);
   c.fillStyle="#842d25";c.fillRect(77,377,69,3);
-  c.fillStyle="#4c4036";c.font="24px Georgia,serif";c.fillText("CORRESPONDANCE",79,433);
+  const face = getComputedStyle(document.documentElement).getPropertyValue("--font-mono").trim() || "monospace";
+  c.fillStyle="#393c3d";c.font="19px "+face;c.letterSpacing="2.2px";c.fillText("CORRESPONDANCE",79,426);
   const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=4;
-  return texture;
+  const signature = new Image();
+  signature.onload = () => {
+    c.drawImage(signature, 73, 98, 424, 223);
+    texture.needsUpdate = true;
+    redraw();
+  };
+  signature.src = path("/charte/signature-encre.svg");
+  return { texture, dispose() { signature.onload = null; texture.dispose(); } };
 }
 
 function waxGeometry() {
@@ -38,16 +44,33 @@ function waxGeometry() {
   return g;
 }
 
-function initial(parent:THREE.Group, material:THREE.Material, shift:number) {
-  const line = [
-    [-.155,-.115],[-.146,-.137],[-.102,-.05],[-.036,.141],[-.012,.117],[-.046,-.084],
-    [.01,-.01],[.137,.129],[.145,.105],[.075,-.106],[.111,-.138],[.185,-.09],
-  ].map(([x,z])=>vector(x+shift,0,-z));
-  const curve=new THREE.CatmullRomCurve3(line);
-  mesh(new THREE.TubeGeometry(curve,64,.009,7,false),material,parent);
+function embossMonogram(crest: THREE.Group, wax: THREE.MeshPhysicalMaterial, redraw: () => void) {
+  let active = true;
+  new SVGLoader().load(path("/charte/monogramme-cachet.svg"), drawing => {
+    if (!active) return;
+    const shapes = drawing.paths.flatMap(stroke => stroke.toShapes());
+    if (!shapes.length) return;
+    const relief = new THREE.ExtrudeGeometry(shapes, {
+      depth: 24, steps: 1, curveSegments: 2, bevelEnabled: true,
+      bevelSize: 5, bevelThickness: 7, bevelSegments: 1,
+    });
+    relief.computeBoundingBox();
+    const { min, max } = relief.boundingBox!;
+    const scale = .57 / (max.x - min.x);
+    relief.translate(-(min.x + max.x) / 2, -(min.y + max.y) / 2, 0);
+    const raisedWax = wax.clone();
+    raisedWax.color.multiplyScalar(.94);
+    raisedWax.bumpMap = null;
+    raisedWax.roughness = .43;
+    const mark = mesh(relief, raisedWax, crest);
+    mark.scale.set(scale, -scale, scale);
+    mark.rotation.x = -Math.PI / 2;
+    redraw();
+  }, undefined, () => {});
+  return () => { active = false; };
 }
 
-export function impression(P:Palette) {
+export function impression(P:Palette,redraw:()=>void) {
   const desk=new THREE.Group();
   desk.position.set(1.13,0,2.09);desk.rotation.y=-.20;
   contactShadow(desk,P.contact,.10,.008,.09,4.34,3.23);
@@ -57,17 +80,16 @@ export function impression(P:Palette) {
   const under=box(desk,cardstock,-.055,.33,.043,2.72,.025,1.62,.013);
   under.rotation.y=.051;
   box(desk,cardstock,0,.352,0,2.72,.026,1.62,.012);
-  const ink=invitationInk();
+  const ink=invitationInk(redraw);
   const printed=mesh(new THREE.PlaneGeometry(2.72,1.62),new THREE.MeshBasicMaterial({
-    map:ink,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,
+    map:ink.texture,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,
   }),desk,0,.365,0);
   printed.rotation.x=-Math.PI/2;printed.castShadow=false;
   contactShadow(desk,P.contact,.634,.374,.052,1.19,1.12);
   const waxPile=new THREE.Group();waxPile.position.set(.63,.389,.058);desk.add(waxPile);
   mesh(waxGeometry(),P.wax,waxPile);
   const crest=new THREE.Group();crest.position.y=.068;crest.rotation.y=.17;waxPile.add(crest);
-  const inkWax=P.wax.clone(); inkWax.color.set("#3a0e0b"); inkWax.roughness=.48;
-  initial(crest,inkWax,-.064);initial(crest,inkWax,.065);
+  const releaseMonogram=embossMonogram(crest,P.wax,redraw);
   const die=new THREE.Group();desk.add(die);
   const movingShade=P.contact.clone();
   const cast=contactShadow(desk,movingShade,.69,.377,.05,1.08,.98);
@@ -84,7 +106,7 @@ export function impression(P:Palette) {
   ].map(([r,h])=>new THREE.Vector2(r,h));
   mesh(new THREE.LatheGeometry(silhouette,72),P.oak,die,0,.264,0);
   for (const y of [.31,.348]) ring(die,P.brass,.173,.008,0,y,0);
-  return {object:desk,ink,update(p:number) {
+  return {object:desk,dispose(){releaseMonogram();ink.dispose();},update(p:number) {
     const pressing=ease(p,.190,.265)-ease(p,.295,.372);
     const retracted=1-pressing;
     const arrival=ease(p,.075,.185);
@@ -181,7 +203,7 @@ export function reception(P:Palette,redraw:()=>void) {
       curtains[i].position.x=sign*(.98+1.02*opening);
       curtains[i].scale.x=1-.54*opening;
     }
-    warm.intensity=rise*(1-away)*7.8;
-    warm.position.set(group.position.x+.82,group.position.y+2.6*group.scale.y,group.position.z+.71);
+    warm.intensity=rise*(1-away)*8.4;
+    warm.position.set(group.position.x-.75,group.position.y+3.02*group.scale.y,group.position.z-.27);
   }};
 }

@@ -5,7 +5,6 @@ import { image } from "../../../lib/maison";
 
 export const clamp = THREE.MathUtils.clamp;
 export const ease = (v: number, low: number, high: number) => THREE.MathUtils.smoothstep(v, low, high);
-export const vector = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
 
 /** A repeatable material grain, shared by all instances in the chamber. */
 function sample(kind: "stone" | "brass" | "wood" | "cloth" | "paper") {

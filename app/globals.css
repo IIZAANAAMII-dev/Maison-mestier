@@ -54,19 +54,21 @@ main:focus { outline: none; }
   ::view-transition-group(etude-portique),
   ::view-transition-group(etude-empreinte),
   ::view-transition-group(etude-entracte) {
-    animation-delay: 375ms;
-    animation-duration: 1125ms;
+    animation-duration: 550ms;
     animation-fill-mode: both;
-    animation-timing-function: cubic-bezier(.65,0,.35,1);
-    animation-timing-function: linear(0,.001,.0078,.0264,.0625,.1221,.2109,.335,.5,.665,.7891,.8779,.9375,.9736,.9922,.999,1);
+    animation-timing-function: cubic-bezier(.22,.72,.18,1);
     overflow: clip;
   }
   html:is(:active-view-transition-type(le-portique), :active-view-transition-type(lempreinte), :active-view-transition-type(lentracte))::view-transition-old(root) {
     z-index: 1;
-    animation: etude-caption-out 750ms ease-out both;
+    animation: etude-caption-out 360ms ease-out both;
   }
   html:is(:active-view-transition-type(le-portique), :active-view-transition-type(lempreinte), :active-view-transition-type(lentracte))::view-transition-new(root) {
     animation: none;
   }
+  html:active-view-transition-type(atelier) [data-atelier-raccord] { view-transition-name: objet-atelier; }
+  ::view-transition-group(objet-atelier) { animation-duration: 520ms; animation-timing-function: cubic-bezier(.22,.72,.18,1); }
+  html:active-view-transition-type(atelier)::view-transition-old(root) { animation: etude-caption-out 320ms ease-out both; }
+  html:active-view-transition-type(atelier)::view-transition-new(root) { animation: none; }
   @keyframes etude-caption-out { to { opacity: 0; } }
 }

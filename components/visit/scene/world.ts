@@ -102,7 +102,7 @@ export function chamber(scene:THREE.Scene, gl:THREE.WebGLRenderer, redraw:()=>vo
   const previousEnvironment=scene.environment;
   const env=environment(gl);scene.environment=env.texture;scene.environmentRotation.y=-.49;
   const P=makePalette(redraw), room=gallery(P.stone.map!,redraw);
-  const ribbon=sculpture(P), letter=impression(P), stage=reception(P,redraw), atmosphere=air();
+  const ribbon=sculpture(P), letter=impression(P,redraw), stage=reception(P,redraw), atmosphere=air();
   const set=new THREE.Group();
   set.add(room.object,ribbon.object,letter.object,stage.object,stage.lamp,atmosphere.shaft,atmosphere.dust);
   scene.add(set);
@@ -170,7 +170,7 @@ export function chamber(scene:THREE.Scene, gl:THREE.WebGLRenderer, redraw:()=>vo
       for(const mat of Object.values(P))if(mat instanceof THREE.Material)mats.add(mat);
       for(const g of geos)g.dispose();
       for(const m of mats)m.dispose();
-      env.dispose();room.map.dispose();letter.ink.dispose();stage.dispose();ribbon.dispose();scans.dispose();sun.shadow.dispose();P.dispose();
+      env.dispose();room.map.dispose();letter.dispose();stage.dispose();ribbon.dispose();scans.dispose();sun.shadow.dispose();P.dispose();
     },
   };
 }

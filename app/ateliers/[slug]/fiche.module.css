@@ -103,10 +103,14 @@
 .proof summary { position: relative; display: block; list-style: none; cursor: zoom-in; -webkit-tap-highlight-color: transparent; }
 .proof summary::-webkit-details-marker { display: none; }
 .proof summary:focus-visible { outline: 2px solid var(--seal); outline-offset: 4px; }
-.paperWindow { display: block; width: 100%; overflow: hidden; }
+.paperWindow { position: relative; display: grid; place-items: center; width: 100%; aspect-ratio: 880 / 620; overflow: hidden; }
+.objet, .estampe { grid-area: 1 / 1; width: 100%; }
+.objet { height: 100%; object-fit: contain; }
+.estampe, .proof[open] .objet { visibility: hidden; }
+.proof[open] .estampe { visibility: visible; }
 .drawing { transform-origin: var(--point-x,50%) var(--point-y,50%); transition: transform .6s cubic-bezier(.22,.67,.18,1); }
 .proof[open] summary { cursor: zoom-out; }
-.proof[open] .drawing { transform: scale(1.8); }
+.proof[open] .drawing { transform: scale(1.28); }
 .inspect { position: absolute; right: 0; bottom: 0; display: inline-flex; align-items: center; gap: .65rem; background: var(--sheet); color: var(--carbon); padding: .55rem .7rem; font: 500 .82rem/1.15 var(--sans); }
 .inspectSymbol { position: relative; height: .7rem; width: .7rem; }
 .inspectSymbol::before, .inspectSymbol::after { position: absolute; content: ""; background: currentColor; }

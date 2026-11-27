@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore, type MouseEvent, type PointerEvent, type ReactNode } from "react";
+import { ArrowIcon } from "../../../components/galerie/Icons";
 import { contact, getSelection, toggleAtelier } from "../../../components/fabrication/fabrication-data";
 import { path } from "../../../lib/maison";
 import s from "./fiche.module.css";
@@ -30,10 +31,10 @@ export function AtelierContact({ slug, href }: { slug: string; href: string }) {
     contact(slug);
   }
 
-  return <a href={href} onClick={open} className={s.write}>Écrire à la Maison <span aria-hidden="true">↗</span></a>;
+  return <a href={href} onClick={open} className={s.write}>Écrire à la Maison <ArrowIcon /></a>;
 }
 
-export function InspectSpecimen({ children, title }: { children: ReactNode; title: string }) {
+export function InspectSpecimen({ children, title, slug, atelier }: { children: ReactNode; title: string; slug: string; atelier: string }) {
   function focusPaper(event: PointerEvent<HTMLElement>) {
     // Native <details> also handles touch and keyboard when scripts are unavailable.
     const frame = event.currentTarget.getBoundingClientRect();
@@ -51,11 +52,14 @@ export function InspectSpecimen({ children, title }: { children: ReactNode; titl
       }
       if (event.key === "Escape") event.currentTarget.parentElement?.removeAttribute("open");
     }}>
-      <span className={s.paperWindow}>{children}</span>
+      <span className={s.paperWindow} data-atelier-objet={slug}>
+        <img className={s.objet} src={path("/galerie-metiers/" + slug + ".webp")} alt={"Maquette de l’atelier " + atelier} width="880" height="620" fetchPriority="high" />
+        <span className={s.estampe}>{children}</span>
+      </span>
       <span className={s.inspect}>
-        <span className={s.closePrint}>Reculer</span>
-        <span className={s.openPrint}>Voir le détail</span>
-        <span className="sr-only"> de l’estampe {title}</span>
+        <span className={s.closePrint}>Revoir le volume</span>
+        <span className={s.openPrint}>Voir le dessin</span>
+        <span className="sr-only"> de l’atelier · {title}</span>
         <span className={s.inspectSymbol} aria-hidden="true" />
       </span>
     </summary>
