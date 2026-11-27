@@ -24,6 +24,7 @@ export default function Ateliers() {
   const onFailure = useCallback(() => { failed.current = true; setStudio(null); }, []);
   const strip = useRef<HTMLDivElement>(null);
   const gesture = useRef<{id:number; x:number; y:number; horizontal:boolean} | null>(null);
+  const ignorerClic = useRef(false);
   const atelier = carnetAteliers[index];
   const kept = Boolean(selection?.includes(atelier.slug));
 
@@ -63,6 +64,7 @@ export default function Ateliers() {
   }
   function touch(event: PointerEvent<HTMLElement>) {
     if (enhanced && event.isPrimary && event.button === 0) {
+      ignorerClic.current = false;
       gesture.current = {id:event.pointerId,x:event.clientX,y:event.clientY,horizontal:false};
     }
   }
@@ -70,9 +72,10 @@ export default function Ateliers() {
     const g = gesture.current;
     if (!g || g.id !== event.pointerId || g.horizontal) return;
     const dx = Math.abs(event.clientX-g.x), dy = Math.abs(event.clientY-g.y);
-    if (dy > 8 && dy >= dx) { gesture.current = null; return; }
+    if (dy > 8 && dy >= dx) { ignorerClic.current = true; gesture.current = null; return; }
     if (dx > 10 && dx > dy * 1.25) {
       g.horizontal = true;
+      ignorerClic.current = true;
       event.currentTarget.setPointerCapture(event.pointerId);
     }
   }
@@ -81,8 +84,17 @@ export default function Ateliers() {
     if (!g || g.id !== event.pointerId) return;
     gesture.current = null;
     const dx = event.clientX - g.x;
+    if (!commit || Math.hypot(dx, event.clientY - g.y) > 10) ignorerClic.current = true;
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
     if (commit && g.horizontal && Math.abs(dx) > Math.min(55,event.currentTarget.clientWidth * .13)) select(index + (dx < 0 ? 1 : -1));
+  }
+
+  function entrerParObjet(event: MouseEvent<HTMLAnchorElement>) {
+    if (event.detail > 0 && ignorerClic.current) {
+      event.preventDefault();
+      return;
+    }
+    if (regularClick(event)) remember(atelier.slug);
   }
 
   return <section ref={rail} id="ateliers" className={s.directory} aria-labelledby="titre-repertoire">
@@ -115,7 +127,12 @@ export default function Ateliers() {
             <img className={s.tirage} src={path("/galerie-metiers/"+atelier.slug+".webp")} width="880" height="620"
               loading="lazy" alt="" draggable={false}/>
             {motion && Studio && <div className={s.volume} aria-hidden="true"><Studio surface={surface} progress={progress} onFailure={onFailure}/></div>}
-            <figcaption className={s.legend}><i aria-hidden="true"/>{legendes[index]}</figcaption>
+            <figcaption>
+              <a className={s.lienObjet} href={atelierPath(atelier.slug)} onClick={entrerParObjet}
+                draggable={false} aria-label={"Entrer dans l’atelier "+atelier.name+" depuis sa maquette"}>
+                <span className={s.legend}><i aria-hidden="true"/>{legendes[index]} <ArrowIcon /></span>
+              </a>
+            </figcaption>
           </figure>
         </article>
         <div ref={strip} className={s.index} role={enhanced ? "tablist" : "navigation"} aria-label="Choisir un atelier" onKeyDown={keys}>

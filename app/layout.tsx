@@ -59,6 +59,11 @@ const studyTransition = `
     const destination = new URL(activation.entry.url).pathname;
     const accueil = url => url.replace(/\\/$/, "") === ${JSON.stringify(path("/").replace(/\/$/, ""))};
     const atelier = url => url.match(/\\/ateliers\\/([a-z0-9-]+)\\/?$/)?.[1];
+    // On touch, restore the live gallery immediately so the next swipe belongs to the models.
+    if (atelier(source) && accueil(destination) && matchMedia("(pointer: coarse)").matches) {
+      transition.skipTransition();
+      return;
+    }
     const slug = accueil(source) ? atelier(destination) : accueil(destination) ? atelier(source) : null;
     if (slug) {
       const objet = document.querySelector('[data-atelier-objet="' + slug + '"]');

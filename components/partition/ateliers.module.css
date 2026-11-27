@@ -1,3 +1,5 @@
+/* The direct index is immediately interactive, including when following a saved link. */
+html:has(.directory:target) {scroll-behavior:auto;}
 .directory {
   --stock: #f3f0ea;
   --ink: #25251f;
@@ -72,6 +74,15 @@
 .table[data-modele-pret] .volume {opacity:1;}
 .table[data-modele-pret] .tirage {visibility:hidden;}
 .legend {position:absolute; bottom:5%; left:4%; display:flex; gap:.65em; align-items:center; white-space:nowrap; color:#685a48; font:italic 400 clamp(.77rem,.9vw,.98rem)/1.1 var(--display);}
+.lienObjet {position:absolute;inset:0;z-index:1;display:block;color:inherit;text-decoration:none;touch-action:pan-y pinch-zoom;}
+.directory .lienObjet:focus-visible {outline:0;}
+.lienObjet:focus-visible .legend {outline:2px solid var(--stamp);outline-offset:5px;}
+.lienObjet:is(:hover,:focus-visible) .legend {color:var(--stamp);}
+.legend svg {font-size:1.12em;}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){
+  .legend svg {transition:transform .25s ease-out;}
+  .lienObjet:hover .legend svg {transform:translate(.12em,-.12em);}
+}
 .legend i {width:clamp(1.15rem,2.3vw,2.8rem);height:1px;background:var(--thread);}
 .index {
   display:flex; align-items:stretch; justify-content:space-between; gap:clamp(.32rem,1vw,1.4rem);
