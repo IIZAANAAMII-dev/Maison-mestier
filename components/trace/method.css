@@ -56,7 +56,7 @@
   position: relative;
   z-index: 2;
   color: var(--method-ink);
-  padding: clamp(5.7rem, 12svh, 8.5rem) 0 clamp(3.6rem, 7.5vw, 8rem);
+  padding: clamp(5.7rem, 12svh, 8.5rem) 0 clamp(2.7rem, 5vw, 5.8rem);
 }
 .method-skin {
   position: absolute;
@@ -85,18 +85,18 @@
 .method-copy .thread-swatch { border-color: currentColor; }
 .method-copy h2 {
   font: 505 clamp(3.3rem, 6.3vw, 8.15rem)/.91 var(--sans), Arial, sans-serif;
-  letter-spacing: -.084em;
+  letter-spacing: -.065em;
 }
 .method-copy h2 :is(span, i) { display: block; }
 .method-copy h2 i {
   color: #f4c7a1;
-  font: italic 440 1.17em/.94 var(--serif), Georgia, serif;
-  letter-spacing: -.075em;
+  font: italic 400 1.22em/.94 var(--serif), Georgia, serif;
+  letter-spacing: -.041em;
   margin-left: -.025em;
   opacity: var(--method-italic, 1);
 }
 .method-summary {
-  max-width: 37ch;
+  max-width: 30ch;
   color: var(--method-soft);
   margin-top: clamp(1rem, 2.6vw, 2rem);
   font-size: clamp(1.04rem, 1.48vw, 1.34rem);
@@ -166,21 +166,21 @@
   opacity: 0;
   transition: opacity .22s;
 }
-.trace-header[data-method]::after { opacity: 1; }
-.trace-header[data-method]:not(:has(details[open]))::before { opacity: 0; }
-.trace-header[data-method] .trace-brand { color: #fff1dd; }
-.trace-header[data-method] .trace-brand img { filter: brightness(0) invert(1); }
-.trace-header[data-method] :is(.trace-nav, .mobile-menu summary) {
+.trace-header[data-lacquer]::after { opacity: 1; }
+.trace-header[data-lacquer]:not(:has(details[open]))::before { opacity: 0; }
+.trace-header[data-lacquer] .trace-brand { color: #fff1dd; }
+.trace-header[data-lacquer] .trace-brand img { filter: brightness(0) invert(1); }
+.trace-header[data-lacquer] :is(.trace-nav, .mobile-menu summary) {
   color: #fff1dd;
   background: #61241edb;
   border-color: #f3cda661;
 }
-.trace-header[data-method] .trace-nav a:is(:hover, :focus-visible, [aria-current]) { background: #a3513e; }
-.trace-header[data-method] .header-contact { color: #61241e; background: #f6ddc2; }
-.trace-header[data-method] .header-contact .action-pearl { background: #9a392c; }
+.trace-header[data-lacquer] .trace-nav a:is(:hover, :focus-visible, [aria-current]) { background: #a3513e; }
+.trace-header[data-lacquer] .header-contact { color: #61241e; background: #f6ddc2; }
+.trace-header[data-lacquer] .header-contact .action-pearl { background: #9a392c; }
 
 @media (max-width: 760px) {
-  .service-section { padding: clamp(3.85rem, 9svh, 5.25rem) 0 3.5rem; }
+  .service-section { padding: clamp(3.85rem, 9svh, 5.25rem) 0 2.75rem; }
   .method-lead { grid-template-columns: 1fr; gap: clamp(1.6rem, 4.4svh, 3rem); }
   .method-copy h2 { font-size: clamp(2.15rem, 10.9vw, 5.15rem); }
   .method-summary { max-width: 38ch; font-size: 1rem; line-height: 1.44; }

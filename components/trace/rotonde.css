@@ -49,14 +49,14 @@
 .rotonde-label .thread-swatch { border-color: currentColor; }
 .rotonde-head h1 {
   font: 505 clamp(3.9rem, 6.25vw, 8.5rem)/.88 var(--sans), Arial, sans-serif;
-  letter-spacing: -.087em;
+  letter-spacing: -.07em;
 }
 .rotonde-head h1 span,
 .rotonde-head h1 i { display: block; }
 .rotonde-head h1 i {
   color: var(--seal);
-  font: italic 445 1.17em/.91 var(--serif), Georgia, serif;
-  letter-spacing: -.064em;
+  font: italic 400 1.23em/.91 var(--serif), Georgia, serif;
+  letter-spacing: -.037em;
   margin-left: -.025em;
 }
 .rotonde-summary {
@@ -185,6 +185,10 @@
   box-shadow: 0 .5rem 1.35rem #4b2e2333, 0 0 0 1px #8a645546;
   transform: translate3d(-50%, -50%, 2px);
 }
+.rotonde-frame[data-facing] {
+  background: linear-gradient(145deg, #fffbf1, #d3b596);
+  box-shadow: 0 .65rem 1.75rem #492b2337, 0 0 0 1px #8a64555c;
+}
 .rotonde-frame picture {
   display: block;
   width: 100%;
@@ -198,6 +202,7 @@
   height: 100%;
   object-fit: cover;
   -webkit-user-drag: none;
+  -webkit-touch-callout: none;
 }
 .rotonde-back {
   display: grid;
@@ -343,6 +348,11 @@
   font-size: .73rem;
   color: #644437;
 }
+.rotonde-instruction span + span { display: none; }
+@media (hover: none), (max-width: 760px) {
+  .rotonde-instruction span:first-child { display: none; }
+  .rotonde-instruction span + span { display: inline; }
+}
 .rotonde-status {
   position: absolute;
   width: 1px;
@@ -373,11 +383,11 @@
 @media (max-width: 760px) {
   .rotonde {
     --scene-x: 50%;
-    --scene-y: 49%;
+    --scene-y: 50.75%;
     --lens: 61rem;
     --tilt: -23deg;
     --radius: clamp(9.4rem, 51.4vw, 17.75rem);
-    --panel-h: clamp(10.1rem, 29svh, 16rem);
+    --panel-h: clamp(10.1rem, 28svh, 16rem);
     --ground: calc(var(--panel-h) / 2 + 1.8rem);
     --floor-diameter: calc(var(--radius) * 2.45 + 2rem);
     --curve: 1.55rem;
@@ -389,7 +399,7 @@
   .rotonde-head h1 { font-size: clamp(3.1rem, 12.1vw, 5.35rem); }
   .rotonde-summary {
     max-width: 31ch;
-    margin-top: .62rem;
+    margin-top: .48rem;
     font-size: .91rem;
   }
   .rotonde-desk {
@@ -479,5 +489,4 @@
 @keyframes rotonde-light { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
   .rotonde[data-interactive] .rotonde-view { cursor: auto; }
-  .rotonde-instruction { visibility: hidden; }
 }

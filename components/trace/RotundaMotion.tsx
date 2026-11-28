@@ -7,6 +7,7 @@ const wrap = (value: number, count: number) => ((value % count) + count) % count
 
 type Drag = {
   id: number;
+  input: "pointer" | "touch";
   startX: number;
   startY: number;
   startPosition: number;
@@ -32,6 +33,7 @@ export default function RotundaMotion() {
     const status = section.querySelector<HTMLElement>(".rotonde-status")!;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const nativeTouch = typeof TouchEvent === "function" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
     const count = cards.length;
     const degrees = 360 / count;
     const listeners = new AbortController();
@@ -53,6 +55,7 @@ export default function RotundaMotion() {
       selected = index;
       cards.forEach((card, i) => {
         card.tabIndex = i === index ? 0 : -1;
+        card.toggleAttribute("data-facing", i === index);
         captions[i].hidden = i !== index;
         marks[i].setAttribute("aria-pressed", String(i === index));
       });
@@ -65,7 +68,7 @@ export default function RotundaMotion() {
       lastTime = now;
 
       if (position !== target || reduced.matches) {
-        const easing = drag?.horizontal || wheelTimer ? 28 : 64;
+        const easing = drag?.horizontal ? (drag.input === "touch" ? 13 : 24) : wheelTimer ? 28 : 68;
         position += (target - position) * (1 - Math.exp(-elapsed / easing));
         if (Math.abs(position - target) < .003 || reduced.matches) position = target;
         orbit!.style.transform = "rotateY(" + (-position * degrees).toFixed(2) + "deg)";
@@ -111,54 +114,71 @@ export default function RotundaMotion() {
       moveTo(nearest + gap);
     }
 
-    function endDrag(event: PointerEvent) {
-      if (!drag || event.pointerId !== drag.id) return;
+    function startDrag(id: number, input: Drag["input"], x: number, y: number, time: number) {
+      if (view!.inert) return;
+      const distance = input === "touch" ? clamp(view!.clientWidth * .35, 100, 215) : clamp(view!.clientWidth * .42, 112, 280);
+      drag = { id, input, startX: x, startY: y, startPosition: position, distance, lastX: x, lastTime: time,
+        velocity: 0, horizontal: false };
+    }
+
+    function updateDrag(gesture: Drag, x: number, y: number, time: number) {
+      const dx = x - gesture.startX;
+      const dy = y - gesture.startY;
+      if (!gesture.horizontal) {
+        if (Math.abs(dy) > 7 && Math.abs(dy) >= Math.abs(dx) * .88) {
+          drag = undefined;
+          return false;
+        }
+        if (Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(dy) * 1.18) return false;
+        window.clearTimeout(wheelTimer);
+        wheelTimer = 0;
+        gesture.horizontal = true;
+        view!.setAttribute("data-dragging", "");
+      }
+      const dt = Math.max(5, time - gesture.lastTime);
+      gesture.velocity = gesture.velocity * .48 + (x - gesture.lastX) / dt * .52;
+      gesture.lastX = x;
+      gesture.lastTime = time;
+      if (!reduced.matches) {
+        target = gesture.startPosition - dx / gesture.distance;
+        queue();
+      }
+      return true;
+    }
+
+    function endDrag(time: number, allowCoast: boolean) {
+      if (!drag) return;
       const gesture = drag;
       drag = undefined;
       if (!gesture.horizontal) return;
 
       view!.removeAttribute("data-dragging");
-      if (view!.hasPointerCapture(event.pointerId)) view!.releasePointerCapture(event.pointerId);
+      if (gesture.input === "pointer" && view!.hasPointerCapture(gesture.id)) view!.releasePointerCapture(gesture.id);
       ignoreClickUntil = performance.now() + 260;
-      const moving = event.type === "pointerup" && event.timeStamp - gesture.lastTime < 105;
-      const coast = moving ? clamp(-gesture.velocity * 155 / gesture.distance, -.8, .8) : 0;
+      if (reduced.matches) {
+        const distance = gesture.startX - gesture.lastX;
+        moveTo(Math.round(gesture.startPosition) + (allowCoast && Math.abs(distance) > 22 ? Math.sign(distance) : 0));
+        return;
+      }
+      const moving = allowCoast && time - gesture.lastTime < 105;
+      const coast = moving ? clamp(-gesture.velocity * 140 / gesture.distance, -.72, .72) : 0;
       moveTo(Math.round(target + coast));
     }
 
     view.addEventListener("pointerdown", event => {
-      if (!event.isPrimary || event.button !== 0 || reduced.matches) return;
-      drag = { id: event.pointerId, startX: event.clientX, startY: event.clientY, startPosition: position,
-        distance: clamp(view.clientWidth * .42, 112, 280), lastX: event.clientX, lastTime: event.timeStamp,
-        velocity: 0, horizontal: false };
+      if (!event.isPrimary || event.button !== 0 || (event.pointerType === "touch" && nativeTouch)) return;
+      startDrag(event.pointerId, "pointer", event.clientX, event.clientY, event.timeStamp);
     }, { signal });
 
     view.addEventListener("pointermove", event => {
-      if (reduced.matches) return;
-      if (drag?.id === event.pointerId) {
-        const dx = event.clientX - drag.startX;
-        const dy = event.clientY - drag.startY;
-        if (!drag.horizontal) {
-          if (Math.abs(dy) > 9 && Math.abs(dy) > Math.abs(dx)) {
-            drag = undefined;
-            return;
-          }
-          if (Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(dy) * 1.12) return;
-          window.clearTimeout(wheelTimer);
-          wheelTimer = 0;
-          drag.horizontal = true;
-          view.setAttribute("data-dragging", "");
+      if (drag?.input === "pointer" && drag.id === event.pointerId) {
+        if (updateDrag(drag, event.clientX, event.clientY, event.timeStamp) && !view.hasPointerCapture(event.pointerId)) {
           view.setPointerCapture(event.pointerId);
         }
-        const dt = Math.max(5, event.timeStamp - drag.lastTime);
-        drag.velocity = drag.velocity * .45 + (event.clientX - drag.lastX) / dt * .55;
-        drag.lastX = event.clientX;
-        drag.lastTime = event.timeStamp;
-        target = drag.startPosition - dx / drag.distance;
-        queue();
         return;
       }
 
-      if (!fine.matches || event.pointerType !== "mouse") return;
+      if (reduced.matches || !fine.matches || event.pointerType !== "mouse") return;
       wantedX = clamp((event.clientX / window.innerWidth - .5) * 18, -9, 9);
       wantedY = clamp((event.clientY / window.innerHeight - .5) * 12, -6, 6);
       queue();
@@ -167,12 +187,44 @@ export default function RotundaMotion() {
     view.addEventListener("pointerleave", () => {
       wantedX = 0;
       wantedY = 0;
-      if (drag && !drag.horizontal) drag = undefined;
+      if (drag?.input === "pointer" && !drag.horizontal) drag = undefined;
       queue();
     }, { signal });
-    window.addEventListener("pointerup", endDrag, { signal });
-    window.addEventListener("pointercancel", endDrag, { signal });
-    view.addEventListener("lostpointercapture", endDrag, { signal });
+
+    function finishPointer(event: PointerEvent) {
+      if (drag?.input === "pointer" && drag.id === event.pointerId) endDrag(event.timeStamp, event.type === "pointerup");
+    }
+    window.addEventListener("pointerup", finishPointer, { signal });
+    window.addEventListener("pointercancel", finishPointer, { signal });
+    view.addEventListener("lostpointercapture", finishPointer, { signal });
+
+    // Touch events keep a native vertical gesture available until a side swipe is deliberate.
+    view.addEventListener("touchstart", event => {
+      if (event.touches.length !== 1) {
+        if (drag?.input === "touch") endDrag(event.timeStamp, false);
+        return;
+      }
+      const touch = event.touches[0];
+      startDrag(touch.identifier, "touch", touch.clientX, touch.clientY, event.timeStamp);
+    }, { signal, passive: true });
+
+    view.addEventListener("touchmove", event => {
+      if (drag?.input !== "touch") return;
+      if (!event.cancelable || event.touches.length !== 1) {
+        endDrag(event.timeStamp, false);
+        return;
+      }
+      const touch = event.touches[0];
+      if (touch.identifier === drag.id && updateDrag(drag, touch.clientX, touch.clientY, event.timeStamp)) event.preventDefault();
+    }, { signal, passive: false });
+
+    function finishTouch(event: TouchEvent) {
+      if (drag?.input !== "touch") return;
+      const id = drag.id;
+      if (Array.from(event.changedTouches).some(touch => touch.identifier === id)) endDrag(event.timeStamp, event.type === "touchend");
+    }
+    view.addEventListener("touchend", finishTouch, { signal, passive: true });
+    view.addEventListener("touchcancel", finishTouch, { signal, passive: true });
     view.addEventListener("click", event => {
       if (event.detail && performance.now() < ignoreClickUntil) {
         event.preventDefault();
@@ -222,9 +274,7 @@ export default function RotundaMotion() {
 
     reduced.addEventListener("change", () => {
       if (!reduced.matches) return;
-      if (drag && view.hasPointerCapture(drag.id)) view.releasePointerCapture(drag.id);
-      drag = undefined;
-      view.removeAttribute("data-dragging");
+      endDrag(performance.now(), false);
       wantedX = 0;
       wantedY = 0;
       moveTo(Math.round(target));
@@ -244,7 +294,10 @@ export default function RotundaMotion() {
       orbit.style.removeProperty("transform");
       world.style.removeProperty("translate");
       select(0);
-      cards.forEach(card => card.removeAttribute("tabindex"));
+      cards.forEach(card => {
+        card.removeAttribute("tabindex");
+        card.removeAttribute("data-facing");
+      });
       status.textContent = "";
     };
   }, []);

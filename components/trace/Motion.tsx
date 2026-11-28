@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import { montageChapters, portraitQuery } from "./montage";
+import { arrivalCut, montageChapters, portraitQuery } from "./montage";
 import { connectDrawings } from "./raccord";
+import { scrollFilm } from "./scrollFilm";
 
 export default function Motion() {
   useEffect(() => {
@@ -26,69 +27,32 @@ export default function Motion() {
       media.add("(prefers-reduced-motion: no-preference) and (min-height: 550px)", () => connectDrawings(main, gsap, ScrollTrigger));
 
       media.add("(prefers-reduced-motion: no-preference)", () => {
-        const film = stage.querySelector<HTMLVideoElement>(".trace-film")!;
+        const assembly = stage.querySelector<HTMLVideoElement>(".trace-table .trace-film")!;
+        const walk = stage.querySelector<HTMLVideoElement>(".trace-walkthrough")!;
         const guide = stage.querySelector<HTMLElement>(".trace-aperture-guide")!;
         const parallax = stage.querySelector<HTMLElement>(".trace-parallax")!;
-        const heroLink = stage.querySelector<HTMLAnchorElement>(".trace-action")!;
         const player = stage.querySelector<HTMLButtonElement>(".trace-player")!;
         const playerName = player.querySelector<HTMLElement>(".player-name")!;
         const chapters = Array.from(stage.querySelectorAll<HTMLButtonElement>(".trace-spool button"));
         const portrait = window.matchMedia(portraitQuery);
         const precisePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
-        const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
         const disposer = new AbortController();
         const { signal } = disposer;
+        const assemblyFilm = scrollFilm(assembly, portrait, signal);
+        const walkFilm = scrollFilm(walk, portrait, signal);
         let progress = 0, chapter = -1;
-        let filmSource = "", usable = false, failed = false;
         let visible = false;
         let lastWidth = stage.clientWidth, lastHeight = stage.clientHeight;
 
-        function loadFilm() {
-          if (connection?.saveData || filmSource || failed) return;
-          filmSource = (portrait.matches ? film.dataset.portrait : film.dataset.film) ?? "";
-          if (!filmSource) return;
-          film.src = filmSource;
-          film.preload = "auto";
-          film.load();
+        function loadVisibleFilms() {
+          if (!visible) return;
+          if (progress > .012 && progress < arrivalCut + .08) assemblyFilm.load();
+          if (progress > .44) walkFilm.load();
         }
 
-        function clearFilm() {
-          usable = false;
-          delete film.dataset.ready;
-          if (!filmSource) return;
-          film.pause();
-          film.removeAttribute("src");
-          film.preload = "none";
-          film.load();
-          filmSource = "";
-        }
-
-        function showFrame() {
-          if (!usable || film.seeking || !Number.isFinite(film.duration)) return;
-          const lastFrame = Math.max(0, film.duration - .036);
-          const target = Math.min(lastFrame, progress * film.duration);
-          const distance = Math.abs(film.currentTime - target);
-          if (progress < .007 || distance > .33) delete film.dataset.ready;
-          else if (film.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) film.dataset.ready = "";
-          if (distance < .026) return;
-          try { film.currentTime = target; } catch { usable = false; }
-        }
-
-        film.addEventListener("loadeddata", () => {
-          if (!filmSource || failed) return;
-          usable = true;
-          showFrame();
-        }, { signal });
-        film.addEventListener("seeked", showFrame, { signal });
-        film.addEventListener("error", () => {
-          if (!filmSource) return;
-          failed = true;
-          usable = false;
-          delete film.dataset.ready;
-        }, { signal });
         const observer = new IntersectionObserver(entries => {
           visible = entries.some(entry => entry.isIntersecting);
-          if (visible && progress > .009 && progress < .999) { loadFilm(); showFrame(); }
+          loadVisibleFilms();
         });
         observer.observe(stage);
 
@@ -103,18 +67,20 @@ export default function Motion() {
         }, { passive: true, signal });
         stage.addEventListener("pointerleave", clearPointer, { signal });
 
-        function frameBox(open: boolean) {
+        function frameBox(pose: "aperture" | "table" | "room") {
           const width = stage!.clientWidth, height = stage!.clientHeight;
           const mobile = portrait.matches;
-          const x = open ? width * (mobile ? .018 : .257) : guide.offsetLeft;
-          const y = open ? height * (mobile ? .117 : .089) : guide.offsetTop;
-          const w = open ? width * (mobile ? .964 : .725) : guide.offsetWidth;
-          const h = open ? height * (mobile ? .686 : .806) : guide.offsetHeight;
+          if (pose === "room") return { x: 0, y: 0, scale: 1, clip: "inset(0px 0px 0px 0px round 0px 0px 0px 0px)" };
+          const open = pose === "table";
+          const x = open ? width * (mobile ? .035 : .277) : guide.offsetLeft;
+          const y = open ? height * (mobile ? .133 : .101) : guide.offsetTop;
+          const w = open ? width * (mobile ? .93 : .687) : guide.offsetWidth;
+          const h = open ? height * (mobile ? .696 : .79) : guide.offsetHeight;
           const style = getComputedStyle(guide);
           const radii = [style.borderTopLeftRadius, style.borderTopRightRadius, style.borderBottomRightRadius, style.borderBottomLeftRadius];
           const pixels = (part: string, axis: number) => part.endsWith("%") ? parseFloat(part) * axis / 100 : parseFloat(part);
           const corners = open
-            ? mobile ? "28px 56px 42px 34px" : "52px 87px 74px 72px"
+            ? mobile ? "30px 54px 32px 32px" : "49px 88px 57px 44px"
             : radii.map(value => pixels(value.split(" ")[0], w) + "px").join(" ") + " / " +
               radii.map(value => pixels(value.split(" ")[1] || value.split(" ")[0], h) + "px").join(" ");
           const aspect = mobile ? .8 : 14 / 11;
@@ -128,15 +94,15 @@ export default function Motion() {
         function display(position: number) {
           if (progress <= .16 && position > .16) clearPointer();
           progress = position;
-          const nextChapter = position < .3 ? 0 : position < .72 ? 1 : 2;
+          const nextChapter = position < .265 ? 0 : position < arrivalCut ? 1 : 2;
           if (nextChapter !== chapter) {
             chapter = nextChapter;
             stage!.dataset.cut = String(chapter);
             chapters.forEach((button, index) => button.setAttribute("aria-pressed", String(index === chapter)));
-            heroLink.tabIndex = chapter === 0 ? 0 : -1;
           }
-          if (visible && position > .009 && position < .999) loadFilm();
-          showFrame();
+          loadVisibleFilms();
+          assemblyFilm.show((position - .02) / (.56 - .02));
+          walkFilm.show((position - arrivalCut) / (.99 - arrivalCut));
         }
 
         main.dataset.cinema = "on";
@@ -148,46 +114,63 @@ export default function Motion() {
           });
           scene.to(cursor, { position: 1, duration: 1, onUpdate: () => display(cursor.position) }, 0)
             .to(".trace-line > *", { yPercent: -116, stagger: .024, duration: .17, ease: "power2.in" }, .085)
-            .to(".trace-lead .trace-label, .trace-lead .trace-pitch, .trace-action", { autoAlpha: 0, y: -15, duration: .16 }, .105)
-            .to(".trace-backlight", { opacity: .24, duration: .31 }, .12)
-            .fromTo(".trace-frame", { clipPath: () => frameBox(false).clip }, { clipPath: () => frameBox(true).clip, duration: .35, ease: "power2.inOut" }, .09)
-            .fromTo(".trace-focal", { x: () => frameBox(false).x, y: () => frameBox(false).y, scale: () => frameBox(false).scale }, {
-              x: () => frameBox(true).x, y: () => frameBox(true).y, scale: () => frameBox(true).scale, duration: .35, ease: "power2.inOut",
-            }, .09)
+            .to(".trace-lead .trace-label, .trace-lead .trace-pitch", { autoAlpha: 0, y: -15, duration: .16 }, .105)
+            .to(".trace-backlight", { opacity: .36, duration: .29 }, .12)
+            .fromTo(".trace-frame", { clipPath: () => frameBox("aperture").clip }, {
+              clipPath: () => frameBox("table").clip, duration: .32, ease: "power2.inOut",
+            }, .08)
+            .fromTo(".trace-focal", {
+              x: () => frameBox("aperture").x, y: () => frameBox("aperture").y, scale: () => frameBox("aperture").scale,
+            }, {
+              x: () => frameBox("table").x, y: () => frameBox("table").y, scale: () => frameBox("table").scale,
+              duration: .32, ease: "power2.inOut",
+            }, .08)
             .to(".thread-ink", { opacity: 0, duration: .17 }, .09)
-            .to(".thread-plan", { strokeDashoffset: 0, duration: .43, ease: "power2.inOut" }, .25)
-            .to(".thread-plan", { opacity: .24, duration: .22 }, .73)
-            .to(".trace-fold", { opacity: 1, duration: .23 }, .19)
-            .to(".trace-built", { opacity: 1, duration: .25 }, .65)
-            .fromTo(".cut-fold", { autoAlpha: 0, y: 19 }, { autoAlpha: 1, y: 0, duration: .14 }, .31)
-            .to(".cut-fold", { autoAlpha: 0, y: -13, duration: .11 }, .625)
-            .fromTo(".cut-stand", { autoAlpha: 0, y: 21 }, { autoAlpha: 1, y: 0, duration: .15 }, .75)
+            .to(".thread-plan", { strokeDashoffset: 0, duration: .28, ease: "power2.inOut" }, .23)
+            .to(".thread-plan", { opacity: 0, duration: .17 }, .49)
+            .to(".trace-fold", { opacity: 1, duration: .22 }, .16)
+            .to(".trace-built", { opacity: 1, duration: .23 }, .34)
+            .fromTo(".cut-fold", { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: .12 }, .28)
+            .to(".cut-fold", { autoAlpha: 0, y: -12, duration: .1 }, .48)
+            .to(".trace-interior", { autoAlpha: 1, duration: .16, ease: "sine.inOut" }, .53)
+            .to(".trace-frame", { clipPath: () => frameBox("room").clip, duration: .21, ease: "power2.inOut" }, .55)
+            .to(".trace-focal", { x: 0, y: 0, scale: 1, duration: .21, ease: "power2.inOut" }, .55)
+            .to(".trace-vignette", { opacity: 1, duration: .16 }, .57)
+            .to(".trace-approach", { scale: 1.11, duration: .32, ease: "sine.inOut" }, .62)
+            .to(".trace-passage", { opacity: 1, duration: .061 }, .9)
+            .fromTo(".cut-passage", { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: .16, ease: "power2.out" }, .78)
             .to(".trace-rail span", { scaleX: 1, duration: 1 }, 0);
           scene.progress(scene.scrollTrigger?.progress ?? 0);
           display(scene.progress());
 
-          let playback: ReturnType<typeof gsap.to> | undefined;
+          let playback = 0;
           function stopPlayback() {
-            playback?.kill();
-            playback = undefined;
+            cancelAnimationFrame(playback);
+            playback = 0;
             player.setAttribute("aria-pressed", "false");
-            playerName.textContent = "Voir le montage";
+            playerName.textContent = "Lire le film";
           }
           player.addEventListener("click", () => {
             if (playback) { stopPlayback(); return; }
             const link = scene.scrollTrigger;
             if (!link) return;
-            loadFilm();
+            if (link.progress < arrivalCut || link.progress >= .977) assemblyFilm.load(true);
+            walkFilm.load(true);
             const position = link.progress >= .977 ? 0 : link.progress;
-            const playhead = { position };
+            const started = performance.now();
+            const duration = Math.max(600, 6500 * (1 - position));
+            const ease = gsap.parseEase("sine.inOut");
             if (link.progress >= .977) window.scrollTo({ top: link.start, behavior: "instant" });
             player.setAttribute("aria-pressed", "true");
             playerName.textContent = "Pause";
-            playback = gsap.to(playhead, {
-              position: .995, duration: Math.max(.5, 4.25 * (1 - position)), ease: "sine.inOut",
-              onUpdate: () => window.scrollTo({ top: link.start + (link.end - link.start) * playhead.position, behavior: "instant" }),
-              onComplete: stopPlayback,
-            });
+            function advance(now: number) {
+              const fraction = Math.min(1, Math.max(0, (now - started) / duration));
+              const playhead = position + (.995 - position) * ease(fraction);
+              window.scrollTo({ top: link!.start + (link!.end - link!.start) * playhead, behavior: "instant" });
+              if (fraction < 1) playback = requestAnimationFrame(advance);
+              else stopPlayback();
+            }
+            playback = requestAnimationFrame(advance);
           }, { signal });
           function interrupt(event: Event) {
             if (event.target instanceof Node && !player.contains(event.target)) stopPlayback();
@@ -202,7 +185,8 @@ export default function Motion() {
             const link = scene.scrollTrigger;
             if (!link) return;
             stopPlayback();
-            if (index !== 0) loadFilm();
+            if (index === 1) assemblyFilm.load(true);
+            if (index === 2) walkFilm.load(true);
             window.scrollTo({ top: link.start + (link.end - link.start) * montageChapters[index].position, behavior: "smooth" });
           }, { signal }));
 
@@ -221,10 +205,9 @@ export default function Motion() {
         }
         window.addEventListener("resize", refreshDimensions, { passive: true, signal });
         portrait.addEventListener("change", () => {
-          const wasLoaded = Boolean(filmSource);
-          clearFilm();
-          failed = false;
-          if (wasLoaded && progress > .009) loadFilm();
+          assemblyFilm.clear();
+          walkFilm.clear();
+          loadVisibleFilms();
           refreshDimensions();
         }, { signal });
         document.fonts.ready.then(() => { if (!signal.aborted) ScrollTrigger.refresh(); });
@@ -239,10 +222,10 @@ export default function Motion() {
           pointerX.tween.kill();
           pointerY.tween.kill();
           parallax.style.removeProperty("transform");
-          heroLink.removeAttribute("tabindex");
           delete main.dataset.cinema;
           delete stage.dataset.cut;
-          clearFilm();
+          assemblyFilm.clear();
+          walkFilm.clear();
         };
       });
       revert = () => media.revert();

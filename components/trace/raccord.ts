@@ -1,8 +1,8 @@
 import type { gsap } from "gsap";
 import type { ScrollTrigger } from "gsap/ScrollTrigger";
 
-const lift = .42;
-const print = .86;
+const lift = .38;
+const print = .82;
 const artSize = 640;
 
 type DrawingBox = { left: number; top: number; width: number };
@@ -63,11 +63,11 @@ export function connectDrawings(main: HTMLElement, animation: typeof gsap, Scrol
     set(room!, "--room-floor", position < lift ? 1 : 0);
     set(floor!, "--portico-trace", 1 - phase(position, .23, .685));
 
-    const copyIn = phase(position, .52, .81);
+    const copyIn = phase(position, .465, .765);
     set(method!, "--method-paper", phase(position, lift, .655));
     set(method!, "--method-copy", copyIn);
     set(method!, "--method-copy-y", 24 * (1 - copyIn) + "px");
-    set(method!, "--method-italic", phase(position, .58, .81));
+    set(method!, "--method-italic", phase(position, .525, .765));
     set(method!, "--method-plate", position >= print ? 1 : 0);
     drawing!.style.visibility = crossing ? "visible" : "hidden";
     if (!crossing) return;

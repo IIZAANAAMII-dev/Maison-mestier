@@ -115,7 +115,7 @@ export default function Rotunda() {
           })}
         </div>
         <button className="rotonde-step" type="button" data-rotonde-step="1" aria-label="Métier suivant"><Arrow next/></button>
-        <p className="rotonde-instruction">Glissez pour tourner</p>
+        <p className="rotonde-instruction"><span>Glissez pour tourner</span><span>Balayez de côté</span></p>
       </div>
       <a className="rotonde-all" href="#maison">Notre méthode
         <span aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none">

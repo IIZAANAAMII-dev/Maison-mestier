@@ -25,7 +25,7 @@ La Rotonde place les cadres, le sol et les supports dans le même espace CSS 3D.
 
 Au défilement, la vue se redresse jusqu’à projeter le sol de face. Le même dessin SVG glisse ensuite de cette projection vers la planche de la méthode. ScrollTrigger suit le défilement natif dans les deux sens. Les mesures de projection sont reprises au redimensionnement. En mouvement réduit, la Rotonde et la planche se lisent dans leur ordre naturel.
 
-Le défilement, les trois boutons d’étape et la lecture guidée conduisent le montage de la maquette Blender dans `art/portique/`. Les deux cadrages, les films et leurs tirages sont dans `public/portique/`. Les images fixes prennent le relais lorsque la vidéo tarde ou que l’économie de données est active.
+Le défilement, les trois boutons de plan et la lecture guidée passent de la maquette Blender au montage, puis à un travelling sous le portique. `art/portique/traversee.py` part de la scène montée pour rendre la visite à hauteur d’œil. Les films paysage et portrait et les images de raccord sont dans `public/portique/`. Le chargement suit la position du visiteur. Les images fixes prennent le relais lorsque la vidéo tarde ou que l’économie de données est active.
 
 La galerie horizontale projette les tirages et leurs relevés sur une pellicule courbe en Canvas 2D. Le défilement natif gère le tactile et le trackpad. Les commandes, le glissement à la souris et le clavier donnent accès aux trois études. Les dessins et les textures se chargent à proximité de la galerie.
 
@@ -35,4 +35,4 @@ Dans la [capture de l’arrivée sur Lusion](https://www.landing.love/sites/lusi
 
 Les références de la Rotonde et les minutages de Lusion, Illoca et Siena Film Foundation figurent à `/reperages/`. L’éclairage de la maquette Three.js suit les [guides de matériaux et lumière](https://github.com/CloudAI-X/threejs-skills/tree/0e181866f095b5f06d005133876e926515390d95/skills). Le défilement et la gestion du cycle de vie des animations s’appuient sur les [guides officiels GSAP](https://github.com/greensock/gsap-skills/tree/aed9cfd3277740755f6bfc1155c7aa645403b760/skills).
 
-Les textes des ateliers et le monogramme proviennent du [dossier de marque](https://www.notion.so/40bf46178928814f8801f51e1aa5c5ed) et des [pages ateliers](https://www.notion.so/41af46178928812496cece45434d7041). Junicode et Geist sont auto-hébergées avec leurs licences dans `public/licences/pavillon/`.
+Les textes des ateliers et le monogramme proviennent du [dossier de marque](https://www.notion.so/40bf46178928814f8801f51e1aa5c5ed) et des [pages ateliers](https://www.notion.so/41af46178928812496cece45434d7041). Hanken Grotesk prolonge la famille [HK Grotesk repérée sur Awwwards](https://www.awwwards.com/inspiration/hk-grotesk-regular). Hanken Grotesk et Instrument Serif sont auto-hébergées, avec leurs licences OFL dans `public/licences/pavillon/`.

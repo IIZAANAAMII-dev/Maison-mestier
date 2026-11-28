@@ -4,6 +4,11 @@ import { path } from "../../lib/maison";
 export const metadata: Metadata = { title: "Les repérages", description: "Les raccords, gestes et mouvements observés image par image pour concevoir la visite de Maison Mestier." };
 const references = [
   {
+    name: "Apple Vision Pro", studio: "Apple", site: "https://www.apple.com/apple-vision-pro/",
+    timing: "Mise en scène du produit", copy: "Une idée par écran, un sujet qui occupe le cadre et quelques mots pour guider le regard.",
+    translation: "Le portique s’ouvre sur un travail de montage, puis sur un travelling à hauteur de visiteur. Le titre se retire pendant que l’espace prend le premier rôle.",
+  },
+  {
     name: "Oryzo AI", studio: "Lusion", site: "https://lusion.co/projects/oryzo_ai/",
     film: "https://assets.awwwards.com/awards/element/2026/03/69c13a0cda821248995089.mp4", award: "https://www.awwwards.com/inspiration/3d-2d-3d-transition-oryzo-ai",
     timing: "0,67 à 5,33 s", copy: "Le regard bascule au-dessus du disque. Son contour reste au même endroit lorsque le décor s’efface, puis le tracé rejoint le titre.",
@@ -35,7 +40,7 @@ const references = [
   {
     name: "Illoca", studio: "Unseen Studio", site: "https://illoca.unseen.co/", film: "https://www.landing.love/sites/illoca/", award: "https://www.awwwards.com/sites/illoca",
     timing: "2,30 à 8,30 s · 20,30 à 26,30 s", copy: "Le cadre s’élargit en gardant un bureau et sa silhouette comme repères. Plus loin, la caméra tourne autour du bâti et fait lire son plan intérieur.",
-    translation: "Le comptoir, le seuil et une silhouette donnent l’échelle du stand dès l’arrivée. Le cadre s’ouvre quand la cloison pivote. Un trait tracé sur le socle accompagne le montage.",
+    translation: "Le comptoir et la silhouette donnent d’abord l’échelle de la maquette. Le cadre s’ouvre puis la caméra passe sous le portique.",
   },
   {
     name: "Siena Film Foundation", studio: "G–NS Studio · Carolina Hernando", site: "https://siena.film/work", film: "https://www.carolinahernando.com/case-study-siena",
@@ -48,7 +53,7 @@ export default function Reperages() {
     <nav className="crumb" aria-label="Fil d’Ariane"><a href={path("/")}>Maison Mestier</a><span>/</span>Les repérages</nav>
     <p className="trace-label"><span className="thread-swatch" aria-hidden="true" />Carnet de réalisation</p><h1 className="inside-heading">Les <i>repérages.</i></h1>
     <p className="detail-deck">Des galeries photographiques aux visites en 3D, ces séquences ont guidé la Rotonde, son raccord avec la méthode et le montage du stand.</p>
-    <div className="reference-list">{references.map(ref => <article key={ref.name}><div><p className="eyebrow">{ref.studio}</p><h2>{ref.name}</h2><p className="ref-time">{ref.timing}</p></div><div><p>{ref.copy}</p><p>{ref.translation}</p><div className="ref-links"><a className="text-link" href={ref.site} target="_blank" rel="noreferrer">Visiter le site</a><a className="text-link" href={ref.film} target="_blank" rel="noreferrer">Voir le film de référence</a>{ref.award && <a className="text-link" href={ref.award} target="_blank" rel="noreferrer">Voir sur Awwwards</a>}</div></div></article>)}</div>
+    <div className="reference-list">{references.map(ref => <article key={ref.name}><div><p className="eyebrow">{ref.studio}</p><h2>{ref.name}</h2><p className="ref-time">{ref.timing}</p></div><div><p>{ref.copy}</p><p>{ref.translation}</p><div className="ref-links"><a className="text-link" href={ref.site} target="_blank" rel="noreferrer">Visiter le site</a>{ref.film && <a className="text-link" href={ref.film} target="_blank" rel="noreferrer">Voir le film de référence</a>}{ref.award && <a className="text-link" href={ref.award} target="_blank" rel="noreferrer">Voir sur Awwwards</a>}</div></div></article>)}</div>
     <a className="trace-pill" href={path("/#seuil")}><span className="action-pearl" aria-hidden="true" />Entrer dans la Rotonde</a>
   </main>;
 }

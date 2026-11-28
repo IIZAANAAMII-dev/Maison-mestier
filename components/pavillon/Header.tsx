@@ -24,22 +24,24 @@ export default function Header() {
     ["seuil", "maison", "etudes", "ateliers", "contact"].forEach(id => { const section = document.getElementById(id); if (section) observer.observe(section); });
     const onHome = Boolean(document.getElementById("seuil"));
     const chapter = document.getElementById("maison");
+    const film = document.getElementById("montage");
     let chapterStart = Infinity, chapterEnd = Infinity;
     const setPaper = () => {
       el.toggleAttribute("data-scrolled", scrollY > 35 || !onHome);
-      el.toggleAttribute("data-method", scrollY >= chapterStart && scrollY < chapterEnd);
+      el.toggleAttribute("data-lacquer", scrollY >= chapterStart && scrollY < chapterEnd);
     };
     const measureChapter = () => {
       if (chapter) {
         const bounds = chapter.getBoundingClientRect();
         const headerCentre = el.offsetHeight * .5;
         chapterStart = bounds.top + scrollY - headerCentre;
-        chapterEnd = bounds.bottom + scrollY - headerCentre;
+        chapterEnd = (film?.getBoundingClientRect().bottom ?? bounds.bottom) + scrollY - headerCentre;
       }
       setPaper();
     };
     const chapterObserver = chapter?.parentElement ? new ResizeObserver(measureChapter) : undefined;
     if (chapterObserver && chapter?.parentElement) chapterObserver.observe(chapter.parentElement);
+    if (film) chapterObserver?.observe(film);
     measureChapter();
     window.addEventListener("scroll", setPaper, { passive: true, signal });
     window.addEventListener("keydown", event => { if (event.key === "Escape" && details.open) { close(); details.querySelector("summary")?.focus(); } }, { signal });
@@ -71,7 +73,7 @@ export default function Header() {
       controller.abort();
       observer.disconnect();
       chapterObserver?.disconnect();
-      el.removeAttribute("data-method");
+      el.removeAttribute("data-lacquer");
       cancelAnimationFrame(frame);
       clear();
     };

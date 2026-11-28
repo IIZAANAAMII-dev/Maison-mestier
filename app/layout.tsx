@@ -8,11 +8,11 @@ import "./trace.css";
 
 const serif = localFont({
   src: [
-    { path: "./fonts/pavillon/junicode.woff2", weight: "300 700", style: "normal" },
-    { path: "./fonts/pavillon/junicode-italic.woff2", weight: "300 700", style: "italic" },
+    { path: "./fonts/pavillon/instrument-serif.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/pavillon/instrument-serif-italic.woff2", weight: "400", style: "italic" },
   ], variable: "--serif", display: "swap", adjustFontFallback: false,
 });
-const sans = localFont({ src: "./fonts/pavillon/geist.woff2", weight: "100 900", variable: "--sans", display: "swap" });
+const sans = localFont({ src: "./fonts/pavillon/hanken-grotesk.woff2", weight: "100 900", variable: "--sans", display: "swap" });
 
 const title = "Maison Mestier — Stands, événements et identités de marque";
 const description = "Stands de salon, événements, identités et expériences digitales. Huit ateliers et un seul interlocuteur, de la première idée au jour du montage.";
