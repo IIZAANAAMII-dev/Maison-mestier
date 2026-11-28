@@ -1,53 +1,3 @@
-.trace-opening { position: relative; isolation: isolate; }
-.rotonde-print, .raccord-plane { display: none; }
-.trace-opening[data-raccord] > .rotonde { position: sticky; top: 0; }
-[data-raccord] .rotonde-print {
-  position: absolute;
-  display: block;
-  inset: -1px;
-  width: calc(100% + 2px);
-  height: calc(100% + 2px);
-  pointer-events: none;
-  opacity: var(--room-ink, 0);
-}
-.rotonde-floor { opacity: var(--room-floor, 1); }
-.rotonde-station :is(.rotonde-frame, .rotonde-back) {
-  opacity: var(--room-objects, 1);
-}
-.rotonde-head, .rotonde-desk {
-  opacity: var(--room-copy, 1);
-  transform: translate3d(0, var(--room-copy-y, 0px), 0);
-}
-.rotonde[data-raccord-leaving] :is(.rotonde-desk, .rotonde-camera) { animation: none; }
-.rotonde[data-raccord-leaving] .rotonde-world { translate: none !important; }
-
-[data-raccord] .raccord-plane {
-  display: block;
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-}
-.raccord-screen {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  overflow: clip;
-}
-.raccord-drawing {
-  position: absolute;
-  inset: 0 auto auto 0;
-  width: 640px;
-  height: 640px;
-  max-width: none;
-  transform-origin: 0 0;
-  visibility: hidden;
-}
-.portico-stroke {
-  stroke-dasharray: 1;
-  stroke-dashoffset: var(--portico-trace, 0);
-}
-
 .service-section {
   --method-ink: #fff3df;
   --method-soft: #f0d7bc;
@@ -65,17 +15,12 @@
     radial-gradient(ellipse at 81% 22%, #8d4230 0%, #702b23 33%, transparent 70%),
     linear-gradient(140deg, #672a23 0%, #4c1b19 69%, #391413 100%);
   border-radius: clamp(2.25rem, 6vw, 6rem) clamp(2.25rem, 6vw, 6rem) 0 0;
-  opacity: var(--method-paper, 1);
 }
 .method-lead {
   display: grid;
   grid-template-columns: minmax(0, 1.06fr) minmax(0, .94fr);
   gap: clamp(1.4rem, 3vw, 4rem);
   align-items: center;
-}
-.method-copy {
-  transform: translate3d(0, var(--method-copy-y, 0px), 0);
-  opacity: var(--method-copy, 1);
 }
 .method-copy .trace-label {
   color: #ecc8a4;
@@ -87,16 +32,11 @@
   letter-spacing: -.065em;
 }
 .method-copy h2 :is(span, i) { display: block; }
-.method-copy h2 span {
-  translate: 0 calc((1 - var(--method-copy, 1)) * .64rem);
-}
 .method-copy h2 i {
   color: #f4c7a1;
   font: italic 400 1.22em/.94 var(--serif), Georgia, serif;
   letter-spacing: -.041em;
   margin-left: -.025em;
-  opacity: var(--method-italic, 1);
-  translate: 0 calc((1 - var(--method-italic, 1)) * .9rem);
 }
 .method-summary {
   max-width: 30ch;
@@ -105,23 +45,27 @@
   font-size: clamp(1.04rem, 1.48vw, 1.34rem);
   line-height: 1.45;
   letter-spacing: -.021em;
-  translate: 0 calc((1 - var(--method-copy, 1)) * 1.05rem);
 }
 .method-drawing {
-  width: min(100%, 34rem);
+  width: min(100%, 44rem);
   justify-self: center;
 }
 .method-plate {
-  aspect-ratio: 1;
-  opacity: var(--method-plate, 1);
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  padding: 4%;
+  aspect-ratio: 1.33;
+  background: radial-gradient(ellipse at 46% 35%, #f9ead0, #ebd5b8 88%);
+  border-radius: clamp(1.4rem, 4.5vw, 4.75rem) clamp(1.4rem, 4.5vw, 4.75rem) .75rem .75rem;
+  box-shadow: 0 1rem 2.8rem #29120b60;
 }
-.method-plate > svg { display: block; width: 100%; height: 100%; }
+.method-plate img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .method-drawing figcaption {
   margin-top: .65rem;
   text-align: center;
   color: #f1ccb1;
   font-size: .83rem;
-  opacity: var(--method-copy, 1);
 }
 .method-details { padding-top: clamp(2.7rem, 6.7vw, 6rem); }
 .method-phases {

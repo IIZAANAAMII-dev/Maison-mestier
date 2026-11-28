@@ -1,4 +1,4 @@
-import PorticoDrawing from "./PorticoDrawing";
+import { path } from "../../lib/maison";
 import "./method.css";
 
 const phases = [
@@ -12,13 +12,15 @@ export default function Services() {
     <div className="method-skin" aria-hidden="true"/>
     <div className="method-lead trace-width">
       <div className="method-copy">
-        <p className="trace-label"><span className="thread-swatch" aria-hidden="true"/>La méthode</p>
-        <h2 id="service-title"><span>Du premier trait</span> <i>au jour J.</i></h2>
-        <p className="method-summary">Un seul interlocuteur pilote le dessin, la fabrication et l’installation de votre projet.</p>
+        <p className="trace-label" data-reveal="label"><span className="thread-swatch" aria-hidden="true"/>La méthode</p>
+        <h2 id="service-title" data-reveal="title"><span data-reveal-line>Du premier trait</span> <i data-reveal-line>au jour J.</i></h2>
+        <p className="method-summary" data-reveal="copy">Un seul interlocuteur pilote le dessin, la fabrication et l’installation de votre projet.</p>
       </div>
-      <figure className="method-drawing">
-        <div className="method-plate"><PorticoDrawing/></div>
-        <figcaption>Étude d’un stand Maison Mestier</figcaption>
+      <figure className="method-drawing" data-reveal="figure">
+        <div className="method-plate">
+          <img src={path("/seuil/plan.svg")} width="1280" height="960" alt="Relevé en perspective du portique, montrant son ouverture et la profondeur de ses montants." loading="lazy"/>
+        </div>
+        <figcaption>Relevé du portique Maison Mestier</figcaption>
       </figure>
     </div>
     <div className="method-details trace-width">

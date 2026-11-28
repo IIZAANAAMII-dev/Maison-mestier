@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { arrivalCut, montageChapters, portraitQuery } from "./montage";
-import { connectDrawings } from "./raccord";
+import { connectThreshold } from "./thresholdMotion";
 import { scrollFilm } from "./scrollFilm";
 
 export default function Motion() {
@@ -24,7 +24,7 @@ export default function Motion() {
       const [{ gsap }, { ScrollTrigger }] = modules;
       gsap.registerPlugin(ScrollTrigger);
       const media = gsap.matchMedia();
-      media.add("(prefers-reduced-motion: no-preference) and (min-height: 550px)", () => connectDrawings(main, gsap, ScrollTrigger));
+      media.add("(prefers-reduced-motion: no-preference) and (min-height: 520px)", () => connectThreshold(main, gsap, ScrollTrigger));
 
       media.add("(prefers-reduced-motion: no-preference)", () => {
         const assembly = stage.querySelector<HTMLVideoElement>(".trace-table .trace-film")!;
@@ -175,6 +175,15 @@ export default function Motion() {
 
           const footerInk = main.querySelector<SVGPathElement>(".footer-ink");
           if (footerInk) gsap.fromTo(footerInk, { strokeDashoffset: 1 }, { strokeDashoffset: 0, ease: "none", scrollTrigger: { trigger: ".project", start: "top 92%", end: "center 45%", scrub: .45 } });
+
+          const screen = main.querySelector<HTMLElement>(".projection-window");
+          if (screen) gsap.fromTo(screen, {
+            clipPath: "inset(3% 17% 4% 17% round 9% 9% 1.5% 1.5%)",
+          }, {
+            clipPath: "inset(0% 0% 0% 0% round 0% 0% 0% 0%)",
+            ease: "sine.out",
+            scrollTrigger: { trigger: ".projection-stage", start: "clamp(top 100%)", end: "top 49%", scrub: .18 },
+          });
         }, main);
 
         function refreshDimensions() {

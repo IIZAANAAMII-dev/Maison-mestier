@@ -42,7 +42,7 @@ export function Offre() {
       <div className="offre-intro">
         <div>
           <p className="trace-label" data-reveal="label"><span className="thread-swatch" aria-hidden="true"/>Nos services</p>
-          <h2 id="offre-title" data-reveal="title" data-relais="offre">
+          <h2 id="offre-title" data-reveal="title">
             <span data-reveal-line>De l’espace</span>{" "}<i data-reveal-line>à l’écran.</i>
           </h2>
         </div>
@@ -72,7 +72,7 @@ export function OffreDigitale() {
     <div className="trace-width offre-digitale-layout">
       <div className="offre-digitale-copy">
         <p className="trace-label" data-reveal="label"><span className="thread-swatch" aria-hidden="true"/>Atelier web</p>
-        <h2 id="offre-web-title" data-reveal="title" data-relais="digital">
+        <h2 id="offre-web-title" data-reveal="title">
           <span data-reveal-line>Du site vitrine</span>{" "}<i data-reveal-line>à l’application.</i>
         </h2>
         <p data-reveal="copy">Présenter un savoir-faire, vendre en ligne ou simplifier le travail de vos équipes. Voyez comment une même direction artistique s’adapte à chacun de ces usages.</p>

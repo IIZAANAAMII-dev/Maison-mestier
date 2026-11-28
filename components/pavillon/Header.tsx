@@ -109,6 +109,7 @@ export default function Header() {
       const y = window.scrollY;
       el.toggleAttribute("data-scrolled", y > 35 || !onHome);
       el.toggleAttribute("data-opening", onHome && y <= 35);
+      el.toggleAttribute("data-threshold-tone", onHome && y < chapterStart);
       el.toggleAttribute("data-projection", y >= projectionStart && y < chapterEnd);
       el.toggleAttribute("data-lacquer", (y >= chapterStart && y < chapterEnd) || (y >= digitalStart && y < digitalEnd) || y >= contactStart);
       const sightline = y + Math.min(window.innerHeight * .3, 240);
@@ -210,6 +211,7 @@ export default function Header() {
       el.removeAttribute("data-lacquer");
       el.removeAttribute("data-projection");
       el.removeAttribute("data-opening");
+      el.removeAttribute("data-threshold-tone");
       el.querySelectorAll("[data-section][aria-current]").forEach(anchor => anchor.removeAttribute("aria-current"));
       cancelAnimationFrame(frame);
       clear();

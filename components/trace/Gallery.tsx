@@ -461,7 +461,7 @@ export default function Gallery() {
     <div className="projection-head">
       <div className="projection-intro">
         <p className="projection-label" data-reveal="label"><span aria-hidden="true" /> Les études de création</p>
-        <h2 id="projection-title" data-reveal="title" data-relais="projection"><span data-reveal-line>En <i>projection.</i></span></h2>
+        <h2 id="projection-title" data-reveal="title"><span data-reveal-line>En <i>projection.</i></span></h2>
       </div>
       <div className="projection-side"><p data-reveal="copy">Un stand, une identité imprimée, une scénographie. Trois études pour voir comment naît un projet.</p>
         {hydrated && <div className="projection-switch" role="group" aria-label="Vue des études">

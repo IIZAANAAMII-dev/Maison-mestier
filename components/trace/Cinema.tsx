@@ -47,7 +47,7 @@ export default function Cinema() {
           <div className="trace-vignette" aria-hidden="true"/>
           <div className="trace-lead">
             <p className="trace-label"><span className="thread-swatch" aria-hidden="true"/>Étude de stand</p>
-            <h2 id="titre-montage" data-relais="stand"><span className="trace-line"><b>Entrez dans</b></span>{" "}<span className="trace-line"><i>le stand.</i></span></h2>
+            <h2 id="titre-montage"><span className="trace-line"><b>Entrez dans</b></span>{" "}<span className="trace-line"><i>le stand.</i></span></h2>
             <p className="trace-pitch">Nous concevons des stands sur mesure pour les salons et les événements.</p>
           </div>
           <div className="trace-captions">
