@@ -1,135 +1,150 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { path } from "../../lib/maison";
+import type { LaboratoryControls } from "./laboratoryScene";
 
-const art = (file: string) => path("/trace/" + file);
-
-const views = [
-  { name: "Le stand", file: "stand.webp", alt: "Le stand assemblé, ses portiques en laque vermillon et son comptoir d’accueil." },
-  { name: "Le trait", file: "sculpture.webp", alt: "Le ruban calligraphique avant sa transformation." },
-  { name: "Le pli", file: "pli.webp", alt: "Détail du pli, entre les deux étapes du montage." },
+const plates = [
+  {
+    name: "Ensemble", file: "ensemble", title: "Une entrée ouverte.",
+    caption: "Le ruban rouge se relève en deux portiques. Depuis l’allée, le comptoir et la table d’échantillons restent visibles.",
+    alt: "Vue d’ensemble du stand. Deux portiques en métal rouge entourent l’accueil sur un socle de pierre claire.",
+  },
+  {
+    name: "Accueil", file: "accueil", title: "Le signe à hauteur de main.",
+    caption: "Le monogramme en laiton s’inscrit dans les cannelures du comptoir. Un catalogue attend le visiteur sur le plateau laqué.",
+    alt: "Détail du comptoir cannelé, de son monogramme en laiton et du catalogue posé sur le plateau.",
+  },
+  {
+    name: "Matières", file: "matieres", title: "Trois laques en lumière.",
+    caption: "Trois échantillons, du revers abricot au lie-de-vin, se détachent du mur. Une réglette en laiton les porte chacun à un angle différent.",
+    alt: "Trois plaquettes de laque posées sur leurs supports en laiton contre la paroi ivoire.",
+  },
 ];
-type Action = "left" | "right" | "near" | "far" | "reset";
 
 export default function ModelViewer() {
   const host = useRef<HTMLDivElement>(null);
-  const action = useRef<(value: Action) => void>(() => {});
-  const [open, setOpen] = useState(false);
+  const controls = useRef<LaboratoryControls | null>(null);
+  const currentView = useRef(0);
+  const drag = useRef<{ id: number; x: number; y: number; start: number; captured: boolean } | null>(null);
   const [view, setView] = useState(0);
-  const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [angle, setAngle] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [status, setStatus] = useState<"idle" | "loading" | "ready" | "photos" | "error">("idle");
+  const plate = plates[view];
+  const photos = status === "photos";
+  const ready = status === "ready" || photos;
+  const range = view === 0 ? 180 : 30;
+  const step = photos ? (view === 0 ? 15 : 10) : 1;
+  const cols = view === 0 ? 6 : 4;
+  const rows = view === 0 ? 4 : 2;
+  const photoFrame = view === 0 ? Math.round(((angle + 360) % 360) / 15) % 24 : Math.round((angle + 30) / 10);
 
   useEffect(() => {
+    if (!open || !host.current) return;
     const surface = host.current;
-    if (!open || !surface) return;
     const controller = new AbortController();
-    const release: (() => void)[] = [];
-    async function mount(canvasHost: HTMLDivElement) {
-      const canvas = document.createElement("canvas");
-      const graphics = canvas.getContext("webgl2", { antialias: true, powerPreference: "low-power" });
-      if (!graphics) throw new Error("WebGL indisponible");
-      release.push(() => graphics.getExtension("WEBGL_lose_context")?.loseContext());
-      const [T, { GLTFLoader }, { OrbitControls }, { RoomEnvironment }] = await Promise.all([
-        import("three"), import("three/examples/jsm/loaders/GLTFLoader.js"), import("three/examples/jsm/controls/OrbitControls.js"), import("three/examples/jsm/environments/RoomEnvironment.js"),
-      ]);
+    const canvas = document.createElement("canvas");
+    let graphics: WebGL2RenderingContext | null = null;
+
+    function fallback() {
       if (controller.signal.aborted) return;
-      const response = await fetch(art("stand.glb"), { signal: controller.signal });
-      if (!response.ok) throw new Error("Maquette indisponible");
-      const bytes = await response.arrayBuffer();
+      controls.current?.dispose();
+      controls.current = null;
+      setAngle(0);
+      setStatus("photos");
+    }
+    async function mount() {
+      graphics = canvas.getContext("webgl2", { antialias: true, powerPreference: "low-power" });
+      if (!graphics) { fallback(); return; }
+      const { mountLaboratory } = await import("./laboratoryScene");
       if (controller.signal.aborted) return;
-      const renderer = new T.WebGLRenderer({ canvas, context: graphics, antialias: true, powerPreference: "low-power" });
-      release.push(() => { renderer.dispose(); renderer.domElement.remove(); });
-      renderer.setPixelRatio(Math.min(devicePixelRatio, 1.6));
-      renderer.toneMapping = T.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.06;
-      renderer.domElement.setAttribute("aria-label", "Maquette du stand orientable à la souris, au toucher ou avec les commandes de vue.");
-      const scene = new T.Scene();
-      scene.background = new T.Color("#f4f0e7");
-      const studio = new RoomEnvironment();
-      const pmrem = new T.PMREMGenerator(renderer);
-      const lighting = pmrem.fromScene(studio, 0.04);
-      scene.environment = lighting.texture;
-      scene.environmentIntensity = .85;
-      studio.dispose(); pmrem.dispose();
-      release.push(() => lighting.dispose());
-      const object = (await new GLTFLoader().parseAsync(bytes, "")).scene;
-      function disposeModel() {
-        object.traverse(node => {
-          if (node instanceof T.Mesh) {
-            node.geometry.dispose();
-            const materials = Array.isArray(node.material) ? node.material : [node.material];
-            materials.forEach(m => m.dispose());
-          }
-        });
-      }
-      if (controller.signal.aborted) { disposeModel(); return; }
-      release.push(disposeModel);
-      scene.add(object);
-      const bounds = new T.Box3().setFromObject(object);
-      const sphere = bounds.getBoundingSphere(new T.Sphere());
-      const sun = new T.DirectionalLight("#ffe8c9", 2.1);
-      sun.target.position.copy(sphere.center);
-      sun.position.copy(sphere.center).add(new T.Vector3(-4, 8, 6));
-      scene.add(sun, sun.target, new T.HemisphereLight("#fff6e3", "#998878", .72));
-      const camera = new T.PerspectiveCamera(35, 1, sphere.radius / 80, sphere.radius * 35);
-      const controls = new OrbitControls(camera, renderer.domElement);
-      controls.target.copy(sphere.center);
-      controls.enablePan = false;
-      controls.enableDamping = false;
-      controls.maxPolarAngle = Math.PI * 0.485;
-      controls.minDistance = sphere.radius * 1.3;
-      controls.maxDistance = sphere.radius * 8;
-      renderer.domElement.addEventListener("webglcontextlost", lost);
-      function lost(event: Event) {
-        event.preventDefault();
-        setStatus("error"); setOpen(false);
-      }
-      function draw() { renderer.render(scene, camera); }
-      function reset() {
-        const halfFov = T.MathUtils.degToRad(camera.fov / 2);
-        const angle = Math.min(halfFov, Math.atan(Math.tan(halfFov) * camera.aspect));
-        const distance = sphere.radius * .96 / Math.sin(angle);
-        camera.position.copy(controls.target).addScaledVector(new T.Vector3(.58,.36,1).normalize(), distance);
-        controls.update();
-        draw();
-      }
-      function resize() {
-        const { width, height } = canvasHost.getBoundingClientRect();
-        if (!width || !height) return;
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-        renderer.setSize(width,height,false);
-        reset();
-      }
-      action.current = command => {
-        if (command === "reset") { reset(); return; }
-        const offset = new T.Spherical().setFromVector3(camera.position.clone().sub(controls.target));
-        if (command === "left" || command === "right") offset.theta += (command === "left" ? -1 : 1) * Math.PI / 8;
-        else offset.radius = T.MathUtils.clamp(offset.radius * (command === "near" ? .8 : 1.25), controls.minDistance, controls.maxDistance);
-        camera.position.copy(controls.target).add(new T.Vector3().setFromSpherical(offset));
-        controls.update();
-      };
-      controls.addEventListener("change", draw);
-      canvasHost.appendChild(renderer.domElement);
-      resize();
-      const observation = new ResizeObserver(resize);
-      observation.observe(canvasHost);
-      release.push(() => { observation.disconnect(); controls.removeEventListener("change", draw); controls.dispose(); renderer.domElement.removeEventListener("webglcontextlost", lost); });
+      const scene = await mountLaboratory(surface, canvas, graphics, controller.signal, fallback);
+      if (controller.signal.aborted) { scene.dispose(); return; }
+      controls.current = scene;
+      scene.select(currentView.current, false);
       setStatus("ready");
     }
-    mount(surface).catch(() => { if (!controller.signal.aborted) { setStatus("error"); setOpen(false); } });
-    return () => { controller.abort(); action.current = () => {}; release.reverse().forEach(dispose => dispose()); };
+    mount().catch(fallback);
+    return () => {
+      controller.abort();
+      graphics?.getExtension("WEBGL_lose_context")?.loseContext();
+      controls.current = null;
+    };
   }, [open]);
 
-  return <section className="viewer" aria-label="Visite du stand">
-    <div className="viewer-image"><img src={art(views[view].file)} alt={views[view].alt} width="1920" height="1152" /></div>
-    {open && <div className="viewer-canvas" ref={host} data-ready={status === "ready" ? "" : undefined} />}
-    <div className="viewer-toolbar">
-      {!open && status === "error" ? <div className="viewer-tools" role="group" aria-label="Cadrages du stand">
-        {views.map((item, i) => <button key={item.file} type="button" aria-pressed={view === i} onClick={() => setView(i)}>{item.name}</button>)}
-      </div> : !open ? <button className="pill" type="button" onClick={() => { setStatus("loading"); setOpen(true); }}>Explorer en 3D</button>
-        : status === "ready" ? <div className="viewer-tools"><button type="button" onClick={() => action.current("left")} aria-label="Tourner à gauche">↶</button><button type="button" onClick={() => action.current("right")} aria-label="Tourner à droite">↷</button><button type="button" onClick={() => action.current("near")} aria-label="Rapprocher">+</button><button type="button" onClick={() => action.current("far")} aria-label="Éloigner">−</button><button type="button" onClick={() => action.current("reset")}>Recentrer</button><button type="button" onClick={() => { setStatus("idle"); setOpen(false); }}>Revoir le tirage</button></div> : null}
-      <span role="status" aria-live="polite">{status === "loading" ? "Ouverture de la maquette…" : status === "error" ? "Visite en trois vues sur cet appareil." : ""}</span>
+  function select(index: number) {
+    drag.current = null;
+    currentView.current = index;
+    setView(index);
+    setAngle(0);
+    controls.current?.select(index, true);
+  }
+  function toggle() {
+    drag.current = null;
+    setAngle(0);
+    setStatus(open ? "idle" : "loading");
+    setOpen(!open);
+  }
+
+  function turn(value: number) {
+    const normalized = value === 180 ? 180 : ((value + 180) % 360 + 360) % 360 - 180;
+    const next = Math.round(Math.min(range, Math.max(-range, normalized)) / step) * step;
+    setAngle(next);
+    controls.current?.turn(next);
+  }
+  function startDrag(event: PointerEvent<HTMLDivElement>) {
+    if (!ready || !event.isPrimary || event.button !== 0) { drag.current = null; return; }
+    drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY, start: angle, captured: false };
+  }
+  function moveDrag(event: PointerEvent<HTMLDivElement>) {
+    const gesture = drag.current;
+    if (!gesture || gesture.id !== event.pointerId) return;
+    const dx = event.clientX - gesture.x, dy = event.clientY - gesture.y;
+    if (!gesture.captured) {
+      if (Math.abs(dx) + Math.abs(dy) < 8) return;
+      if (Math.abs(dy) > Math.abs(dx)) { drag.current = null; return; }
+      event.currentTarget.setPointerCapture(event.pointerId);
+      gesture.captured = true;
+    }
+    turn(gesture.start - dx * (view === 0 ? 185 : 55) / event.currentTarget.clientWidth);
+  }
+  const endDrag = () => { drag.current = null; };
+
+  return <section className="specimen" aria-label="Inspection de la maquette">
+    <div className="specimen-stage" data-interactive={ready || undefined}
+      onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={endDrag}
+      onPointerCancel={endDrag} onLostPointerCapture={endDrag}
+      onPointerLeave={() => { if (!drag.current?.captured) endDrag(); }}>
+      <img key={plate.file} src={path("/trace/labo-" + plate.file + ".webp")} width="1080" height="800" alt={plate.alt} fetchPriority={view === 0 ? "high" : "auto"}/>
+      <div className="specimen-canvas" data-ready={status === "ready" || undefined} ref={host}/>
+      {photos && <div className="specimen-rotation" aria-hidden="true" style={{ visibility: angle === 0 ? "hidden" : "visible" }}>
+        <img key={plate.file} alt="" draggable={false} src={path("/trace/rotation-" + plate.file + ".webp")}
+          onError={() => { setOpen(false); setStatus("error"); }}
+          style={{ width: cols * 100 + "%", height: rows * 100 + "%", left: -(photoFrame % cols) * 100 + "%", top: -Math.floor(photoFrame / cols) * 100 + "%" }}/>
+      </div>}
+    </div>
+    <div className="specimen-caption">
+      <div className="specimen-tabs" role="group" aria-label="Choisir un point de vue">
+        {plates.map((item, index) => <button key={item.file} type="button" aria-pressed={view === index} onClick={() => select(index)}>{item.name}</button>)}
+      </div>
+      <div className="specimen-note" key={plate.file} aria-live="polite">
+        <h2>{plate.title}</h2>
+        <p>{plate.caption}</p>
+      </div>
+      <div className="specimen-control">
+        <button type="button" className="specimen-switch" aria-pressed={open} onClick={toggle}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" aria-hidden="true">
+            <path d="m12 2.8 8 4.7v9l-8 4.7-8-4.7v-9zM4.2 7.6l7.8 4.5 7.8-4.5M12 12.1v9"/>
+          </svg>
+          {open ? (ready ? "Revenir au tirage" : "Annuler le chargement") : status === "error" ? "Réessayer la 3D" : "Manipuler en 3D"}
+        </button>
+        <p className="specimen-status" role="status">{status === "loading" ? "Ouverture de la maquette…" : status === "error" ? "Les tirages restent accessibles. La rotation n’a pas pu se charger." : photos ? "Rotation photographique. Glissez horizontalement pour changer d’angle." : ready ? "Glissez horizontalement pour faire pivoter la vue." : ""}</p>
+        {ready && <label className="specimen-angle">
+          <span>Angle de vue</span><output aria-hidden="true">{angle}°</output>
+          <input type="range" min={-range} max={range} step={step} value={angle} aria-label="Angle de vue" aria-valuetext={angle + " degrés"} onChange={event => turn(Number(event.target.value))}/>
+        </label>}
+      </div>
     </div>
   </section>;
 }

@@ -3,9 +3,11 @@ import { notFound } from "next/navigation";
 import { atelierPath, carnetAteliers, path } from "../../../lib/maison";
 import { atelierPlate } from "../../../lib/pavillon";
 import { KeepAtelier } from "../../../components/pavillon/Project";
+import WorkshopChapters from "../../../components/pavillon/WorkshopChapters";
 import DigitalShowcase from "../../../components/pavillon/DigitalShowcase";
 import { pageMetadata } from "../../../lib/seo";
 import "../../interieur.css";
+import "./atelier.css";
 
 type Props = { params: Promise<{ slug: string }> };
 export const dynamicParams = false;
@@ -39,58 +41,55 @@ export default async function Atelier({ params }: Props) {
   return <main id="contenu" tabIndex={-1} className="inside atelier-page">
     <div className="shell">
       <nav className="crumb" aria-label="Fil d’Ariane">
-        <a href={path("/")}>Maison Mestier</a><span>/</span><a href={path("/#ateliers")}>Les ateliers</a>
+        <a href={path("/")}>La Maison</a><span aria-hidden="true">/</span><a href={path("/#ateliers")}>Les ateliers</a>
       </nav>
-      <div className="detail-intro">
-        <div className="atelier-title">
-          <p className="eyebrow rule-label" data-reveal="label">Atelier de la Maison</p>
-          <h1 className="inside-heading" data-reveal="title"><span data-reveal-line>{item.slug === "digital" ? "Sites web et applications" : item.name}</span></h1>
+      <header className="workshop-cover" data-service={item.slug}>
+        <div className="workshop-heading">
+          <p className="eyebrow rule-label">{plate.family}</p>
+          <h1>{plate.title[0]} <i>{plate.title[1]}</i></h1>
         </div>
-        <figure className="atelier-figure" data-reveal="figure">
-          <div className={"detail-hero work-" + item.slug} style={{ viewTransitionName: "atelier-" + item.slug }}>
-            <img src={path(plate.file)} width="1400" height="1000" alt={plate.alt} fetchPriority="high" decoding="async"/>
-          </div>
+        <figure className="workshop-print">
+          <picture style={{ viewTransitionName: "atelier-" + item.slug }}>
+            <source media="(max-width: 760px)" srcSet={path(plate.mobile)}/>
+            <img src={path(plate.file)} width="1280" height="853" alt={plate.alt} fetchPriority="high" decoding="async"/>
+          </picture>
           <figcaption>{plate.caption}</figcaption>
         </figure>
-        <div className="atelier-deck" data-reveal="copy">
-          <p className="detail-deck">{item.headline}</p>
-          <div className="atelier-actions">
-            <a className="trace-pill" href={projectUrl}><span className="action-pearl" aria-hidden="true"/>Parler de votre projet</a>
+        <div className="workshop-deck">
+          <p>{item.headline}</p>
+          <div className="workshop-actions">
+            <a className="trace-pill" href={projectUrl}><span className="action-pearl" aria-hidden="true"/>{plate.action}</a>
             <a className="text-link" href={example.href}>{example.label}</a>
           </div>
         </div>
-      </div>
+      </header>
       {item.slug === "digital" && <DigitalShowcase/>}
-      <div className="reading atelier-reading" id="prestations">
-        <aside aria-label="Dans cet atelier">
-          <p className="eyebrow rule-label" data-reveal="label">Dans cet atelier</p>
-          <ol>{item.chapters.map((chapter, i) => <li key={chapter.title} data-reveal="row" data-reveal-order={Math.min(i, 3)}>
-            <a href={"#geste-" + (i + 1)}>{chapter.title}</a>
-          </li>)}</ol>
-          <div className="atelier-save" data-reveal="row"><KeepAtelier slug={item.slug}/></div>
-        </aside>
-        <div>
-          <p className="reading-lead" data-reveal="copy">{item.intro}</p>
-          {item.chapters.map((chapter, i) => <section className="atelier-chapter" key={chapter.title} id={"geste-" + (i + 1)}>
-            <h2 data-reveal="title">{chapter.title}</h2>
-            <p data-reveal="copy">{chapter.body}</p>
-          </section>)}
-          {related.length > 0 && <nav className="related" aria-label="Ateliers associés" data-reveal="row">
-            <p className="eyebrow">Ateliers associés</p>{related.map(a => <a key={a.slug} href={atelierPath(a.slug)}>{a.name}</a>)}
-          </nav>}
+      <section className="workshop-reading" id="prestations" aria-labelledby="workshop-service-title">
+        <div className="workshop-prologue">
+          <h2 id="workshop-service-title" data-reveal="title">Dans <i>l’atelier.</i></h2>
+          <p data-reveal="copy">{item.intro}</p>
+          <div className="atelier-save"><KeepAtelier slug={item.slug}/></div>
         </div>
-      </div>
+        <WorkshopChapters chapters={item.chapters}/>
+      </section>
+      {related.length > 0 && <nav className="workshop-related" aria-label="Ateliers associés">
+        <p>Ateliers associés</p>
+        <ul>{related.map(a => <li key={a.slug}><a href={atelierPath(a.slug)}>{a.name}</a></li>)}</ul>
+      </nav>}
     </div>
-    <section className="inside-invite">
+    <section className="inside-invite workshop-invite">
       <div className="shell">
         <p className="eyebrow rule-label" data-reveal="label">Parlons projet</p>
         <h2 data-reveal="title">{item.cta}</h2>
-        <a className="pill" href={projectUrl} data-reveal="row">Parler de votre projet</a>
+        <a className="pill" href={projectUrl}>{plate.action}</a>
       </div>
     </section>
-    <nav className="inside-next shell" aria-label="Poursuivre la visite" data-reveal="row">
+    <nav className="inside-next shell workshop-next" aria-label="Poursuivre la visite">
       <a className="text-link" href={path("/#ateliers")}>Tous les ateliers</a>
-      <a href={atelierPath(next.slug)}><span>Atelier suivant</span><i>{next.name}</i></a>
+      <a className="workshop-next-item" href={atelierPath(next.slug)}>
+        <img src={path(atelierPlate[next.slug].mobile)} width="96" height="96" alt="" loading="lazy"/>
+        <span><small>Atelier suivant</small><i>{next.name}</i></span>
+      </a>
     </nav>
   </main>;
 }

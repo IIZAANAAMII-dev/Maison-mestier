@@ -13,7 +13,7 @@
   inset: 0;
   background:
     radial-gradient(ellipse at 81% 22%, #8d4230 0%, #702b23 33%, transparent 70%),
-    linear-gradient(140deg, #672a23 0%, #4c1b19 69%, #391413 100%);
+    linear-gradient(140deg, #672a23 0%, #4c1b19 69%, #391916 100%);
   border-radius: clamp(2.25rem, 6vw, 6rem) clamp(2.25rem, 6vw, 6rem) 0 0;
 }
 .method-lead {
@@ -47,26 +47,73 @@
   letter-spacing: -.021em;
 }
 .method-drawing {
-  width: min(100%, 44rem);
+  width: min(100%, 41rem);
   justify-self: center;
+  color: #61392a;
+  background: #f0e4cd;
+  border-radius: .28rem clamp(1.45rem,4vw,4rem) .28rem .28rem;
+  box-shadow: 0 1.1rem 2.1rem #2e110f34;
+  overflow: hidden;
 }
 .method-plate {
-  display: grid;
-  place-items: center;
-  min-width: 0;
-  padding: 4%;
-  aspect-ratio: 1.33;
-  background: radial-gradient(ellipse at 46% 35%, #f9ead0, #ebd5b8 88%);
-  border-radius: clamp(1.4rem, 4.5vw, 4.75rem) clamp(1.4rem, 4.5vw, 4.75rem) .75rem .75rem;
-  box-shadow: 0 1rem 2.8rem #29120b60;
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1.8;
+  margin: 4.5% 5% 0;
+  border-bottom: 1px solid #8e60494f;
 }
-.method-plate img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.method-perspective { position: absolute; width: 70%; height: 100%; object-fit: contain; object-position: center; }
+.method-inset {
+  position: absolute;
+  width: 25%;
+  aspect-ratio: 1;
+  top: 20%;
+  right: 1.5%;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid #8c605275;
+  border-radius: 50%;
+  background: #f8f1e6;
+}
+.method-inset img {
+  position: absolute;
+  width: 355%;
+  max-width: none;
+  height: auto;
+  left: -43%;
+  top: -26%;
+}
+.method-plate::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 13%;
+  top: 17%;
+  width: 9%;
+  aspect-ratio: 1;
+  border: 1px solid #895d4970;
+  border-radius: 50%;
+}
+.method-plate::after {
+  content: "";
+  position: absolute;
+  height: 1px;
+  top: 26%;
+  left: 22%;
+  width: 52.5%;
+  transform: rotate(9deg);
+  transform-origin: left;
+  background: #895d4970;
+}
 .method-drawing figcaption {
-  margin-top: .65rem;
-  text-align: center;
-  color: #f1ccb1;
-  font-size: .83rem;
+  display: flex;
+  justify-content: space-between;
+  gap: .85rem;
+  padding: .62rem 5% .85rem;
+  line-height: 1.3;
+  font-size: clamp(.7rem,1vw,.85rem);
 }
+.method-drawing figcaption span { color: #765140; }
 .method-details { padding-top: clamp(2.7rem, 6.7vw, 6rem); }
 .method-phases {
   display: grid;
@@ -135,7 +182,7 @@
   .method-lead { grid-template-columns: 1fr; gap: clamp(1.55rem, 4svh, 2.65rem); }
   .method-copy h2 { font-size: clamp(2.15rem, 10.9vw, 5.15rem); }
   .method-summary { max-width: 38ch; font-size: 1rem; line-height: 1.44; }
-  .method-drawing { width: min(100%, 22rem); }
+  .method-drawing { width: min(100%, 33rem); }
   .method-details { padding-top: 2rem; }
   .method-phases { grid-template-columns: 1fr; }
   .method-phases li,
@@ -152,4 +199,13 @@
   }
   .method-phases h3 { font-size: clamp(1.65rem, 5.4vw, 2.45rem); }
   .method-phases p { margin: 0; }
+}
+
+.method-mini-play { width: .62rem; height: .67rem; background: currentColor; clip-path: polygon(9% 0, 100% 50%, 9% 100%); }
+.method-action:is(:focus-visible,:hover) .method-mini-play { transform: scale(1.12); }
+@media (prefers-reduced-motion: no-preference) {
+  .method-phases li[data-reveal-state="shown"] { animation-name: method-margin; }
+  .method-drawing[data-reveal-state="shown"] .method-inset { animation: method-lens .75s cubic-bezier(.16,.7,.25,1) backwards; }
+  @keyframes method-margin { from { opacity: 0; transform: translateX(-.7rem); } to { opacity: 1; transform: none; } }
+  @keyframes method-lens { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: scale(1); } }
 }

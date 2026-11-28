@@ -149,15 +149,6 @@
   transform: translate3d(0, 0, 60px) rotateY(-12deg) rotateZ(9deg);
 }
 .digital-phone-display { border-radius: clamp(.46rem, 2.35vw, 1.65rem); }
-.digital-phone-camera {
-  position: absolute;
-  top: 3.65%;
-  left: 36.8%;
-  width: 26.4%;
-  height: 3.4%;
-  border-radius: 2rem;
-  background: #281d1a;
-}
 .digital-interface {
   position: absolute;
   inset: 0;
@@ -444,10 +435,78 @@
   .digital-showcase[data-mode="store"] [data-screen="store"],
   .digital-showcase[data-mode="app"] [data-screen="app"] { transform: translateY(0); transition-delay: .02s, .02s, 0s; }
   .digital-laptop, .digital-phone { transition: transform .86s cubic-bezier(.18, .72, .25, 1); }
-  .digital-showcase[data-mode="store"] .digital-phone { transform: translate3d(-6%, -1%, 74px) rotateY(-9deg) rotateZ(6deg); }
-  .digital-showcase[data-mode="store"] .digital-laptop { transform: translate3d(1%, 0, 4px) rotateY(-14deg) rotateX(7deg) rotateZ(-4deg); }
-  .digital-showcase[data-mode="app"] .digital-phone { transform: translate3d(-4%, -5%, 78px) rotateY(-8deg) rotateZ(4deg); }
-  .digital-showcase[data-mode="app"] .digital-laptop { transform: translate3d(1.5%, 2%, 12px) rotateY(-7deg) rotateX(4deg) rotateZ(-3deg); }
   .digital-example-copy { animation: digital-copy-in .48s cubic-bezier(.22, .65, .26, 1) both; }
   @keyframes digital-copy-in { from { opacity: 0; translate: 0 .72rem; } }
+}
+
+.digital-heading h2 span, .digital-heading h2 i { display: inline; }
+.digital-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .55rem 1.4rem;
+  padding-block: .8rem;
+  border-top: 1px solid var(--rule);
+}
+.digital-controls > span { color: #583d33; font-size: .95rem; }
+.digital-formats {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: .85rem;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: stretch;
+  padding: .18rem;
+  gap: .15rem;
+  border-radius: 3rem;
+  background: #fff5e8;
+  border: 1px solid #b99881;
+  box-shadow: 0 .25rem 1rem #260d0a40;
+}
+.digital-formats button {
+  background: transparent;
+  color: #57352d;
+  border: none;
+  border-radius: 2.5rem;
+  padding: .55rem .95rem;
+  min-height: 2.75rem;
+  font: 550 .9rem/1 var(--sans), sans-serif;
+}
+.digital-formats button[aria-pressed="true"] { background: #6e3028; color: #fff5e8; }
+.digital-showcase .digital-room {
+  min-height: 0;
+  aspect-ratio: 1.72;
+  max-height: 43rem;
+  border-radius: .4rem clamp(1.5rem, 4vw, 4.3rem) .4rem .4rem;
+}
+.digital-showcase .digital-world { inset: 0 0 3.5rem; }
+.digital-showcase .digital-laptop { top: 8%; left: 23.5%; width: 53%; }
+.digital-showcase .digital-phone { top: 8%; bottom: auto; left: 50%; right: auto; width: 18.5%; }
+.digital-showcase[data-device="computer"] .digital-laptop { opacity: 1; visibility: visible; transform: rotateY(-5deg) rotateX(3deg) rotateZ(-1deg); }
+.digital-showcase[data-device="computer"] .digital-phone { opacity: 0; visibility: hidden; transform: translate3d(90%, 6%, -72px) rotateY(-22deg) rotateZ(4deg); }
+.digital-showcase[data-device="phone"] .digital-laptop { opacity: 0; visibility: hidden; transform: translate3d(-20%, 7%, -145px) rotateY(18deg) rotateX(8deg); }
+.digital-showcase[data-device="phone"] .digital-phone { opacity: 1; visibility: visible; transform: translateX(-50%) rotateY(-4deg) rotateZ(1deg); }
+.digital-details { grid-template-columns: 1fr auto; }
+.digital-brief { white-space: normal; }
+@media (max-width: 680px) {
+  .digital-heading h2 i { display: inline; }
+  .digital-heading { margin-bottom: .85rem; }
+  .digital-controls { align-items: start; flex-direction: column; }
+  .digital-choices { width: 100%; }
+  .digital-choices button { flex: 1; }
+  .digital-showcase .digital-room { aspect-ratio: .99; max-height: none; margin: 0; }
+  .digital-showcase .digital-world { inset: 0 0 3.65rem; }
+  .digital-showcase .digital-phone { width: 36%; top: 5%; padding: 1.35%; border-radius: 1.35rem; }
+  .digital-showcase .digital-phone-display { border-radius: 1.02rem; }
+  .digital-showcase .digital-laptop { width: 80%; top: 14%; left: 10%; }
+  .digital-details { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .digital-showcase .digital-laptop, .digital-showcase .digital-phone {
+    transition: transform .58s cubic-bezier(.18,.72,.25,1), opacity .28s ease, visibility 0s .58s;
+  }
+  .digital-showcase[data-device="computer"] .digital-laptop,
+  .digital-showcase[data-device="phone"] .digital-phone { transition-delay: 0s; }
 }

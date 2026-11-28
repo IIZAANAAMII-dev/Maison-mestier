@@ -3,20 +3,36 @@
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
 import { usePathname } from "next/navigation";
 import { path } from "../../lib/maison";
-import { mainLinks, studyPath } from "../../lib/pavillon";
+import { mainLinks } from "../../lib/pavillon";
 import "./header-motion.css";
 
 const mobileHeader = "(max-width: 860px)";
-const contactTitle = "Parler de votre projet";
+const contactTitle = "Parlons projet";
 const navigationLinks = mainLinks.map(({ title, hash }) => ({ title, section: hash, href: path("/#" + hash) }));
 const laboratory = { title: "Le laboratoire", section: "laboratoire", href: path("/laboratoire/") };
-const contact = { title: contactTitle, section: "contact", href: path("/#contact") };
+const contact = { title: contactTitle, section: "contact", href: path("/#projet") };
 const mobileLinks = [...navigationLinks, laboratory];
 const sectionIds = ["seuil", ...mainLinks.map(({ hash }) => hash), "contact"];
 
-function Arrow() {
-  return <svg aria-hidden="true" viewBox="0 0 20 20" width="20" height="20" fill="none">
-    <path d="M4 10h11m-4.5-4.5L15 10l-4.5 4.5" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
+const linkNotes: Record<string, string> = {
+  maison: "Du dessin à la fabrication",
+  montage: "Le montage d’un stand",
+  etudes: "Les études de création",
+  ateliers: "Les métiers de la Maison",
+  offre: "Les savoir-faire de la Maison",
+};
+
+function MenuMark({ section }: { section: string }) {
+  const drawing: Record<string, string> = {
+    maison: "M4 25V8h20v17M8 25V12h12v13M2 26h24",
+    montage: "M3 7h22v16H3zM3 11h22M8 7l3 4m3-4 3 4m3-4 3 4",
+    etudes: "M4 5h15v18H4zM19 10h5v16H9v-3M7 17l3-3 3 2 3-4",
+    ateliers: "M5 6h7v7H5zM16 6h7v7h-7zM5 17h7v7H5zM16 17h7v7h-7z",
+    offre: "M4 8h20M4 15h20M4 22h13",
+    contact: "M3 7h22v15H3zM4 8l10 8L24 8",
+  };
+  return <svg className="menu-mark" aria-hidden="true" viewBox="0 0 28 30" width="27" height="30" fill="none">
+    <path d={drawing[section]} stroke="currentColor" strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round" />
   </svg>;
 }
 
@@ -32,6 +48,7 @@ export default function Header() {
   const header = useRef<HTMLElement>(null);
   const menu = useRef<HTMLDialogElement>(null);
   const menuClose = useRef<HTMLButtonElement>(null);
+  const backdropPress = useRef(false);
   const fallback = useRef<HTMLDetailsElement>(null);
   const closeTimer = useRef<number>(0);
   const [expanded, setExpanded] = useState(false);
@@ -50,6 +67,7 @@ export default function Header() {
     dialog.showModal();
     document.documentElement.setAttribute("data-header-menu-open", "");
     dialog.scrollTop = 0;
+    dialog.querySelector(".header-menu-layout")?.scrollTo(0, 0);
     menuClose.current?.focus({ preventScroll: true });
     setExpanded(true);
   }
@@ -224,10 +242,10 @@ export default function Header() {
       <nav className="trace-nav" aria-label="Navigation principale">
         {navigationLinks.map(link => <a key={link.section} data-section={link.section} href={link.href}>{link.title}</a>)}
       </nav>
-      <a className="header-contact" data-section={contact.section} href={contact.href}>
+      <a className="header-contact" aria-haspopup="dialog" data-section={contact.section} href={contact.href}>
         <span className="action-pearl" aria-hidden="true" />{contact.title}
       </a>
-      <button type="button" className="header-menu-toggle" aria-controls="maison-menu" aria-expanded={expanded} onClick={openMenu}>
+      <button type="button" className="header-menu-toggle" aria-haspopup="dialog" aria-controls="maison-menu" aria-expanded={expanded} onClick={openMenu}>
         Menu <span className="header-menu-glyph" aria-hidden="true" />
       </button>
       <details
@@ -250,6 +268,15 @@ export default function Header() {
       className="header-menu"
       aria-label="Menu de la Maison"
       ref={menu}
+      onPointerDown={event => {
+        const box = event.currentTarget.getBoundingClientRect();
+        backdropPress.current = event.target === event.currentTarget && (event.clientX < box.left || event.clientX > box.right);
+      }}
+      onPointerUp={event => {
+        const box = event.currentTarget.getBoundingClientRect();
+        if (backdropPress.current && (event.clientX < box.left || event.clientX > box.right)) closeMenu();
+        backdropPress.current = false;
+      }}
       onCancel={event => { event.preventDefault(); closeMenu(); }}
       onClose={() => { if (!menu.current?.open) finishMenu(); }}
       onAnimationEnd={event => {
@@ -265,18 +292,20 @@ export default function Header() {
         </div>
         <div className="header-menu-layout">
           <nav className="header-menu-links" aria-label="Navigation principale">
-            <ul>{mobileLinks.map(link =>
+            <ul>{navigationLinks.map(link =>
               <li key={link.section}><a data-section={link.section} href={link.href} onClick={followMenuLink}>
-                <span>{link.title}</span><Arrow />
+                <MenuMark section={link.section}/><span className="menu-entry"><strong>{link.title}</strong><small>{linkNotes[link.section]}</small></span>
               </a></li>
             )}</ul>
           </nav>
-          <a className="header-menu-project" data-section={contact.section} href={contact.href} onClick={followMenuLink}>
-            <span>{contact.title}</span><Arrow />
-          </a>
-          <a className="header-menu-photo" href={studyPath("le-portique")} onClick={followMenuLink}>
+          <a className="header-menu-photo" data-section="laboratoire" href={laboratory.href} onClick={followMenuLink}>
             <img src={path("/portique/approche-mobile.webp")} width="640" height="800" loading="lazy" alt="" />
-            <span>Le Portique <Arrow /></span>
+            <span><strong>Le laboratoire</strong><small>Manipuler la maquette</small></span>
+          </a>
+        </div>
+        <div className="header-menu-foot">
+          <a className="header-menu-project" data-section={contact.section} aria-haspopup="dialog" href={contact.href} onClick={followMenuLink}>
+            <MenuMark section="contact"/><span>Écrire à la Maison</span>
           </a>
         </div>
       </div>

@@ -34,7 +34,7 @@ function WebsiteScreen({ compact = false }: { compact?: boolean }) {
       <span>{compact ? "Menu" : "Expertises      Réalisations     Contact"}</span>
     </div>
     <div className="digital-site-hero">
-      <img src={path("/portique/passage.webp")} alt="" width={896} height={704} loading="lazy"/>
+      <img src={path("/metiers/stands.webp")} alt="" width={1280} height={853} loading="lazy"/>
       <div>
         <small>Maison de communication</small>
         <strong>Votre marque<i> en grand.</i></strong>
@@ -93,7 +93,7 @@ function ApplicationScreen({ compact = false }: { compact?: boolean }) {
 }
 
 function moveScene(event: PointerEvent<HTMLDivElement>) {
-  if (event.pointerType !== "mouse") return;
+  if (event.pointerType !== "mouse" || !window.matchMedia("(hover: hover) and (prefers-reduced-motion: no-preference)").matches) return;
   const stage = event.currentTarget;
   const bounds = stage.getBoundingClientRect();
   const x = (event.clientX - bounds.left) / bounds.width - .5;
@@ -108,20 +108,36 @@ function resetScene(event: PointerEvent<HTMLDivElement>) {
 }
 
 export default function DigitalShowcase() {
-  const [mode, setMode] = useState<Mode>("site");
+  const [mode, setMode] = useState<Mode>("store");
+  const [device, setDevice] = useState<"phone" | "computer">("phone");
   const example = examples[mode];
 
-  return <section id="demonstrations" className="digital-showcase" aria-labelledby="digital-showcase-title" data-mode={mode}>
+  return <section id="demonstrations" className="digital-showcase" aria-labelledby="digital-showcase-title" data-mode={mode} data-device={device}>
     <div className="digital-heading">
       <div>
         <p className="eyebrow rule-label" data-reveal="label">Atelier numérique</p>
-        <h2 id="digital-showcase-title" data-reveal="title"><span data-reveal-line>Du site </span><i data-reveal-line>à l’application.</i></h2>
+        <h2 id="digital-showcase-title" data-reveal="title"><span data-reveal-line>Les </span><i data-reveal-line>prototypes.</i></h2>
       </div>
-      <p data-reveal="copy">Design, développement et intégrations. La Maison conçoit votre site, votre boutique ou votre outil métier, du premier écran à la mise en ligne.</p>
+      <p data-reveal="copy">Trois exemples conçus à l’atelier. Choisissez un usage, puis passez du téléphone à l’ordinateur pour voir comment l’interface s’adapte.</p>
     </div>
-    <div className="digital-room" onPointerMove={moveScene} onPointerLeave={resetScene} data-reveal="figure">
+    <div className="digital-controls">
+      <span>Choisir le prototype</span>
+      <div role="group" aria-label="Choisir une démonstration" className="digital-choices">
+        {(Object.keys(examples) as Mode[]).map(choice => <button
+          key={choice}
+          type="button"
+          aria-pressed={mode === choice}
+          aria-controls="digital-scenes digital-example"
+          onClick={() => setMode(choice)}
+        >{examples[choice].label}</button>)}
+      </div>
+    </div>
+    <div id="digital-scenes" className="digital-room" onPointerMove={moveScene} onPointerLeave={resetScene} data-reveal="figure">
       <div className="digital-room-line" aria-hidden="true"/>
-      <p className="digital-room-caption">Démonstrations de l’atelier</p>
+      <div role="group" aria-label="Format de la maquette" className="digital-formats">
+        <button type="button" aria-controls="digital-scenes" aria-pressed={device === "phone"} onClick={() => setDevice("phone")}>Téléphone</button>
+        <button type="button" aria-controls="digital-scenes" aria-pressed={device === "computer"} onClick={() => setDevice("computer")}>Ordinateur</button>
+      </div>
       <div className="digital-world" aria-hidden="true">
         <div className="digital-rear-shadow"/>
         <div className="digital-laptop">
@@ -142,20 +158,10 @@ export default function DigitalShowcase() {
             <StoreScreen compact/>
             <ApplicationScreen compact/>
           </div>
-          <div className="digital-phone-camera"/>
         </div>
       </div>
     </div>
     <div className="digital-details">
-      <div role="group" aria-label="Choisir une démonstration" className="digital-choices">
-        {(Object.keys(examples) as Mode[]).map(choice => <button
-          key={choice}
-          type="button"
-          aria-pressed={mode === choice}
-          aria-controls="digital-example"
-          onClick={() => setMode(choice)}
-        >{examples[choice].label}</button>)}
-      </div>
       <div id="digital-example" className="digital-example" aria-live="polite" aria-atomic="true">
         <div key={mode} className="digital-example-copy">
           <h3>{example.heading}</h3>

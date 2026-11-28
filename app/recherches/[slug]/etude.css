@@ -1,0 +1,64 @@
+.study-page { background: var(--paper-light); }
+.study-page .crumb { margin-bottom: clamp(.8rem, 3vw, 3.2rem); }
+.study-page .study-intro .inside-heading { margin-top: .75rem; }
+.study-page .study-intro .inside-heading i { color: #743129; }
+.study-print { margin: 0 auto; padding-inline: var(--gutter); max-width: 112rem; }
+.study-print-window {
+  overflow: hidden;
+  isolation: isolate;
+  position: relative;
+  border-radius: .32rem clamp(2rem, 5vw, 5rem) .32rem .32rem;
+  background: var(--paper);
+  aspect-ratio: 1.81;
+}
+.study-print-window img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: top left;
+  transform: translate(var(--paper-pan-x), var(--paper-pan-y)) scale(var(--paper-zoom));
+}
+.study-print-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .6rem 2rem;
+  justify-content: space-between;
+  padding: .85rem 0;
+  margin: 0;
+  border-bottom: 1px solid var(--rule);
+}
+.study-print-tools > div { display: inline-flex; align-items: center; gap: .25rem; }
+.study-print-tools button {
+  border: 1px solid transparent;
+  border-radius: 2rem;
+  padding: .6rem .92rem;
+  min-height: 2.75rem;
+  font: 550 .92rem/1.15 var(--sans), sans-serif;
+  color: #51362e;
+  background: transparent;
+}
+.study-print-tools button[aria-pressed="true"] { color: #682e27; background: #efe3d6; border-color: #9a77665c; }
+.study-print-tools button:focus-visible { outline-offset: 2px; }
+.study-print-tools p { max-width: 36rem; font: italic 400 clamp(1.1rem, 1.65vw, 1.6rem)/1.13 var(--serif), serif; color: #6e3d31; }
+.study-page .study-reading { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
+.study-reading-plate { width: 100%; margin: 0; }
+.study-reading-plate img { width: 100%; height: auto; border-radius: .3rem; }
+.study-reading-plate figcaption { margin-top: .47rem; }
+.study-page .study-reading h2 { margin-top: 1.1rem; font-size: clamp(1.8rem, 2.8vw, 3.15rem); }
+.study-actions { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; align-items: center; margin-top: 1.3rem; }
+.study-page .inside-next { border-top: 1px solid var(--rule); }
+@media (max-width: 760px) {
+  .study-page .study-intro { display: block; }
+  .study-page .study-intro > p { margin-top: .55rem; }
+  .study-print-window { aspect-ratio: 1.23; }
+  .study-print-tools { display: grid; gap: .35rem; }
+  .study-print-tools p { min-height: 2.4em; }
+  .study-print-tools button { padding-inline: .74rem; }
+  .study-page .study-reading { grid-template-columns: 1fr; gap: 2.1rem; }
+  .study-reading-plate { grid-row: 2; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .study-print-window img { transition: transform .8s cubic-bezier(.22,.67,.22,1); }
+  .study-print-tools button { transition: background-color .2s, border-color .2s; }
+}

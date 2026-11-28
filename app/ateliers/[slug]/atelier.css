@@ -1,0 +1,122 @@
+.atelier-page { --folio-wine: #692b26; background: var(--paper-light); }
+.atelier-page .crumb { margin-bottom: clamp(1rem, 3.3vw, 3.7rem); }
+.workshop-heading { grid-area: title; align-self: end; }
+.workshop-heading .eyebrow { color: var(--folio-wine); }
+.workshop-heading h1 {
+  max-width: 11ch;
+  margin-top: clamp(.85rem, 2vw, 1.65rem);
+  font: 500 clamp(3.15rem, 6.3vw, 7.5rem)/.91 var(--sans), sans-serif;
+  letter-spacing: -.07em;
+}
+.workshop-heading h1 i {
+  display: block;
+  padding-bottom: .09em;
+  color: var(--folio-wine);
+  font: italic 400 1.13em/.96 var(--serif), Georgia, serif;
+  letter-spacing: -.045em;
+}
+.workshop-print { grid-area: print; margin: 0; }
+.workshop-print picture {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 1.14;
+  isolation: isolate;
+  border-radius: .38rem clamp(2rem, 6vw, 6rem) .38rem .38rem;
+  background: var(--paper);
+}
+.workshop-print img { width: 100%; height: 100%; object-fit: cover; }
+.workshop-print figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .72rem;
+  font: italic 400 clamp(1.05rem, 1.35vw, 1.5rem)/1.2 var(--serif), serif;
+  color: var(--folio-wine);
+}
+.workshop-print figcaption::before { content: ""; width: 1.55rem; height: 1px; background: currentColor; opacity: .65; }
+.workshop-deck { grid-area: deck; align-self: start; }
+.workshop-deck > p { max-width: 28em; font-size: clamp(1.1rem, 1.65vw, 1.65rem); line-height: 1.34; letter-spacing: -.026em; text-wrap: pretty; }
+.workshop-cover {
+  display: grid;
+  grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr);
+  grid-template-areas: "title print" "deck print";
+  column-gap: clamp(2rem, 6vw, 7rem);
+  row-gap: clamp(1rem, 2.4vw, 2.6rem);
+}
+.workshop-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .3rem 1.1rem; margin-top: 1.15rem; }
+.workshop-actions .trace-pill { background: var(--folio-wine); min-height: 2.85rem; }
+.workshop-actions .text-link { min-height: 2.75rem; display: inline-flex; align-items: center; }
+.workshop-reading {
+  display: grid;
+  grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr);
+  align-items: start;
+  gap: clamp(2rem, 8.5vw, 9rem);
+  padding-block: clamp(4rem, 9vw, 10rem) clamp(2.6rem, 5vw, 6rem);
+}
+.workshop-prologue h2 {
+  margin-bottom: .8rem;
+  font: 450 clamp(2.5rem, 4.2vw, 5rem)/.98 var(--sans), sans-serif;
+  letter-spacing: -.063em;
+}
+.workshop-prologue h2 i { font-family: var(--serif), serif; color: var(--folio-wine); }
+.workshop-prologue > p, .workshop-answer p { line-height: 1.6; max-width: 55ch; font-size: clamp(1rem, 1.12vw, 1.2rem); }
+.workshop-chapters { border-bottom: 1px solid var(--rule); }
+.workshop-chapters details { border-top: 1px solid var(--rule); }
+.workshop-chapters details[open] { border-top-color: var(--folio-wine); }
+.workshop-chapters summary { list-style: none; position: relative; cursor: pointer; padding: 1.4rem 2.7rem 1.4rem 0; }
+.workshop-chapters summary h3 {
+  font: 400 clamp(1.65rem, 2.6vw, 3.15rem)/1.03 var(--serif), Georgia, serif;
+  letter-spacing: -.025em;
+  text-wrap: balance;
+}
+.workshop-fold { position: absolute; top: 50%; right: .2rem; transform: translateY(-50%); width: 1.6rem; height: 1.6rem; }
+.workshop-fold::before, .workshop-fold::after { content: ""; position: absolute; top: 50%; left: 15%; width: 70%; height: 1px; background: currentColor; }
+.workshop-fold::after { rotate: 90deg; }
+.workshop-chapters details[open] .workshop-fold::after { rotate: 0deg; }
+.workshop-chapters details[open] summary, .workshop-chapters summary:is(:hover,:focus-visible) { color: var(--folio-wine); }
+.workshop-answer { padding: 0 clamp(.85rem, 2.3vw, 2rem) 1.5rem 0; }
+.workshop-related {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: .4rem 2rem;
+  padding: 1.15rem 0 clamp(2rem, 4vw, 4rem);
+  border-top: 1px solid var(--rule);
+}
+.workshop-related p, .workshop-next small { font: 500 .85rem/1.35 var(--sans), sans-serif; color: var(--muted); }
+.workshop-related ul { display: flex; flex-wrap: wrap; gap: .22rem 1.2rem; padding: 0; list-style: none; }
+.workshop-related a, .atelier-save .text-link { display: inline-flex; align-items: center; min-height: 2.75rem; }
+.workshop-related a { text-decoration: underline; text-underline-offset: .24em; }
+.workshop-invite .pill { color: #512723; }
+.workshop-next-item { display: flex; align-items: center; gap: .9rem; }
+.workshop-next-item img { width: clamp(3rem, 5.5vw, 6rem); aspect-ratio: 1; height: auto; object-fit: cover; border-radius: .22rem .9rem .22rem .22rem; }
+.workshop-next-item small { display: block; }
+.inside .workshop-next-item i { display: block; color: var(--folio-wine); }
+
+@media (max-width: 760px) {
+  .atelier-page .crumb { margin-bottom: .75rem; }
+  .atelier-page .workshop-cover { grid-template-columns: 1fr; grid-template-areas: "title" "print" "deck"; gap: .9rem; }
+  .workshop-heading h1 { max-width: none; font-size: clamp(3.05rem, 11vw, 5rem); margin-top: .7rem; }
+  .workshop-heading h1 i { display: inline; }
+  .workshop-print picture { aspect-ratio: 1.38; border-top-right-radius: 2.2rem; }
+  .workshop-cover:is([data-service="intendance"],[data-service="visibilite"]) .workshop-print picture { aspect-ratio: 1.18; }
+  .workshop-cover:is([data-service="intendance"],[data-service="visibilite"]) .workshop-print img { object-position: 50% 38%; }
+  .workshop-print figcaption { margin-top: .4rem; }
+  .workshop-actions { margin-top: .75rem; }
+  .workshop-reading { grid-template-columns: 1fr; gap: 1.65rem; padding-top: 3.5rem; }
+  .workshop-related { display: block; }
+  .workshop-related ul { column-gap: 1.1rem; margin-top: .3rem; }
+  .inside .workshop-next { align-items: center; }
+  .workshop-next-item { gap: .55rem; }
+  .workshop-next-item img { width: clamp(2.5rem, 10vw, 4rem); }
+  .inside .workshop-next-item i { font-size: clamp(1.45rem, 6.3vw, 2.6rem); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .workshop-print img { animation: workshop-settle .88s cubic-bezier(.18,.72,.25,1) both; }
+  @keyframes workshop-settle { from { transform: scale(1.035); } }
+  .workshop-fold::after { transition: rotate .32s cubic-bezier(.17,.7,.25,1); }
+  .workshop-chapters details[open] .workshop-answer { animation: workshop-unfold .27s ease-out both; }
+  @keyframes workshop-unfold { from { opacity: .1; translate: 0 -.28rem; } }
+  .workshop-next-item img { transition: rotate .35s ease; }
+  .workshop-next-item:is(:hover,:focus-visible) img { rotate: -4deg; }
+}

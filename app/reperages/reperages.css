@@ -1,0 +1,13 @@
+.note-book { max-width: 89rem; padding-bottom: clamp(4rem,8vw,9rem); }
+.note-book .inside-heading { line-height: .99; margin-block: .65rem 1.3rem; }
+.note-list { border-bottom: 1px solid var(--rule); margin: clamp(2.4rem,6vw,6rem) 0 2rem; }
+.note-list article { display: grid; grid-template-columns: minmax(8rem,.6fr) minmax(0,1.4fr); align-items: center; gap: clamp(1.5rem,6vw,7rem); border-top: 1px solid var(--rule); padding-block: clamp(1.5rem,3.5vw,4rem); }
+.note-print { width: 100%; max-height: 16rem; object-fit: cover; aspect-ratio: 1.4; border-radius: .25rem 2rem .25rem .25rem; }
+.note-list h2 { font: 400 clamp(2.15rem,4.5vw,5.25rem)/1 var(--serif),serif; letter-spacing: -.045em; margin-block: .45rem 1.2rem; }
+.note-list h3 { font: 600 1.06rem/1.4 var(--sans),sans-serif; margin-bottom: .35rem; }
+.note-list h3+p { max-width: 53ch; }
+.note-list .text-link { margin-top: .8rem; min-height: 2.75rem; display: inline-flex; align-items: center; }
+@media (max-width:620px) {
+  .note-list article { grid-template-columns: minmax(0,1fr); row-gap: 1rem; }
+  .note-print { height: 7.5rem; width: min(100%,19rem); aspect-ratio: auto; }
+}

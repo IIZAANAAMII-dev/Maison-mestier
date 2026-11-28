@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { atelierPath, carnetAteliers, image, path, studies } from "../../../lib/maison";
 import { studyPath } from "../../../lib/pavillon";
 import { pageMetadata } from "../../../lib/seo";
+import StudyPrint from "../../../components/pavillon/StudyPrint";
 import "../../interieur.css";
+import "./etude.css";
 
 type Props = { params: Promise<{ slug: string }> };
 export const dynamicParams = false;
@@ -38,22 +40,23 @@ export default async function Study({ params }: Props) {
         <p data-reveal="copy">{item.material}</p>
       </div>
     </div>
-    <figure className="spread-image" style={{ viewTransitionName: "etude-" + item.slug }} data-reveal="figure">
-      <img src={image(item.image)} width="1440" height="930" fetchPriority="high" alt={item.alt}/>
-    </figure>
+    <StudyPrint src={image(item.image)} alt={item.alt} artwork={item.image} slug={item.slug}/>
     <div className="shell study-reading">
-      <p className="eyebrow rule-label" data-reveal="label">Notes d’atelier</p>
+      <figure className="study-reading-plate" data-reveal="figure">
+        <img src={path("/images/releves/" + item.image + ".webp")} width="1100" height="825" loading="lazy" alt={"Relevé graphique de l’étude " + item.name}/>
+        <figcaption>Relevé graphique · {item.name}</figcaption>
+      </figure>
       <div>
+        <p className="eyebrow rule-label" data-reveal="label">Notes d’atelier</p>
         <h2 data-reveal="title">{item.intro}</h2>
         <p data-reveal="copy">{item.gesture}</p>
         <p data-reveal="copy">{item.use}</p>
-        <a className="text-link" href={atelierPath(workshop.slug)} data-reveal="row">Découvrir l’atelier {workshop.name}</a>
+        <div className="study-actions">
+          <a className="trace-pill" href={path("/?atelier=" + workshop.slug + "#projet")}><span className="action-pearl" aria-hidden="true"/>Discuter d’un projet</a>
+          <a className="text-link" href={atelierPath(workshop.slug)}>Découvrir l’atelier {workshop.name}</a>
+        </div>
       </div>
     </div>
-    <figure className="study-drawing shell" data-reveal="figure">
-      <img src={path("/images/releves/" + item.image + ".webp")} width="1000" height="700" loading="lazy" alt={"Relevé graphique de l’étude " + item.name}/>
-      <figcaption>Relevé de l’étude · {item.name}</figcaption>
-    </figure>
     <nav className="inside-next shell" aria-label="Poursuivre la visite" data-reveal="row">
       <a className="text-link" href={path("/#etudes")}>Toutes les études</a>
       <a href={studyPath(next.slug)}><span>Étude suivante</span><i>{next.name}</i></a>

@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { path } from "../lib/maison";
+import { carnetAteliers, path } from "../lib/maison";
 import { siteDescription, siteName, siteOrigin, siteTitle } from "../lib/seo";
 import Header from "../components/pavillon/Header";
+import { ProjectDesk } from "../components/pavillon/Project";
 import Footer from "../components/pavillon/Footer";
 import ScrollReveals from "../components/pavillon/ScrollReveals";
 import "./globals.css";
@@ -26,7 +27,8 @@ export const metadata: Metadata = {
 };
 export const viewport: Viewport = { themeColor: "#f4f0e7", width: "device-width", initialScale: 1 };
 export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const entries = carnetAteliers.map(({ name, slug }) => ({ name, slug }));
   return <html lang="fr" className={serif.variable + " " + sans.variable}>
-    <body id="haut"><a className="skip" href="#contenu">Aller au contenu</a><Header />{children}<Footer /><ScrollReveals /></body>
+    <body id="haut"><a className="skip" href="#contenu">Aller au contenu</a><Header />{children}<Footer /><ProjectDesk entries={entries} /><ScrollReveals /></body>
   </html>;
 }

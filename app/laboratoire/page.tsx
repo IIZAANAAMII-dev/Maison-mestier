@@ -2,42 +2,35 @@ import { path } from "../../lib/maison";
 import { pageMetadata } from "../../lib/seo";
 import ModelViewer from "../../components/pavillon/ModelViewer";
 import "../interieur.css";
+import "./laboratoire.css";
 
 export const metadata = pageMetadata({
   route: "/laboratoire/",
   title: "Le Trait — Maquette 3D de stand · Maison Mestier",
-  description: "Explorez la maquette 3D du stand dessiné par Maison Mestier, du portique en laque vermillon au comptoir d’accueil.",
+  description: "Inspectez Le Trait, une étude de stand en trois points de vue. Portiques en laque vermillon, comptoir cannelé et nuancier en laiton.",
 });
+
 export default function Laboratoire() {
   return <main id="contenu" tabIndex={-1} className="inside lab-page">
     <div className="shell">
-      <nav className="crumb" aria-label="Fil d’Ariane"><a href={path("/")}>Maison Mestier</a><span>/</span>Le laboratoire</nav>
-      <div className="study-intro">
+      <nav className="crumb" aria-label="Fil d’Ariane"><a href={path("/")}>Maison Mestier</a><span aria-hidden="true">/</span>Le laboratoire</nav>
+      <header className="lab-heading">
         <div>
-          <p className="trace-label" data-reveal="label"><span className="thread-swatch" aria-hidden="true"/>Le laboratoire</p>
+          <p className="trace-label" data-reveal="label"><span className="thread-swatch" aria-hidden="true"/>Laboratoire de scénographie</p>
           <h1 className="inside-heading" data-reveal="title"><span data-reveal-line>Le <i>Trait.</i></span></h1>
         </div>
-        <p data-reveal="copy">Maquette d’exposition<br/>Laque vermillon et métal plié</p>
-      </div>
+        <p>Une maquette d’étude pour un stand de salon. Du portique au nuancier mural, trois points de vue pour entrer dans le dessin.</p>
+      </header>
+      <ModelViewer/>
     </div>
-    <div data-reveal="figure"><ModelViewer/></div>
-    <div className="shell study-reading">
-      <p className="trace-label" data-reveal="label"><span className="thread-swatch" aria-hidden="true"/>Le montage</p>
-      <div>
-        <h2 data-reveal="title">Un trait pour dessiner l’entrée.</h2>
-        <p data-reveal="copy">En se dépliant, le ruban forme deux portiques. Depuis l’allée, ils signalent la marque. À l’intérieur, le comptoir, le lutrin et l’assise donnent une place à chaque échange.</p>
-        <a className="text-link" href={path("/ateliers/stands-salons/")} data-reveal="row">Découvrir l’atelier Stands &amp; Salons</a>
-      </div>
-    </div>
-    <div className="lab-details shell">
-      <figure data-reveal="figure">
-        <img src={path("/trace/sculpture.webp")} loading="lazy" width="1200" height="880" alt="La sculpture de départ en laque rouge."/>
-        <figcaption>Le trait · Volume initial</figcaption>
-      </figure>
-      <figure data-reveal="figure">
-        <img src={path("/trace/pli.webp")} loading="lazy" width="1200" height="880" alt="La tranche claire et la boucle du ruban en train de se déployer."/>
-        <figcaption>Le pli · Transformation de la matière</figcaption>
-      </figure>
+    <div className="shell lab-making">
+      <section aria-labelledby="lab-process">
+        <p className="trace-label" data-reveal="label"><span className="thread-swatch" aria-hidden="true"/>Du geste au stand</p>
+        <h2 id="lab-process" data-reveal="title">La courbe <i>avant le lieu.</i></h2>
+        <p>Au départ, une bande de métal dessinée d’un seul geste. Son revers clair attrape la lumière. Une fois dépliée, la même courbe dessine l’entrée du stand.</p>
+        <a className="trace-pill" href={path("/ateliers/stands-salons/")}><span className="action-pearl" aria-hidden="true"/>Découvrir l’atelier Stands &amp; Salons</a>
+      </section>
+      <figure data-reveal="figure"><img src={path("/trace/pli.webp")} loading="lazy" width="1050" height="816" alt="Gros plan sur le revers abricot et l’arête fine de la feuille laquée rouge."/><figcaption>Détail du pli · Laque vermillon, revers abricot.</figcaption></figure>
     </div>
   </main>;
 }

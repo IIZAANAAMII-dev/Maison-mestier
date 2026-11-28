@@ -3,6 +3,7 @@
 From the repository root, render every view and combine the two native camera takes:
 
 blender -b -P art/trace/trace.py -- --build --model
+blender -b -P art/trace/trace.py -- --laboratory
 blender -b -P art/trace/trace.py -- --still sculpture --width 1280 --height 1056 --samples 44
 blender -b -P art/trace/trace.py -- --still sculpture-mobile --width 864 --height 1080 --samples 36
 blender -b -P art/trace/trace.py -- --still stand --width 1250 --height 900 --samples 40
@@ -16,6 +17,7 @@ Set --work on each command to choose a different render directory.
 
 import argparse
 import math
+import subprocess
 import sys
 from pathlib import Path
 
@@ -25,6 +27,8 @@ from mathutils import Vector
 parser = argparse.ArgumentParser()
 parser.add_argument("--build", action="store_true")
 parser.add_argument("--model", action="store_true")
+parser.add_argument("--laboratory", action="store_true", help="Render the web-inspection photographs")
+parser.add_argument("--plate", choices=["ensemble", "accueil", "matieres"], help="Limit the laboratory render to one camera")
 parser.add_argument("--still", choices=["sculpture", "sculpture-mobile", "stand", "pli"])
 parser.add_argument("--frames", choices=["wide", "tall"])
 parser.add_argument("--width", type=int, default=800)
@@ -438,12 +442,39 @@ box("Comptoir · couronne", (-0.72, -0.24, 1.31), (1.72, 0.65, 0.09), lacquer, f
 for k in range(22):
     x = -1.425 + k * 0.067
     line("Cannelure du comptoir", [(x, -0.531, 0.31), (x, -0.531, 1.17)], 0.014, chalk, furniture)
-label("Monogramme comptoir", "M", (-0.89, -0.557, 0.80), 0.26, brass, furniture)
+# Reproduce the Maison’s actual drawn mark as a thin brass inlay on the counter.
+box("Cartouche de la Maison", (-0.72, -0.552, 0.84), (0.46, 0.025, 0.40), claret, furniture, 0.028)
+existing_curves = set(bpy.data.objects)
+bpy.ops.import_curve.svg(filepath=str(public.parent / "charte/monogramme-encre.svg"))
+mark = next(ob for ob in set(bpy.data.objects) - existing_curves if ob.type == "CURVE")
+mark.data.resolution_u = 4
+bpy.context.view_layer.update()
+mark_graph = bpy.context.evaluated_depsgraph_get()
+mark_mesh = bpy.data.meshes.new_from_object(mark.evaluated_get(mark_graph), depsgraph=mark_graph)
+mark_mesh.transform(mark.matrix_world)
+xs, ys = ([vertex.co[axis] for vertex in mark_mesh.vertices] for axis in (0, 1))
+factor = 0.31 / (max(xs) - min(xs))
+cx, cy = (min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2
+for vertex in mark_mesh.vertices:
+    x, y, _ = vertex.co
+    vertex.co = ((x - cx) * factor - 0.72, -0.567, (y - cy) * factor + 0.84)
+mark_mesh.materials.clear()
+mark_mesh.materials.append(brass)
+stamp = bpy.data.objects.new("Monogramme en marqueterie de laiton", mark_mesh)
+furniture.objects.link(stamp)
+bpy.data.objects.remove(mark, do_unlink=True)
 box("Catalogue sur comptoir", (-0.76, -0.29, 1.39), (0.36, 0.23, 0.038), claret, furniture, 0.01)
 box("Feuillets du catalogue", (-0.72, -0.21, 1.418), (0.30, 0.20, 0.012), porcelain, furniture, 0.005)
 for x in (-1.83, -1.27):
     box("Piètement de banquette", (x, 1.14, 0.38), (0.06, 0.38, 0.39), brass, furniture, 0.018)
 box("Assise rembourrée", (-1.55, 1.14, 0.61), (0.97, 0.49, 0.16), soft, furniture, 0.075)
+backrest = box("Dossier en lin", (-1.55, 1.36, 0.83), (0.97, 0.10, 0.44), soft, furniture, 0.047)
+backrest.rotation_euler.x = math.radians(-5)
+for x in (-1.88, -1.22):
+    box("Support du dossier", (x, 1.41, 0.71), (0.028, 0.034, 0.43), brass, furniture, 0.009)
+for n in range(17):
+    x = -1.94 + n * 0.048
+    line("Couture sellier", [(x, 0.897, 0.613), (x + 0.024, 0.897, 0.613)], 0.0025, claret, furniture)
 box("Lutrin · tige", (1.84, -0.47, 0.87), (0.035, 0.035, 1.32), brass, furniture, 0.008)
 pod = box("Lutrin imprimé", (1.84, -0.47, 1.55), (0.54, 0.10, 0.39), claret, furniture, 0.035)
 pod.rotation_euler.x = math.radians(-14)
@@ -452,6 +483,16 @@ box("Pied du lutrin", (1.84, -0.47, 0.20), (0.29, 0.25, 0.03), brass, furniture,
 for x, y, h in ((0.82, 1.05, 0.66), (1.10, 1.15, 0.84)):
     box("Tablette · colonne", (x, y, 0.18 + h * 0.5), (0.055, 0.055, h), brass, furniture, 0.01)
     box("Tablette · plateau", (x, y, 0.18 + h), (0.45, 0.33, 0.045), porcelain, furniture, 0.02)
+# Three stepped lacquer samples sit on a removable brass rack, each at a different angle.
+for idx, mat in enumerate((reverse, lacquer, claret)):
+    x = 0.66 + idx * 0.34
+    box("Rail en laiton", (x, 1.86, 1.40), (0.28, 0.10, 0.035), brass, furniture, 0.009)
+    sample = box("Nuancier de laque", (x, 1.853, 1.64), (0.25, 0.036, 0.45), mat, furniture, 0.013)
+    sample.rotation_euler.y = math.radians((idx - 1) * 7)
+    line("Repère gravé", [(x - 0.06, 1.906, 1.30), (x + 0.06, 1.906, 1.30)], 0.006, brass, furniture)
+for idx, mat in enumerate((soft, reverse, claret)):
+    sheet = box("Feuillet de matière", (0.82, 1.05, 0.87 + idx * 0.026), (0.32, 0.23, 0.018), mat, furniture, 0.006)
+    sheet.rotation_euler.z = math.radians((idx - 1) * 12)
 for ob in list(furniture.objects):
     if ob != fitout:
         ob.parent = fitout
@@ -615,6 +656,39 @@ if args.still:
     scene.frame_set(60 if args.still == "stand" else 1)
     scene.camera = {"sculpture": wide, "sculpture-mobile": tall, "stand": wide, "pli": detail}[args.still]
     render_png(work / (args.still + ".png"))
+if args.laboratory:
+    # Each photograph has a matching interactive pose (Blender XYZ → glTF XZ−Y).
+    scene.frame_set(60)
+    scene.render.film_transparent = False
+    floor.is_shadow_catcher = False
+    scene.cycles.samples = args.samples
+    scene.render.resolution_x, scene.render.resolution_y = 1080, 800
+    scene.render.image_settings.file_format = "PNG"
+    scene.render.image_settings.color_mode = "RGB"
+    views = [
+        ("ensemble", (0, 0.36, 1.47), (5.1, -9.8, 4.9), 51),
+        ("accueil", (-0.72, -0.23, 1.03), (-2.50, -4.35, 2.13), 73),
+        ("matieres", (0.99, 1.85, 1.62), (0.62, 0.12, 1.57), 49),
+    ]
+    for name, target, position, lens in views:
+        if args.plate and name != args.plate:
+            continue
+        camera_data = bpy.data.cameras.new(name)
+        camera_data.lens = lens
+        camera_obj = bpy.data.objects.new(name, camera_data)
+        scene.collection.objects.link(camera_obj)
+        camera_obj.location = position
+        camera_obj.rotation_euler = (v(target) - v(position)).to_track_quat("-Z", "Y").to_euler()
+        scene.camera = camera_obj
+        plate = work / ("labo-" + name + ".png")
+        scene.render.filepath = str(plate)
+        bpy.ops.render.render(write_still=True)
+        subprocess.run([
+            "ffmpeg", "-v", "error", "-y", "-i", str(plate),
+            "-vf", "hqdn3d=4:3:0:0", "-c:v", "libwebp", "-quality", "83",
+            "-compression_level", "6", "-frames:v", "1", str(public / ("labo-" + name + ".webp")),
+        ], check=True)
+
 if args.frames:
     frame_dir = work / args.frames
     frame_dir.mkdir(exist_ok=True)

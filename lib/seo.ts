@@ -13,10 +13,10 @@ export function siteUrl(route: string) {
 }
 
 const socialImage = {
-  url: "/trace/stand.webp",
-  alt: "Une maquette de stand Maison Mestier sous un portique vermillon.",
-  width: 1250,
-  height: 900,
+  url: "/seuil/vue.webp",
+  alt: "Le portique en laque rouge de Maison Mestier, devant un comptoir de noyer.",
+  width: 1280,
+  height: 960,
 };
 
 type PageMetadata = {

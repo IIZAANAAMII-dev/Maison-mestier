@@ -16,18 +16,16 @@ export default function ScrollReveals() {
       elements.forEach(element => element.removeAttribute("data-reveal-state"));
       if (!motion.matches || typeof IntersectionObserver !== "function") return;
 
-      const initialHeight = window.innerHeight;
+      // Take all measurements before setting animation states. Never hide an above-fold link.
+      const belowFold = elements.filter(element => element.getBoundingClientRect().top >= window.innerHeight);
       observer = new IntersectionObserver(entries => {
         for (const entry of entries) {
           if (!entry.isIntersecting) continue;
           (entry.target as HTMLElement).dataset.revealState = "shown";
           observer?.unobserve(entry.target);
         }
-      }, { rootMargin: "0px 0px -5% 0px", threshold: .03 });
-
-      for (const element of elements) {
-        // Keep content in the opening viewport and deep-linked destinations immediately readable.
-        if (element.getBoundingClientRect().top < initialHeight * .96) continue;
+      }, { rootMargin: "0px 0px 5% 0px", threshold: 0 });
+      for (const element of belowFold) {
         element.dataset.revealState = "waiting";
         observer.observe(element);
       }

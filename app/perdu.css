@@ -1,0 +1,9 @@
+.lost-page { background: var(--paper-light); display: grid; min-height: 85svh; align-items: center; grid-template-columns: repeat(2,minmax(0,1fr)); gap: clamp(2rem,5vw,6rem); padding: calc(var(--head) + 2rem) var(--gutter) 4rem; }
+.lost-sheet { overflow: hidden; border-radius: 5rem .3rem .3rem .3rem; box-shadow: 0 .4rem 1.5rem #47372014; }
+.lost-sheet img { width: 100%; height: auto; }
+.lost-copy h1 { margin: .24em 0; font: 500 clamp(3.5rem,7vw,8rem)/.94 var(--sans),sans-serif; letter-spacing: -.065em; }
+.lost-copy h1 i { display: block; color: #843930; font-family: var(--serif),serif; }
+.lost-copy >p:not(.trace-label) { max-width: 30ch; font-size: 1.1rem; }
+.lost-copy nav { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1.5rem; }
+.lost-copy nav a { min-height: 2.75rem; display: inline-flex; align-items: center; }
+@media(max-width:720px) { .lost-page { grid-template-columns: 1fr; gap: 1.5rem; } .lost-sheet { max-height: 31svh; display: flex; align-items: center; } }

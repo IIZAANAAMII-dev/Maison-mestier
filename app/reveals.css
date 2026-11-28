@@ -1,33 +1,17 @@
-@media (prefers-reduced-motion: no-preference) {
-  [data-reveal] {
-    --reveal-distance: .85rem;
-    --reveal-duration: .62s;
-    --reveal-delay: 0s;
-    --reveal-curve: cubic-bezier(.18, .78, .24, 1);
-  }
-  [data-reveal="label"] { --reveal-distance: .35rem; --reveal-duration: .43s; }
-  [data-reveal="title"] { --reveal-distance: 1.03rem; --reveal-duration: .77s; }
-  [data-reveal="copy"] { --reveal-delay: .09s; }
-  [data-reveal="figure"] { --reveal-distance: 0rem; --reveal-duration: .84s; }
-  [data-reveal-order="1"] { --reveal-delay: .065s; }
-  [data-reveal-order="2"] { --reveal-delay: .13s; }
-  [data-reveal-order="3"] { --reveal-delay: .19s; }
-
-  [data-reveal-state="waiting"]:not(:focus-within) {
-    opacity: 0;
-  }
-  [data-reveal-state="shown"]:not(:focus-within):not(:has([data-reveal-line])) {
-    animation: arrive-in-frame var(--reveal-duration) var(--reveal-curve) var(--reveal-delay) backwards;
-  }
-  [data-reveal-state="shown"]:not(:focus-within) [data-reveal-line] {
-    display: block;
-    animation: arrive-in-frame var(--reveal-duration) var(--reveal-curve) var(--reveal-delay) backwards;
-  }
-  [data-reveal-state="shown"] [data-reveal-line] + [data-reveal-line] { --reveal-delay: .115s; }
-  @keyframes arrive-in-frame {
-    from { opacity: 0; translate: 0 var(--reveal-distance); }
-    to { opacity: 1; translate: 0 0; }
-  }
-}
-
 [data-reveal-line] { display: block; }
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal] { --ease-arrive: cubic-bezier(.2,.74,.25,1); }
+  /* Each entry starts readable. A fling or a deep link can skip the transition. */
+  [data-reveal="title"][data-reveal-state="shown"] [data-reveal-line],
+  [data-reveal="title"][data-reveal-state="shown"]:not(:has([data-reveal-line])) { animation: settle-type .56s var(--ease-arrive) backwards; }
+  [data-reveal="title"][data-reveal-state="shown"] [data-reveal-line]+[data-reveal-line] { animation-delay: 55ms; }
+  [data-reveal="figure"][data-reveal-state="shown"]:not(:focus-within) { animation: expose-print .58s ease-out backwards; }
+  [data-reveal="copy"][data-reveal-state="shown"] { animation: settle-copy .32s ease-out backwards; }
+  [data-reveal="row"][data-reveal-state="shown"]:not(:focus-within) { animation: settle-row .36s var(--ease-arrive) backwards; }
+  @keyframes settle-type { from { opacity: .6; transform: translateY(.18em); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes expose-print { from { opacity: .76; } to { opacity: 1; } }
+  @keyframes settle-copy { from { opacity: .76; } to { opacity: 1; } }
+  @keyframes settle-row { from { transform: translateX(-.22rem); } to { transform: translateX(0); } }
+  ::view-transition-old(root) { animation-duration: .12s; }
+  ::view-transition-new(root) { animation-duration: .18s; }
+}

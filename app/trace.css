@@ -134,3 +134,19 @@ body { background: var(--paper); }
 @media (max-width:360px) {
   .trace-header .header-contact { display: none; }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .trace-pill .action-pearl { position: relative; }
+  .trace-pill .action-pearl::after {
+    position: absolute; content: ""; inset: -4px; border: 1px solid currentColor;
+    border-radius: inherit; opacity: 0; transform: scale(.5);
+    transition: opacity .22s, transform .3s cubic-bezier(.16,.72,.25,1);
+  }
+  .trace-pill:is(:active,:focus-visible) .action-pearl::after { transform: scale(1); opacity: .6; }
+  .invitation-action img { transition: transform .25s; }
+  .invitation-action:active img { transform: scale(.87); }
+}
+@media (hover:hover) and (prefers-reduced-motion: no-preference) {
+  .trace-pill:hover .action-pearl::after { transform: scale(1); opacity: .6; }
+  .invitation-action:hover img { transform: rotate(-6deg); }
+}

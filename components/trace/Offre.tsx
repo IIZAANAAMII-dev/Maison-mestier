@@ -3,84 +3,83 @@ import "./offre.css";
 
 const families = [
   {
-    title: "Créer un lieu",
-    image: "/metiers/stands.webp",
-    alt: "Un stand rouge et pierre, avec un espace d’accueil ouvert sur l’allée.",
-    copy: "Conception 3D, fabrication et coordination sur place, du dossier exposant au démontage.",
+    title: "Occuper un lieu", image: "stands",
+    alt: "Comptoir d’accueil et portique laqué d’un stand ouvert sur l’allée.",
     services: [
-      { label: "Stands de salon", slug: "stands-salons" },
-      { label: "Événements", slug: "evenement" },
-      { label: "Showrooms et pop-up", slug: "ephemere" },
-      { label: "Coordination", slug: "intendance" },
+      ["stands-salons", "Stands de salon", "Plans 3D, fabrication et montage"],
+      ["evenement", "Événements", "Lancements, soirées et conventions"],
+      ["ephemere", "Espaces éphémères", "Pop-up stores, corners et showrooms"],
+      ["intendance", "Intendance", "Dossiers exposants, logistique et coordination"],
     ],
   },
   {
-    title: "Signer une marque",
-    image: "/metiers/identite.webp",
-    alt: "Papier gaufré, papeterie rouge et éléments d’identité visuelle sur une table d’atelier.",
-    copy: "Une identité qui se reconnaît dans le détail, du logo et du packaging à la photo et au film.",
+    title: "Signer une marque", image: "identite",
+    alt: "Cartons de correspondance en papier ivoire et laque rouge.",
     services: [
-      { label: "Identité et imprimés", slug: "identite" },
-      { label: "Photographie et film", slug: "contenu" },
+      ["identite", "Identité visuelle", "Logo, charte, papeterie et packaging"],
+      ["contenu", "Photo et film", "Prises de vue, interviews et montage"],
     ],
   },
   {
-    title: "Développer en ligne",
-    image: "/metiers/digital.webp",
-    alt: "Un site Maison Mestier présenté sur un ordinateur et un téléphone.",
-    copy: "Sites vitrines, boutiques et applications web métier sur mesure, avec les intégrations nécessaires.",
+    title: "Prendre place en ligne", image: "digital",
+    alt: "Écrans d’un site web et de sa version mobile sur une table d’atelier.",
     services: [
-      { label: "Sites web et applications", slug: "digital" },
-      { label: "Référencement et visibilité", slug: "visibilite" },
+      ["digital", "Sites et applications", "Sites vitrines, boutiques et outils métier"],
+      ["visibilite", "Visibilité", "Référencement, campagnes et mesure"],
     ],
   },
-] as const;
+];
 
 export function Offre() {
   return <section className="offre" id="offre" aria-labelledby="offre-title">
     <div className="trace-width">
-      <div className="offre-intro">
+      <header className="offre-intro">
         <div>
-          <p className="trace-label" data-reveal="label"><span className="thread-swatch" aria-hidden="true"/>Nos services</p>
-          <h2 id="offre-title" data-reveal="title">
-            <span data-reveal-line>De l’espace</span>{" "}<i data-reveal-line>à l’écran.</i>
-          </h2>
+          <p className="trace-label" data-reveal="label">Les huit ateliers</p>
+          <h2 id="offre-title" data-reveal="title"><span data-reveal-line>Qu’avez-vous</span>{" "}<i data-reveal-line>en tête ?</i></h2>
         </div>
-        <div className="offre-pitch" data-reveal="copy">
-          <p>Un stand, une identité, un site ou une application. Vous pouvez nous confier un seul volet ou nous laisser coordonner l’ensemble.</p>
-          <a className="trace-pill" href="#projet"><span className="action-pearl" aria-hidden="true"/>Parler de votre projet</a>
-        </div>
-      </div>
-      <div className="offre-families">
-        {families.map(({ title, image, alt, copy, services }) => <article key={title} className="offre-family">
-          <a className="offre-photo" data-reveal="figure" href={atelierPath(services[0].slug)} aria-label={services[0].label}>
-            <img src={path(image)} alt={alt} width="1280" height="853" loading="lazy" decoding="async"/>
-          </a>
-          <h3 data-reveal="title">{title}</h3>
-          <p data-reveal="copy">{copy}</p>
-          <ul className="offre-services" role="list" data-reveal="row">
-            {services.map(({ label, slug }) => <li key={slug}><a href={atelierPath(slug)}>{label}</a></li>)}
+        <p data-reveal="copy">Vous préparez un salon, un lancement ou un nouveau site ? Découvrez ce que chaque atelier peut prendre en charge.</p>
+      </header>
+      <div className="service-register" id="ateliers" aria-label="Les huit ateliers de Maison Mestier">
+        {families.map(family => <section className="register-spread" key={family.image} aria-labelledby={"famille-" + family.image}>
+          <div className="register-cover">
+            <picture data-reveal="figure">
+              <source media="(max-width: 760px)" srcSet={path("/metiers/" + family.image + "-mobile.webp")}/>
+              <img src={path("/metiers/" + family.image + ".webp")} alt={family.alt} width="1280" height="853" loading="lazy" decoding="async"/>
+            </picture>
+            <h3 id={"famille-" + family.image}>{family.title}</h3>
+          </div>
+          <ul role="list" className="register-links">
+            {family.services.map(([slug, title, delivery]) => <li key={slug}>
+              <a href={atelierPath(slug)}><span><strong>{title}</strong><small>{delivery}</small></span>
+                <span aria-hidden="true" className="register-sign"><img src={path("/charte/carnet.svg")} width="18" height="18" alt="" /></span>
+              </a>
+            </li>)}
           </ul>
-        </article>)}
+        </section>)}
       </div>
     </div>
   </section>;
 }
 
 export function OffreDigitale() {
-  return <section className="offre-digitale" id="offre-web" aria-labelledby="offre-web-title">
-    <div className="trace-width offre-digitale-layout">
-      <div className="offre-digitale-copy">
-        <p className="trace-label" data-reveal="label"><span className="thread-swatch" aria-hidden="true"/>Atelier web</p>
-        <h2 id="offre-web-title" data-reveal="title">
-          <span data-reveal-line>Du site vitrine</span>{" "}<i data-reveal-line>à l’application.</i>
-        </h2>
-        <p data-reveal="copy">Présenter un savoir-faire, vendre en ligne ou simplifier le travail de vos équipes. Voyez comment une même direction artistique s’adapte à chacun de ces usages.</p>
-        <a className="trace-pill" href={atelierPath("digital") + "#demonstrations"} data-reveal="row"><span className="action-pearl" aria-hidden="true"/>Voir les démonstrations</a>
-      </div>
-      <figure className="offre-digitale-image" data-reveal="figure">
-        <img src={path("/metiers/digital.webp")} width="1280" height="853" loading="lazy" decoding="async" alt="Maquettes d’un site sur ordinateur et téléphone, dans les tons ivoire et rouge de Maison Mestier."/>
+  return <aside id="offre-web" className="digital-invitation" aria-labelledby="offre-web-title">
+    <div className="trace-width invitation-inside">
+      <figure className="invitation-art" data-reveal="figure">
+        <picture>
+          <img src={path("/images/empreinte.webp")} alt="Gros plan du monogramme en relief et de sa matrice en laiton." width="1280" height="900" loading="lazy" decoding="async"/>
+        </picture>
+        <div className="invitation-window" aria-hidden="true">
+          <span className="invitation-toolbar"><i/><i/><i/></span>
+          <div className="invitation-screen"><span>Éditions Mestier</span><i>Correspondance.</i></div>
+        </div>
       </figure>
+      <div className="invitation-copy">
+        <p className="trace-label" data-reveal="label">L’atelier numérique</p>
+        <h2 id="offre-web-title" data-reveal="title"><span data-reveal-line>Du papier</span>{" "}<i data-reveal-line>à l’écran.</i></h2>
+        <p>Ouvrez la boutique de papeterie, puis passez au site vitrine ou à l’application métier. Trois prototypes à explorer sur téléphone et sur ordinateur.</p>
+        <a className="trace-pill invitation-action" href={atelierPath("digital") + "#demonstrations"}><img src={path("/charte/interface.svg")} width="18" height="18" alt=""/>Explorer les prototypes</a>
+      </div>
     </div>
-  </section>;
+  </aside>;
 }
