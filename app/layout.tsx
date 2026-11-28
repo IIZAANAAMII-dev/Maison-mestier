@@ -3,8 +3,10 @@ import localFont from "next/font/local";
 import { path } from "../lib/maison";
 import Header from "../components/pavillon/Header";
 import Footer from "../components/pavillon/Footer";
+import ScrollReveals from "../components/pavillon/ScrollReveals";
 import "./globals.css";
 import "./trace.css";
+import "./reveals.css";
 
 const serif = localFont({
   src: [
@@ -28,6 +30,6 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { themeColor: "#f4f0e7", width: "device-width", initialScale: 1 };
 export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="fr" className={serif.variable + " " + sans.variable}>
-    <body id="haut"><a className="skip" href="#contenu">Aller au contenu</a><Header />{children}<Footer /></body>
+    <body id="haut"><a className="skip" href="#contenu">Aller au contenu</a><Header />{children}<Footer /><ScrollReveals /></body>
   </html>;
 }

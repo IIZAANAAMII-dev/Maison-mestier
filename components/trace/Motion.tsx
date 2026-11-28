@@ -72,10 +72,10 @@ export default function Motion() {
           const mobile = portrait.matches;
           if (pose === "room") return { x: 0, y: 0, scale: 1, clip: "inset(0px 0px 0px 0px round 0px 0px 0px 0px)" };
           const open = pose === "table";
-          const x = open ? width * (mobile ? .035 : .277) : guide.offsetLeft;
+          const x = open ? width * (mobile ? .028 : .277) : guide.offsetLeft;
           const y = open ? height * (mobile ? .133 : .101) : guide.offsetTop;
-          const w = open ? width * (mobile ? .93 : .687) : guide.offsetWidth;
-          const h = open ? height * (mobile ? .696 : .79) : guide.offsetHeight;
+          const w = open ? width * (mobile ? .944 : .687) : guide.offsetWidth;
+          const h = open ? height * (mobile ? .655 : .79) : guide.offsetHeight;
           const style = getComputedStyle(guide);
           const radii = [style.borderTopLeftRadius, style.borderTopRightRadius, style.borderBottomRightRadius, style.borderBottomLeftRadius];
           const pixels = (part: string, axis: number) => part.endsWith("%") ? parseFloat(part) * axis / 100 : parseFloat(part);
@@ -84,9 +84,12 @@ export default function Motion() {
             : radii.map(value => pixels(value.split(" ")[0], w) + "px").join(" ") + " / " +
               radii.map(value => pixels(value.split(" ")[1] || value.split(" ")[0], h) + "px").join(" ");
           const aspect = mobile ? .8 : 14 / 11;
+          const sourceWidth = Math.min(width, height * aspect);
+          // The portrait render has blank paper above and below the model.
+          const displayWidth = mobile ? Math.min(w * .98, h / .82) : Math.min(w, h * aspect);
           return {
             x: x + w / 2 - width / 2, y: y + h / 2 - height / 2,
-            scale: Math.min(w / aspect, h) / Math.min(width / aspect, height),
+            scale: displayWidth / sourceWidth,
             clip: "inset(" + y + "px " + (width - x - w) + "px " + (height - y - h) + "px " + x + "px round " + corners + ")",
           };
         }
@@ -107,14 +110,22 @@ export default function Motion() {
 
         main.dataset.cinema = "on";
         const slide = gsap.context(() => {
+          gsap.timeline({
+            defaults: { ease: "power2.out" },
+            scrollTrigger: { trigger: cinema, start: "clamp(top 91%)", end: "top 31%", scrub: .18 },
+          })
+            .fromTo(".trace-lead .trace-label", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .26 }, 0)
+            .fromTo(".trace-lead .trace-line", { opacity: 0, yPercent: 27 }, { opacity: 1, yPercent: 0, stagger: .07, duration: .42 }, .09)
+            .fromTo(".trace-lead .trace-pitch", { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: .3 }, .3);
+
           const cursor = { position: 0 };
           const scene = gsap.timeline({
             defaults: { ease: "none" },
             scrollTrigger: { trigger: cinema, start: "top top", end: "bottom bottom", scrub: .22, invalidateOnRefresh: true },
           });
           scene.to(cursor, { position: 1, duration: 1, onUpdate: () => display(cursor.position) }, 0)
-            .to(".trace-line > *", { yPercent: -116, stagger: .024, duration: .17, ease: "power2.in" }, .085)
-            .to(".trace-lead .trace-label, .trace-lead .trace-pitch", { autoAlpha: 0, y: -15, duration: .16 }, .105)
+            .to(".trace-lead .trace-line > *", { yPercent: -116, stagger: .024, duration: .17, ease: "power2.in" }, .085)
+            .to(".trace-lead", { autoAlpha: 0, y: -10, duration: .17 }, .1)
             .to(".trace-backlight", { opacity: .36, duration: .29 }, .12)
             .fromTo(".trace-frame", { clipPath: () => frameBox("aperture").clip }, {
               clipPath: () => frameBox("table").clip, duration: .32, ease: "power2.inOut",
@@ -130,7 +141,8 @@ export default function Motion() {
             .to(".thread-plan", { opacity: 0, duration: .17 }, .49)
             .to(".trace-fold", { opacity: 1, duration: .22 }, .16)
             .to(".trace-built", { opacity: 1, duration: .23 }, .34)
-            .fromTo(".cut-fold", { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: .12 }, .28)
+            .fromTo(".cut-fold", { autoAlpha: 0 }, { autoAlpha: 1, duration: .1 }, .265)
+            .fromTo(".cut-fold .trace-caption-line > *", { yPercent: 116 }, { yPercent: 0, stagger: .02, duration: .13, ease: "power3.out" }, .265)
             .to(".cut-fold", { autoAlpha: 0, y: -12, duration: .1 }, .48)
             .to(".trace-interior", { autoAlpha: 1, duration: .16, ease: "sine.inOut" }, .53)
             .to(".trace-frame", { clipPath: () => frameBox("room").clip, duration: .21, ease: "power2.inOut" }, .55)
@@ -138,13 +150,16 @@ export default function Motion() {
             .to(".trace-vignette", { opacity: 1, duration: .16 }, .57)
             .to(".trace-approach", { scale: 1.11, duration: .32, ease: "sine.inOut" }, .62)
             .to(".trace-passage", { opacity: 1, duration: .061 }, .9)
-            .fromTo(".cut-passage", { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: .16, ease: "power2.out" }, .78)
+            .fromTo(".cut-passage", { autoAlpha: 0 }, { autoAlpha: 1, duration: .13, ease: "power2.out" }, .745)
+            .fromTo(".cut-passage .trace-caption-line > *", { yPercent: 115 }, { yPercent: 0, stagger: .024, duration: .17, ease: "power3.out" }, .745)
+            .fromTo(".trace-atelier-link", { autoAlpha: 0, y: 9 }, { autoAlpha: 1, y: 0, duration: .08, ease: "power2.out" }, .88)
             .to(".trace-rail span", { scaleX: 1, duration: 1 }, 0);
           scene.progress(scene.scrollTrigger?.progress ?? 0);
           display(scene.progress());
 
           let playback = 0;
           function stopPlayback() {
+            if (!playback) return;
             cancelAnimationFrame(playback);
             playback = 0;
             player.setAttribute("aria-pressed", "false");
@@ -154,13 +169,14 @@ export default function Motion() {
             if (playback) { stopPlayback(); return; }
             const link = scene.scrollTrigger;
             if (!link) return;
-            if (link.progress < arrivalCut || link.progress >= .977) assemblyFilm.load(true);
+            const replay = link.progress >= montageChapters[2].position - .005;
+            if (link.progress < arrivalCut || replay) assemblyFilm.load(true);
             walkFilm.load(true);
-            const position = link.progress >= .977 ? 0 : link.progress;
+            const position = replay ? 0 : link.progress;
             const started = performance.now();
             const duration = Math.max(600, 6500 * (1 - position));
             const ease = gsap.parseEase("sine.inOut");
-            if (link.progress >= .977) window.scrollTo({ top: link.start, behavior: "instant" });
+            if (replay) window.scrollTo({ top: link.start, behavior: "instant" });
             player.setAttribute("aria-pressed", "true");
             playerName.textContent = "Pause";
             function advance(now: number) {
@@ -176,6 +192,7 @@ export default function Motion() {
             if (event.target instanceof Node && !player.contains(event.target)) stopPlayback();
           }
           window.addEventListener("pointerdown", interrupt, { passive: true, signal });
+          window.addEventListener("touchstart", interrupt, { passive: true, signal });
           window.addEventListener("wheel", stopPlayback, { passive: true, signal });
           window.addEventListener("keydown", interrupt, { signal });
           window.addEventListener("pagehide", stopPlayback, { signal });
@@ -192,9 +209,6 @@ export default function Motion() {
 
           const footerInk = main.querySelector<SVGPathElement>(".footer-ink");
           if (footerInk) gsap.fromTo(footerInk, { strokeDashoffset: 1 }, { strokeDashoffset: 0, ease: "none", scrollTrigger: { trigger: ".project", start: "top 92%", end: "center 45%", scrub: .45 } });
-          main.querySelectorAll<HTMLElement>("[data-words]").forEach(heading => {
-            gsap.from(heading, { y: 25, rotation: -1.4, duration: .8, transformOrigin: "0 100%", ease: "power3.out", scrollTrigger: { trigger: heading, start: "clamp(top 92%)", once: true } });
-          });
         }, main);
 
         function refreshDimensions() {

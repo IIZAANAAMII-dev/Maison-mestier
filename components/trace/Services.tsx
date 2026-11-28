@@ -22,13 +22,13 @@ export default function Services() {
       </figure>
     </div>
     <div className="method-details trace-width">
-      <ol className="method-phases" aria-label="Étapes d’un projet">
-        {phases.map(phase => <li key={phase.title}>
+      <ol className="method-phases" aria-label="Étapes d’un projet" role="list">
+        {phases.map((phase, index) => <li key={phase.title} data-reveal="row" data-reveal-order={index}>
           <h3>{phase.title}</h3>
           <p>{phase.description}</p>
         </li>)}
       </ol>
-      <a className="trace-pill method-action" href="#montage"><span className="action-pearl" aria-hidden="true"/>Entrer dans le stand</a>
+      <a className="trace-pill method-action" href="#montage" data-reveal="copy"><span className="action-pearl" aria-hidden="true"/>Entrer dans le stand</a>
     </div>
   </section>;
 }

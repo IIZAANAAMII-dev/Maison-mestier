@@ -25,10 +25,12 @@ export default function Header() {
     const onHome = Boolean(document.getElementById("seuil"));
     const chapter = document.getElementById("maison");
     const film = document.getElementById("montage");
+    const contact = document.getElementById("contact");
     let chapterStart = Infinity, chapterEnd = Infinity;
+    let contactStart = Infinity;
     const setPaper = () => {
       el.toggleAttribute("data-scrolled", scrollY > 35 || !onHome);
-      el.toggleAttribute("data-lacquer", scrollY >= chapterStart && scrollY < chapterEnd);
+      el.toggleAttribute("data-lacquer", (scrollY >= chapterStart && scrollY < chapterEnd) || scrollY >= contactStart);
     };
     const measureChapter = () => {
       if (chapter) {
@@ -37,13 +39,16 @@ export default function Header() {
         chapterStart = bounds.top + scrollY - headerCentre;
         chapterEnd = (film?.getBoundingClientRect().bottom ?? bounds.bottom) + scrollY - headerCentre;
       }
+      if (contact) contactStart = contact.getBoundingClientRect().top + scrollY - el.offsetHeight * .5;
       setPaper();
     };
     const chapterObserver = chapter?.parentElement ? new ResizeObserver(measureChapter) : undefined;
     if (chapterObserver && chapter?.parentElement) chapterObserver.observe(chapter.parentElement);
     if (film) chapterObserver?.observe(film);
+    if (contact?.parentElement) chapterObserver?.observe(contact.parentElement);
     measureChapter();
     window.addEventListener("scroll", setPaper, { passive: true, signal });
+    window.addEventListener("resize", measureChapter, { passive: true, signal });
     window.addEventListener("keydown", event => { if (event.key === "Escape" && details.open) { close(); details.querySelector("summary")?.focus(); } }, { signal });
     document.addEventListener("pointerdown", event => { if (event.target instanceof Node && !details.contains(event.target)) close(); }, { passive: true, signal });
     window.addEventListener("pagehide", close, { signal });

@@ -11,6 +11,7 @@
   --ground: calc(var(--panel-h) / 2 + 2.75rem);
   --floor-diameter: calc(var(--radius) * 2.59 + 3.5rem);
   --curve: clamp(1.2rem, 3vw, 3rem);
+  --plinth-depth: clamp(.35rem, .9vw, .75rem);
   min-height: max(41rem, 100svh);
   position: relative;
   isolation: isolate;
@@ -24,8 +25,8 @@
   inset: 0;
   overflow: hidden;
   background:
-    radial-gradient(ellipse at 67% 30%, #fffcf4 0%, #f8f1e3a8 46%, #bfa78926 100%),
-    linear-gradient(126deg, #f8f0e1 23%, #eae0cf 62%, #dac8ae 100%);
+    radial-gradient(ellipse at 63% 11%, #fffcf4 0%, #fbf4e8b8 43%, #dac4a66b 100%),
+    linear-gradient(142deg, #f8f0e1 23%, #eae0cf 62%, #cab396 100%);
   pointer-events: none;
 }
 .rotonde-wall svg {
@@ -35,6 +36,32 @@
   stroke-width: 1;
 }
 .rotonde-wall path:last-child { opacity: .76; }
+.rotonde-vault {
+  position: absolute;
+  left: var(--scene-x);
+  top: 12%;
+  width: clamp(26rem, 66vw, 70rem);
+  height: 68%;
+  transform: translateX(-50%);
+  border-radius: 48% 48% 17% 17% / 52% 52% 12% 12%;
+  border-top: 1px solid #956d4e36;
+  background:
+    radial-gradient(ellipse at 41% 2%, #fff8ea 12%, transparent 61%),
+    linear-gradient(114deg, #b3997529, #ead8bec8 34%, #c4a58077 100%);
+  box-shadow: inset 1rem .25rem 2.8rem #86624716, inset -1.25rem 0 3rem #89634220;
+  mask-image: linear-gradient(#000 0 61%, transparent 100%);
+  opacity: var(--room-objects, 1);
+  pointer-events: none;
+}
+.rotonde-vault::before {
+  content: "";
+  position: absolute;
+  inset: clamp(.65rem, 2vw, 1.75rem);
+  border: 1px solid #8666482b;
+  border-bottom: 0;
+  border-radius: inherit;
+  background: linear-gradient(156deg, #fff8ec97 1%, #fff8ec00 31%, #b3946c24 55%, transparent 78%);
+}
 .rotonde-head {
   position: absolute;
   z-index: 3;
@@ -108,6 +135,7 @@
   transform: rotateY(var(--azimuth)) translateZ(var(--radius));
 }
 .rotonde-floor,
+.rotonde-plinth,
 .rotonde-base,
 .rotonde-post,
 .rotonde-frame,
@@ -117,17 +145,27 @@
   inset: 0 auto auto 0;
 }
 .rotonde-floor,
+.rotonde-plinth,
 .rotonde-base,
 .rotonde-post,
 .rotonde-back { pointer-events: none; }
+.rotonde-plinth {
+  width: var(--floor-diameter);
+  height: var(--floor-diameter);
+  border-radius: 50%;
+  transform: translate3d(-50%, calc(var(--ground) + var(--plinth-depth) - 50%), 0) rotateX(90deg);
+  background: linear-gradient(158deg, #e4cdb0, #9b7255 80%, #795037);
+  box-shadow: 0 .65rem 2rem #4d2f1a56;
+  opacity: calc(var(--room-floor, 1) * (1 - var(--room-ink, 0)));
+}
 .rotonde-floor {
   width: var(--floor-diameter);
   height: var(--floor-diameter);
   border-radius: 50%;
   transform: translate3d(-50%, calc(var(--ground) - 50%), 0) rotateX(90deg);
   border: 1px solid #a991777b;
-  box-shadow: 0 0 0 .65rem #e9decc64, 0 0 3rem #8b51332e;
-  background: radial-gradient(circle at 43% 40%, #f8efe0, #ebdcc6 60%, #d8c0a2);
+  box-shadow: inset 0 0 0 .25rem #f2e5d341;
+  background: radial-gradient(ellipse at 37% 24%, #fff8e8, #f0e2ca 51%, #d6bca0 100%);
 }
 .rotonde-floor::before,
 .rotonde-floor::after {
@@ -160,14 +198,14 @@
   width: min(calc(var(--panel-w) * .88), 19rem);
   height: clamp(3rem, 7.8vw, 7rem);
   border-radius: 50%;
-  background: radial-gradient(ellipse, #4b281847, #613c281c 36%, transparent 69%);
+  background: radial-gradient(ellipse, #4b28186b, #613c282a 38%, transparent 72%);
   transform: translate3d(-50%, calc(var(--ground) - 50% - 1px), 0) rotateX(90deg);
 }
 .rotonde-post {
   width: clamp(.56rem, 1.05vw, .95rem);
   height: calc(var(--ground) - var(--panel-h) / 2 + .9rem);
   border-radius: 5px;
-  background: linear-gradient(90deg,#9d8062, #d2b99c 54%, #9d7a61);
+  background: linear-gradient(90deg, #856147, #b58f66 24%, #e5caaa 49%, #94704f 82%, #6b503c);
   transform: translate3d(-50%, calc(var(--panel-h) / 2 - .8rem), -7px);
 }
 .rotonde-frame,
@@ -181,21 +219,33 @@
 .rotonde-frame {
   display: block;
   padding: clamp(.28rem, .52vw, .52rem);
-  background: linear-gradient(145deg, #fef8ec, #c3a987);
-  box-shadow: 0 .5rem 1.35rem #4b2e2333, 0 0 0 1px #8a645546;
+  background: linear-gradient(145deg, #fdf2e0, #ab8b69);
+  box-shadow: 0 .65rem 1.5rem #4b2e2347, 0 0 0 1px #8a645546;
   transform: translate3d(-50%, -50%, 2px);
 }
 .rotonde-frame[data-facing] {
   background: linear-gradient(145deg, #fffbf1, #d3b596);
-  box-shadow: 0 .65rem 1.75rem #492b2337, 0 0 0 1px #8a64555c;
+  box-shadow: 0 .8rem 1.85rem #492b2349, 0 0 0 1px #8a64555c;
 }
 .rotonde-frame picture {
+  position: relative;
   display: block;
   width: 100%;
   height: 100%;
   border-radius: calc(var(--curve) * .88) calc(var(--curve) * .88) calc(var(--curve) * .59) calc(var(--curve) * .59);
   overflow: hidden;
   background: #d5b299;
+}
+.rotonde-frame picture::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 0 0 1.15rem #301a1466, inset 0 1px #fff7e07a;
+}
+.rotonde-frame[data-facing] picture::after {
+  box-shadow: inset 0 0 .95rem #331c142e, inset 0 1px #fff7e08c;
 }
 .rotonde-frame img {
   width: 100%;
@@ -208,7 +258,7 @@
   display: grid;
   place-items: center;
   border: 1px solid #5c251d88;
-  background: radial-gradient(ellipse at 33% 12%, #aa4d3c, #8e2a23 55%, #67251b 100%);
+  background: radial-gradient(ellipse at 29% 4%, #a05846, #75302a 58%, #4c1e1b 100%);
   box-shadow: 0 .5rem 1.18rem #4b2e2329;
   transform: translate3d(-50%, -50%, -6px) rotateY(180deg);
 }
@@ -217,7 +267,7 @@
   position: absolute;
   inset: .45rem;
   border-radius: inherit;
-  border: 1px solid #e7bda77a;
+  border: 1px solid #e7bda752;
 }
 .rotonde-back img { width: clamp(2.5rem, 5vw, 4.3rem); height: auto; opacity: .74; }
 
@@ -429,27 +479,79 @@
   .rotonde-step { width: 2.75rem; height: 2.75rem; background: #f3ebddc4; }
   .rotonde-step svg { width: 1rem; height: 1rem; }
 }
-@media (max-width: 760px) and (max-height: 675px) and (orientation: portrait) {
+
+@media (max-width: 760px) and (orientation: portrait) {
   .rotonde {
-    --scene-y: 54%;
-    --tilt: -11deg;
-    --panel-h: clamp(6.8rem, 19.4svh, 8.1rem);
-    --ground: calc(var(--panel-h) / 2 + 1.2rem);
+    --scene-gutter: var(--gutter);
+    --scene-y: 37%;
+    --lens: 54rem;
+    --tilt: -19deg;
+    --radius: clamp(8.75rem, 48.5vw, 17.75rem);
+    --panel-h: clamp(9.6rem, 26svh, 15.5rem);
+    --floor-diameter: calc(var(--radius) * 2.4 + 1.45rem);
+    --curve: clamp(1.35rem, 6.2vw, 2.15rem);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(13rem, 1fr) auto;
+    row-gap: .2rem;
+    padding-top: calc(var(--head) + clamp(.72rem, 2.25svh, 1.45rem));
+    padding-bottom: max(.7rem, calc(env(safe-area-inset-bottom) + .2rem));
     min-height: max(35rem, 100svh);
   }
-  .rotonde-head { top: calc(var(--head) + .2rem); }
-  .rotonde-head h1 { font-size: clamp(2.95rem, 10.25vw, 4.3rem); }
-  .rotonde-summary { margin-top: .37rem; }
+  .rotonde-wall svg { opacity: .3; }
+  .rotonde-head,
+  .rotonde-desk {
+    position: relative;
+    inset: auto;
+    margin-inline: var(--scene-gutter);
+  }
+  .rotonde-head h1 { font-size: clamp(2.68rem, 11.7vw, 5.05rem); }
+  .rotonde-summary { max-width: 29ch; margin-top: .65rem; }
+  .rotonde-view { position: relative; inset: auto; }
+  .rotonde-vault {
+    width: min(108%, 40rem);
+    top: -.2rem;
+    height: 99%;
+    border-radius: 50% 50% 18% 18% / 53% 53% 11% 11%;
+  }
+  .rotonde-desk { align-self: end; }
+  .rotonde-desk::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -.95rem calc(-1 * var(--scene-gutter)) calc(-.7rem - env(safe-area-inset-bottom));
+    background: linear-gradient(to bottom, #f3e9d800, #f3e9d8 1.6rem, #efe3d1 100%);
+  }
+  .rotonde-readout {
+    display: grid;
+    align-content: end;
+    min-height: 4.65rem;
+  }
+  .rotonde-caption p { font-size: .82rem; }
+}
+
+@media (max-width: 760px) and (max-height: 675px) and (orientation: portrait) {
+  .rotonde {
+    --scene-y: 44%;
+    --tilt: -13deg;
+    --radius: clamp(8rem, 45.5vw, 11.4rem);
+    --panel-h: clamp(6.65rem, 19.65svh, 8.2rem);
+    --ground: calc(var(--panel-h) / 2 + 1.15rem);
+    grid-template-rows: auto minmax(11.5rem, 1fr) auto;
+    padding-top: calc(var(--head) + .56rem);
+  }
+  .rotonde-label { margin-bottom: .48rem; }
+  .rotonde-head h1 { font-size: clamp(2.35rem, 10.8vw, 4.05rem); }
+  .rotonde-summary { margin-top: .39rem; }
   .rotonde-desk { row-gap: .26rem; }
+  .rotonde-readout { min-height: 4.3rem; }
   .rotonde-caption h2 { font-size: 1.48rem; }
   .rotonde-caption p { font-size: .75rem; }
   .rotonde-dial { width: 3.76rem; }
   .rotonde-mark { width: 1.5rem; height: 1.5rem; }
 }
-@media (max-width: 355px) {
-  .rotonde-desk { left: 1rem; right: 1rem; }
-  .rotonde-head { left: 1rem; }
-  .rotonde-head h1 { font-size: 2.95rem; }
+@media (max-width: 355px) and (orientation: portrait) {
+  .rotonde { --scene-gutter: 1rem; }
 }
 @media (max-height: 630px) and (min-width: 600px) and (orientation: landscape) {
   .rotonde {
@@ -470,7 +572,15 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .rotonde[data-interactive] .rotonde-caption:not([hidden]) { animation: rotonde-caption-in .3s ease-out both; }
+  .rotonde[data-interactive] .rotonde-caption:not([hidden]) h2 {
+    animation: rotonde-caption-in .42s cubic-bezier(.18,.66,.33,1) both;
+  }
+  .rotonde[data-interactive] .rotonde-caption:not([hidden]) p {
+    animation: rotonde-caption-in .38s ease-out .055s both;
+  }
+  .rotonde[data-interactive] .rotonde-caption:not([hidden]) .rotonde-detail {
+    animation: rotonde-caption-in .32s ease-out .095s both;
+  }
   [data-arrival] .rotonde-label { animation: rotonde-caption-in .62s ease-out .21s both; }
   [data-arrival] .rotonde-head h1 span { animation: rotonde-caption-in .74s cubic-bezier(.16,.72,.3,1) .26s both; }
   [data-arrival] .rotonde-head h1 i { animation: rotonde-caption-in .76s cubic-bezier(.16,.72,.3,1) .36s both; }

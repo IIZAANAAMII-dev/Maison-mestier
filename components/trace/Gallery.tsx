@@ -138,7 +138,7 @@ export default function Gallery() {
   const fallback = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const controls = useRef<{ to: (index: number, relative: boolean, moveFocus?: boolean) => void; view: (view: View) => void } | null>(null);
-  const [active, setActive] = useState(0);
+  const [{ active, direction }, setSelection] = useState({ active: 0, direction: "next" });
   const [view, setView] = useState<View>("volume");
   const [hydrated, setHydrated] = useState(false);
   const [projected, setProjected] = useState(false);
@@ -177,14 +177,18 @@ export default function Gallery() {
 
     function hint(index: number) {
       const next = wrap(index);
-      if (lastIndex !== next) { lastIndex = next; setActive(next); }
+      if (lastIndex !== next) {
+        const direction = wrap(next - lastIndex) <= total / 2 ? "next" : "previous";
+        lastIndex = next;
+        setSelection({ active: next, direction });
+      }
       if (pendingFocus === next) {
         pendingFocus = null;
         (optical ? hits[next] : native.children[next] as HTMLElement).focus({ preventScroll: true });
       }
     }
     function filmHeight() {
-      return Math.min(height * .83, pitch / (width < 640 ? 1.16 : 1.56));
+      return Math.min(height * .89, pitch / (width < 640 ? 1.28 : 1.56));
     }
     function textures(images: HTMLImageElement[]) {
       const w = width <= 700 ? 620 : 940;
@@ -223,7 +227,7 @@ export default function Gallery() {
       ctx.setTransform(density, 0, 0, density, 0, 0);
       ctx.clearRect(0, 0, width, height);
       const camera = { width, height, pitch, filmHeight: filmHeight(), x: eyeX, y: eyeY, bend };
-      const steps = width < 640 ? 23 : 34;
+      const steps = width < 640 ? 18 : 34;
       // The closest frame is painted last where the tail of the film curls behind it.
       const order = [focus - 2, focus + 2, focus - 1, focus + 1, focus];
       for (const filmIndex of order) {
@@ -244,8 +248,8 @@ export default function Gallery() {
       if (!w || !h || (w === width && h === height)) return;
       const position = pitch && optical ? viewport.scrollLeft / pitch : total + lastIndex;
       width = w; height = h;
-      pitch = Math.min(840, width * (width < 640 ? .72 : .565));
-      density = Math.min(devicePixelRatio || 1, width < 640 ? 1.8 : 1.5);
+      pitch = Math.min(840, width * (width < 640 ? .83 : .565));
+      density = Math.min(devicePixelRatio || 1, width < 640 ? 1.65 : 1.5);
       panel.width = Math.round(width * density);
       panel.height = Math.round(height * density);
       viewport.style.setProperty("--projection-pitch", pitch + "px");
@@ -345,8 +349,8 @@ export default function Gallery() {
     function manualTravel() { requestedStop = null; pendingFocus = null; }
     function pointerDown(event: PointerEvent) {
       manualTravel();
-      if ((event.pointerType !== "mouse" && event.pointerType !== "pen") || event.button !== 0 || !optical) return;
       suppressClick = false;
+      if ((event.pointerType !== "mouse" && event.pointerType !== "pen") || event.button !== 0 || !optical) return;
       mouse = { id: event.pointerId, start: event.clientX, left: viewport.scrollLeft, last: event.clientX, ts: event.timeStamp, velocity: 0, moved: false };
     }
     function pointerMove(event: PointerEvent) {
@@ -476,10 +480,10 @@ export default function Gallery() {
   return <section ref={root} id="etudes" className="projection" aria-labelledby="projection-title">
     <div className="projection-head">
       <div className="projection-intro">
-        <p className="projection-label"><span aria-hidden="true" /> Les études de création</p>
-        <h2 id="projection-title">En <i>projection.</i></h2>
+        <p className="projection-label" data-reveal="label"><span aria-hidden="true" /> Les études de création</p>
+        <h2 id="projection-title" data-reveal="title"><span data-reveal-line>En <i>projection.</i></span></h2>
       </div>
-      <div className="projection-side"><p>Un stand, une identité imprimée, une scénographie. Trois études pour voir comment naît un projet.</p>
+      <div className="projection-side"><p data-reveal="copy">Un stand, une identité imprimée, une scénographie. Trois études pour voir comment naît un projet.</p>
         {hydrated && <div className="projection-switch" role="group" aria-label="Vue des études">
           <button type="button" aria-pressed={view === "volume"} onClick={() => changeView("volume")}>Matière</button>
           <button type="button" aria-pressed={view === "dessin"} onClick={() => changeView("dessin")}>Dessin</button>
@@ -507,9 +511,12 @@ export default function Gallery() {
       </div>
     </div>
     <div className="projection-caption" hidden={!hydrated}>
-      <div className="projection-selected" aria-live="polite" aria-atomic="true">
-        <span className="projection-count">{String(active + 1).padStart(2, "0")}<b> / {String(total).padStart(2, "0")}</b></span>
-        <div key={active} className="projection-name"><span>{plates[active].category}</span><h3><a href={studyPath(plates[active].slug)}>{plates[active].name}</a></h3></div>
+      <div className="projection-selected" data-direction={direction} aria-live="polite" aria-atomic="true">
+        <span className="projection-count"><span key={active}>{String(active + 1).padStart(2, "0")}</span><b> / {String(total).padStart(2, "0")}</b></span>
+        <div className="projection-name">
+          <span className="projection-category"><span key={active}>{plates[active].category}</span></span>
+          <h3><a href={studyPath(plates[active].slug)}><span key={active}>{plates[active].name}</span></a></h3>
+        </div>
       </div>
       {hydrated && <div className="projection-controls">
         <button type="button" aria-label="Étude précédente" onClick={() => controls.current?.to(-1, true)}><Chevrons /></button>

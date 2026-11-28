@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { path } from "../../lib/maison";
+import "../interieur.css";
 
 export const metadata: Metadata = { title: "Les repérages", description: "Les raccords, gestes et mouvements observés image par image pour concevoir la visite de Maison Mestier." };
 const references = [
@@ -51,9 +52,23 @@ const references = [
 export default function Reperages() {
   return <main id="contenu" tabIndex={-1} className="inside research-page shell">
     <nav className="crumb" aria-label="Fil d’Ariane"><a href={path("/")}>Maison Mestier</a><span>/</span>Les repérages</nav>
-    <p className="trace-label"><span className="thread-swatch" aria-hidden="true" />Carnet de réalisation</p><h1 className="inside-heading">Les <i>repérages.</i></h1>
-    <p className="detail-deck">Des galeries photographiques aux visites en 3D, ces séquences ont guidé la Rotonde, son raccord avec la méthode et le montage du stand.</p>
-    <div className="reference-list">{references.map(ref => <article key={ref.name}><div><p className="eyebrow">{ref.studio}</p><h2>{ref.name}</h2><p className="ref-time">{ref.timing}</p></div><div><p>{ref.copy}</p><p>{ref.translation}</p><div className="ref-links"><a className="text-link" href={ref.site} target="_blank" rel="noreferrer">Visiter le site</a>{ref.film && <a className="text-link" href={ref.film} target="_blank" rel="noreferrer">Voir le film de référence</a>}{ref.award && <a className="text-link" href={ref.award} target="_blank" rel="noreferrer">Voir sur Awwwards</a>}</div></div></article>)}</div>
-    <a className="trace-pill" href={path("/#seuil")}><span className="action-pearl" aria-hidden="true" />Entrer dans la Rotonde</a>
+    <p className="trace-label" data-reveal="label"><span className="thread-swatch" aria-hidden="true"/>Carnet de réalisation</p>
+    <h1 className="inside-heading" data-reveal="title"><span data-reveal-line>Les <i>repérages.</i></span></h1>
+    <p className="detail-deck" data-reveal="copy">Des galeries photographiques aux visites en 3D, ces séquences ont guidé la Rotonde, son raccord avec la méthode et le montage du stand.</p>
+    <div className="reference-list">
+      {references.map((ref, index) => <article key={ref.name} data-reveal="row" data-reveal-order={index % 2}>
+        <div><p className="eyebrow">{ref.studio}</p><h2>{ref.name}</h2><p className="ref-time">{ref.timing}</p></div>
+        <div>
+          <p>{ref.copy}</p>
+          <p>{ref.translation}</p>
+          <div className="ref-links">
+            <a className="text-link" href={ref.site} target="_blank" rel="noreferrer">Visiter le site</a>
+            {ref.film && <a className="text-link" href={ref.film} target="_blank" rel="noreferrer">Voir le film de référence</a>}
+            {ref.award && <a className="text-link" href={ref.award} target="_blank" rel="noreferrer">Voir sur Awwwards</a>}
+          </div>
+        </div>
+      </article>)}
+    </div>
+    <a className="trace-pill" href={path("/#seuil")} data-reveal="row"><span className="action-pearl" aria-hidden="true"/>Entrer dans la Rotonde</a>
   </main>;
 }

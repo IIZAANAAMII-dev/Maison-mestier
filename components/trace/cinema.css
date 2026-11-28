@@ -2,6 +2,7 @@
 .trace-sticky { position: relative; }
 .trace-stage {
   --scene-corners: 2.8rem 18% 4.1rem 20% / 2.8rem 15% 4.1rem 19%;
+  --film-controls-bottom: max(clamp(.72rem, 3svh, 2.5rem), calc(env(safe-area-inset-bottom) + .42rem));
   position: relative;
   isolation: isolate;
   min-height: 35rem;
@@ -13,6 +14,7 @@
 }
 [data-cinema] .trace-cinema { height: 224svh; }
 [data-cinema] .trace-sticky { position: sticky; top: 0; }
+[data-cinema] .trace-stage { min-height: 0; max-height: none; }
 .trace-lead {
   position: absolute;
   z-index: 5;
@@ -47,7 +49,9 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse at 77% 45%, #834233, #4f231cb5 48%, transparent 77%);
+  background:
+    radial-gradient(ellipse at 72% 29%, #985d3d83, transparent 48%),
+    radial-gradient(ellipse at 77% 56%, #804033, #4f231cb5 45%, transparent 77%);
   opacity: .86;
 }
 .trace-frame, .trace-aperture-guide {
@@ -109,6 +113,13 @@
 }
 .trace-caption p { font: 490 clamp(2.95rem, 5.15vw, 7rem)/.89 var(--sans), sans-serif; letter-spacing: -.068em; }
 .trace-caption i { font: italic 400 1.2em/.94 var(--serif), Georgia, serif; letter-spacing: -.042em; }
+.trace-caption-line {
+  display: block;
+  overflow: hidden;
+  padding: .1em .16em .18em 0;
+  margin: -.1em -.16em -.12em 0;
+}
+.trace-caption-line > * { display: block; }
 .cut-fold p { font-size: clamp(1.95rem, 4.15vw, 5.25rem); }
 .cut-passage { bottom: 16%; }
 .trace-atelier-link {
@@ -120,12 +131,14 @@
   margin-top: .8rem;
   border-bottom: 1px solid #fff1e4a8;
   font-weight: 550;
+  transition: border-color .22s, color .22s;
 }
+.trace-atelier-link:hover { border-color: #f4c99c; color: #f4c99c; }
 
 .trace-foot {
   position: absolute;
   z-index: 6;
-  bottom: max(clamp(1rem, 3.4svh, 2.5rem), calc(env(safe-area-inset-bottom) + .4rem));
+  bottom: var(--film-controls-bottom);
   left: var(--gutter);
   right: var(--gutter);
   display: flex;
@@ -146,9 +159,11 @@
   border: 0;
   background: transparent;
   padding: 0 .35rem 0 0;
+  touch-action: manipulation;
 }
 [data-cinema] .trace-player { display: inline-flex; }
 [data-cinema] .trace-scroll { display: none; }
+.player-name { min-width: 7.6ch; text-align: left; }
 .player-disc {
   display: grid;
   place-items: center;
@@ -191,6 +206,7 @@
   font-size: .84rem;
   font-weight: 540;
   white-space: nowrap;
+  touch-action: manipulation;
   transition: background .24s, color .24s;
 }
 .trace-spool button[aria-pressed="true"] { color: #40201a; background: #f7e2ca; }
@@ -208,25 +224,37 @@
   [data-cinema] .trace-cinema { height: 209svh; }
   .trace-lead { inset: calc(var(--head) + clamp(.65rem, 2.1svh, 1.55rem)) var(--gutter) auto; width: auto; translate: none; }
   .trace-lead .trace-label { font-size: .7rem; margin-bottom: .66rem; }
-  .trace-lead h2 { font-size: clamp(2.65rem, 12vw, 6.15rem); }
+  .trace-lead h2 { font-size: clamp(2.65rem, 12.6vw, 6.15rem); }
   .trace-line { padding-bottom: .1em; margin-bottom: -.1em; }
   .trace-line + .trace-line { margin-top: -.025em; }
   .trace-line i { font-size: 1.2em; }
   .trace-pitch { margin-top: .65rem; max-width: min(22rem, 100%); font-size: clamp(1rem, 3.7vw, 1.15rem); line-height: 1.37; }
-  .trace-frame, .trace-aperture-guide { inset: clamp(15.4rem, 33.4%, 21rem) max(3.3vw, .5rem) 13%; }
+  .trace-frame, .trace-aperture-guide { inset: clamp(15.4rem, 33.4%, 21rem) max(3.3vw, .5rem) 15%; }
   [data-cinema] .trace-drawing-wide { display: none; }
   [data-cinema] .trace-drawing-portrait { display: block; }
-  .trace-caption { bottom: 16%; }
-  .cut-fold { bottom: 12.4%; }
-  .trace-vignette { background: linear-gradient(0deg, #281511, #271710b8 17%, #26161118 42%, transparent 76%, #27160f83); }
+  .trace-caption { bottom: calc(var(--film-controls-bottom) + 4.4rem); }
+  .cut-fold { bottom: max(13%, calc(var(--film-controls-bottom) + 3.55rem)); }
+  .trace-vignette { background: linear-gradient(0deg, #281511, #271710d9 20%, #26161118 49%, transparent 76%, #27160f83); }
   .trace-caption p { font-size: clamp(2.28rem, 9.2vw, 4rem); }
   .cut-fold p { font-size: clamp(1.27rem, 5.4vw, 2rem); }
-  .trace-caption p br { display: none; }
+  .cut-fold .trace-caption-line { display: inline-block; vertical-align: baseline; }
+  .trace-atelier-link { margin-top: .45rem; }
   .trace-foot { gap: .5rem; }
   .trace-player, .trace-scroll { font-size: .77rem; gap: .39rem; }
   .player-disc { width: 1.82rem; height: 1.82rem; }
   .trace-spool button { font-size: .76rem; padding-inline: .63rem; }
   .trace-rail { position: absolute; inset: -.49rem 0 auto; }
+}
+@media (max-width: 760px) and (max-height: 610px) and (orientation: portrait) {
+  .trace-lead { top: calc(var(--head) + .65rem); }
+  .trace-lead h2 { font-size: clamp(2.45rem, 11.4vw, 3.04rem); }
+  .trace-lead .trace-label { margin-bottom: .47rem; }
+  .trace-pitch { margin-top: .49rem; line-height: 1.28; }
+  .trace-frame, .trace-aperture-guide { inset-block-start: clamp(13.4rem, 43svh, 16.4rem); }
+}
+@media (max-width: 760px) and (max-height: 520px) and (orientation: portrait) {
+  .trace-lead h2 { font-size: clamp(2.2rem, 10vw, 2.65rem); }
+  .trace-pitch { font-size: .92rem; }
 }
 @media (max-width: 370px) and (orientation: portrait) {
   .trace-lead h2 { font-size: clamp(2.56rem, 11.8vw, 3.48rem); }

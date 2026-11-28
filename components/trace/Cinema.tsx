@@ -51,13 +51,15 @@ export default function Cinema() {
           <div className="trace-vignette" aria-hidden="true"/>
           <div className="trace-lead">
             <p className="trace-label"><span className="thread-swatch" aria-hidden="true"/>Étude de stand</p>
-            <h2 id="titre-montage"><span className="trace-line"><b>Entrez dans</b></span><span className="trace-line"><i>le stand.</i></span></h2>
+            <h2 id="titre-montage"><span className="trace-line"><b>Entrez dans</b></span>{" "}<span className="trace-line"><i>le stand.</i></span></h2>
             <p className="trace-pitch">Le stand se monte. La caméra passe sous le portique.</p>
           </div>
           <div className="trace-captions">
-            <div className="trace-caption cut-fold" aria-hidden="true"><p>Le volume<br/> <i>s’assemble.</i></p></div>
+            <div className="trace-caption cut-fold" aria-hidden="true">
+              <p><span className="trace-caption-line"><span>Le volume</span></span>{" "}<span className="trace-caption-line"><i>s’assemble.</i></span></p>
+            </div>
             <div className="trace-caption cut-passage">
-              <p>À hauteur<br/> de <i>visiteur.</i></p>
+              <p><span className="trace-caption-line"><span>À hauteur</span></span>{" "}<span className="trace-caption-line"><i>de visiteur.</i></span></p>
               <a className="trace-atelier-link" href={atelierPath("stands-salons")}>Découvrir les stands</a>
             </div>
           </div>

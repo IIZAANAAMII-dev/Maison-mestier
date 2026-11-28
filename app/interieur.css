@@ -1,0 +1,121 @@
+.atelier-page .detail-intro {
+  grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+  grid-template-areas: "titre image" "chapeau image";
+  row-gap: 1rem;
+}
+.atelier-title { grid-area: titre; align-self: end; }
+.atelier-figure { grid-area: image; }
+.atelier-deck { grid-area: chapeau; align-self: start; }
+.atelier-title .inside-heading { margin-bottom: 0; }
+.inside .inside-heading { line-height: .94; text-wrap: balance; }
+.inside .detail-deck { text-wrap: pretty; }
+.atelier-page .inside-invite { background: #6e2b24; color: #fff3e4; }
+.atelier-page .inside-invite h2 { text-wrap: balance; }
+.inside .inside-next > a { min-width: 0; }
+.inside .inside-next i { display: inline-block; }
+.research-page .reference-list h2 { overflow-wrap: anywhere; text-wrap: balance; }
+
+@media (max-width: 760px) {
+  .inside {
+    padding-top: calc(var(--head) + 1rem);
+  }
+  .inside .crumb {
+    gap: .55rem;
+    margin-bottom: 1.55rem;
+    font-size: .8rem;
+  }
+  .inside .crumb a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+  .inside .inside-heading {
+    font-size: clamp(2.75rem, 12.4vw, 5.6rem);
+    letter-spacing: -.06em;
+    margin-top: .9rem;
+    overflow-wrap: anywhere;
+  }
+  .inside .detail-deck { font-size: 1.15rem; line-height: 1.42; }
+  .atelier-page .detail-intro {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "titre" "image" "chapeau";
+    gap: 1.15rem;
+  }
+  .atelier-page .detail-hero { aspect-ratio: 1.20; }
+  .atelier-page .detail-intro .text-link { margin-top: .65rem; }
+  .inside .text-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+  .inside .reading,
+  .inside .study-reading { padding-block: 3.4rem; }
+  .inside .reading ol { margin-top: .65rem; }
+  .inside .reading li { padding: 0; }
+  .inside .reading li a {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    padding-block: .4rem;
+  }
+  .inside .reading-lead,
+  .inside .study-reading h2 { margin-bottom: 1.3rem; }
+  .inside .reading section h2 { margin-bottom: .65rem; }
+  .inside .inside-invite { padding-block: 2.8rem; }
+  .inside .inside-invite h2 {
+    margin-block: 1rem 1.45rem;
+    font-size: clamp(2.45rem, 10vw, 3.7rem);
+  }
+  .inside .inside-next {
+    align-items: baseline;
+    gap: .75rem 1.1rem;
+    padding-block: 2.15rem;
+  }
+  .inside .study-intro { gap: .6rem; padding-bottom: 1.4rem; }
+  .study-page .spread-image {
+    min-height: 0;
+    height: auto;
+    aspect-ratio: 1.16;
+  }
+  .inside .study-reading .eyebrow { margin-top: 0; }
+  .inside .study-drawing figcaption { margin-bottom: 1.5rem; }
+  .lab-page .viewer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+    height: auto;
+    background: var(--paper-light);
+  }
+  .lab-page .viewer :is(.viewer-image, .viewer-canvas) {
+    grid-area: 1 / 1;
+    position: relative;
+    min-height: 0;
+    height: auto;
+    overflow: hidden;
+  }
+  .lab-page .viewer-image { aspect-ratio: 1.13; }
+  .lab-page .viewer-canvas { contain: size layout; }
+  .lab-page .viewer-toolbar {
+    position: relative;
+    inset: auto;
+    justify-content: center;
+    padding: .65rem .85rem;
+    gap: .5rem;
+    border-top: 1px solid var(--rule);
+    background: var(--paper-light);
+  }
+  .lab-page .viewer-tools { justify-content: center; gap: .3rem; }
+  .lab-page .viewer-tools button { background: var(--paper); }
+  .lab-page .viewer-tools button[aria-pressed="true"] { background: var(--ink); }
+  .research-page .reference-list { margin-block: 2rem 2.3rem; }
+  .research-page .reference-list article { gap: .7rem; padding-block: 1.5rem; }
+  .research-page .reference-list h2 { font-size: clamp(2rem, 7.6vw, 3.8rem); }
+  .research-page .ref-time { margin-top: .62rem; }
+  .research-page .ref-links { gap: .25rem .8rem; }
+  .research-page .ref-links .text-link { margin-top: 0; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .inside .inside-next i { transition: translate .23s ease-out; }
+  .inside .inside-next a:last-child:is(:hover, :focus-visible) i { translate: -.17em 0; }
+}

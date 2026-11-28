@@ -58,8 +58,10 @@ export default function Rotunda() {
       <p className="rotonde-summary">Stands de salon, événements, identités visuelles et sites web.</p>
     </header>
     <div className="rotonde-view" role="region" aria-label="La Rotonde des métiers">
+      <div className="rotonde-vault" aria-hidden="true"/>
       <div className="rotonde-camera">
         <div className="rotonde-world">
+          <div className="rotonde-plinth" aria-hidden="true"/>
           <div className="rotonde-floor" aria-hidden="true">
             <div className="rotonde-inlay"/>
             <div className="rotonde-floor-centre"><img src={path(marks)} alt="" width="84" height="84" decoding="async"/></div>
