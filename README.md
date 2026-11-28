@@ -23,6 +23,8 @@ La scène source se trouve dans `art/trace/le-trait.blend`. Le générateur `art
 
 La Rotonde place les cadres, le sol et les supports dans le même espace CSS 3D. Elle utilise les photographies de démonstration générées dans `public/metiers/`, avec des cadrages portrait sur téléphone. Le glissement horizontal, le trackpad, les flèches et le cadran font tourner les métiers. Un défilement vertical poursuit la visite.
 
+Au défilement, la vue se redresse jusqu’à projeter le sol de face. Le même dessin SVG glisse ensuite de cette projection vers la planche de la méthode. ScrollTrigger suit le défilement natif dans les deux sens. Les mesures de projection sont reprises au redimensionnement. En mouvement réduit, la Rotonde et la planche se lisent dans leur ordre naturel.
+
 Le défilement, les trois boutons d’étape et la lecture guidée conduisent le montage de la maquette Blender dans `art/portique/`. Les deux cadrages, les films et leurs tirages sont dans `public/portique/`. Les images fixes prennent le relais lorsque la vidéo tarde ou que l’économie de données est active.
 
 La galerie horizontale projette les tirages et leurs relevés sur une pellicule courbe en Canvas 2D. Le défilement natif gère le tactile et le trackpad. Les commandes, le glissement à la souris et le clavier donnent accès aux trois études. Les dessins et les textures se chargent à proximité de la galerie.

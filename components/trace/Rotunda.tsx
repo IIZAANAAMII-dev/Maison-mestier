@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { atelierPath, path } from "../../lib/maison";
+import PorticoDrawing from "./PorticoDrawing";
 import RotundaMotion from "./RotundaMotion";
 import "./rotonde.css";
 
@@ -62,6 +63,7 @@ export default function Rotunda() {
           <div className="rotonde-floor" aria-hidden="true">
             <div className="rotonde-inlay"/>
             <div className="rotonde-floor-centre"><img src={path(marks)} alt="" width="84" height="84" decoding="async"/></div>
+            <PorticoDrawing className="rotonde-print"/>
           </div>
           <div className="rotonde-orbit">
             {metiers.map((item, index) => <div className="rotonde-station" key={item.slug}
@@ -115,7 +117,7 @@ export default function Rotunda() {
         <button className="rotonde-step" type="button" data-rotonde-step="1" aria-label="Métier suivant"><Arrow next/></button>
         <p className="rotonde-instruction">Glissez pour tourner</p>
       </div>
-      <a className="rotonde-all" href="#ateliers">Tous les ateliers
+      <a className="rotonde-all" href="#maison">Notre méthode
         <span aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none">
           <path d="M8 3.5v9m-3-3 3 3 3-3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg></span>

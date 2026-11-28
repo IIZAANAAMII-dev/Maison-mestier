@@ -1,0 +1,194 @@
+.trace-opening { position: relative; isolation: isolate; }
+.rotonde-print, .raccord-plane { display: none; }
+.trace-opening[data-raccord] > .rotonde { position: sticky; top: 0; }
+[data-raccord] .rotonde-print {
+  position: absolute;
+  display: block;
+  inset: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  pointer-events: none;
+  opacity: var(--room-ink, 0);
+}
+.rotonde-floor { opacity: var(--room-floor, 1); }
+.rotonde-floor-centre { opacity: calc(1 - var(--room-ink, 0)); }
+.rotonde-station :is(.rotonde-frame, .rotonde-back, .rotonde-base, .rotonde-post) {
+  opacity: var(--room-objects, 1);
+}
+.rotonde-head, .rotonde-desk {
+  opacity: var(--room-copy, 1);
+  transform: translate3d(0, var(--room-copy-y, 0px), 0);
+}
+.rotonde[data-raccord-leaving] :is(.rotonde-desk, .rotonde-camera) { animation: none; }
+.rotonde[data-raccord-leaving] .rotonde-world { translate: none !important; }
+
+[data-raccord] .raccord-plane {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.raccord-screen {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: clip;
+}
+.raccord-drawing {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 640px;
+  height: 640px;
+  max-width: none;
+  transform-origin: 0 0;
+  visibility: hidden;
+}
+.portico-stroke {
+  stroke-dasharray: 1;
+  stroke-dashoffset: var(--portico-trace, 0);
+}
+
+.service-section {
+  --method-ink: #fff3df;
+  --method-soft: #f0d7bc;
+  --method-rule: #f3d0aa59;
+  position: relative;
+  z-index: 2;
+  color: var(--method-ink);
+  padding: clamp(5.7rem, 12svh, 8.5rem) 0 clamp(3.6rem, 7.5vw, 8rem);
+}
+.method-skin {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 81% 22%, #8d4230 0%, #702b23 33%, transparent 70%),
+    linear-gradient(140deg, #672a23 0%, #4c1b19 69%, #391413 100%);
+  border-radius: clamp(2.25rem, 6vw, 6rem) clamp(2.25rem, 6vw, 6rem) 0 0;
+  opacity: var(--method-paper, 1);
+}
+.method-lead {
+  display: grid;
+  grid-template-columns: minmax(0, 1.06fr) minmax(0, .94fr);
+  gap: clamp(1.4rem, 3vw, 4rem);
+  align-items: center;
+}
+.method-copy {
+  transform: translate3d(0, var(--method-copy-y, 0px), 0);
+  opacity: var(--method-copy, 1);
+}
+.method-copy .trace-label {
+  color: #ecc8a4;
+  margin-bottom: clamp(.85rem, 2.6vw, 1.9rem);
+}
+.method-copy .thread-swatch { border-color: currentColor; }
+.method-copy h2 {
+  font: 505 clamp(3.3rem, 6.3vw, 8.15rem)/.91 var(--sans), Arial, sans-serif;
+  letter-spacing: -.084em;
+}
+.method-copy h2 :is(span, i) { display: block; }
+.method-copy h2 i {
+  color: #f4c7a1;
+  font: italic 440 1.17em/.94 var(--serif), Georgia, serif;
+  letter-spacing: -.075em;
+  margin-left: -.025em;
+  opacity: var(--method-italic, 1);
+}
+.method-summary {
+  max-width: 37ch;
+  color: var(--method-soft);
+  margin-top: clamp(1rem, 2.6vw, 2rem);
+  font-size: clamp(1.04rem, 1.48vw, 1.34rem);
+  line-height: 1.45;
+  letter-spacing: -.021em;
+}
+.method-drawing {
+  width: min(100%, 34rem);
+  justify-self: center;
+}
+.method-plate {
+  aspect-ratio: 1;
+  opacity: var(--method-plate, 1);
+}
+.method-plate > svg { display: block; width: 100%; height: 100%; }
+.method-drawing figcaption {
+  margin-top: .65rem;
+  text-align: center;
+  color: #f1ccb1;
+  font-size: .83rem;
+  opacity: var(--method-copy, 1);
+}
+.method-details { padding-top: clamp(2.7rem, 6.7vw, 6rem); }
+.method-phases {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none;
+  padding: 0;
+  border-block: 1px solid var(--method-rule);
+}
+.method-phases li { padding: 1.35rem clamp(1.2rem, 2.75vw, 2.9rem) 1.5rem 0; }
+.method-phases li + li { border-left: 1px solid var(--method-rule); padding-left: clamp(1.2rem, 2.75vw, 2.9rem); }
+.method-phases h3 {
+  font: 480 clamp(2.05rem, 3.3vw, 3.35rem)/.95 var(--serif), Georgia, serif;
+  letter-spacing: -.045em;
+}
+.method-phases p {
+  color: var(--method-soft);
+  margin-top: .68rem;
+  max-width: 32ch;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+.method-action.trace-pill {
+  min-height: 2.8rem;
+  margin-top: clamp(1.15rem, 2.3vw, 2rem);
+  border-color: #f1cea491;
+  color: var(--method-ink);
+  background: transparent;
+  transition: color .25s, background .25s, border-color .25s;
+}
+.method-action .action-pearl { background: #f4c7a1; }
+.method-action:is(:hover, :focus-visible) {
+  color: #521f1a;
+  background: #f6d6b7;
+  border-color: #f6d6b7;
+}
+.method-action:is(:hover, :focus-visible) .action-pearl { background: #8e2a23; }
+
+.trace-header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(#60251eea 0%, #672821be 57%, #67282100 100%);
+  opacity: 0;
+  transition: opacity .22s;
+}
+.trace-header[data-method]::after { opacity: 1; }
+.trace-header[data-method]:not(:has(details[open]))::before { opacity: 0; }
+.trace-header[data-method] .trace-brand { color: #fff1dd; }
+.trace-header[data-method] .trace-brand img { filter: brightness(0) invert(1); }
+.trace-header[data-method] :is(.trace-nav, .mobile-menu summary) {
+  color: #fff1dd;
+  background: #61241edb;
+  border-color: #f3cda661;
+}
+.trace-header[data-method] .trace-nav a:is(:hover, :focus-visible, [aria-current]) { background: #a3513e; }
+.trace-header[data-method] .header-contact { color: #61241e; background: #f6ddc2; }
+.trace-header[data-method] .header-contact .action-pearl { background: #9a392c; }
+
+@media (max-width: 760px) {
+  .service-section { padding: clamp(3.85rem, 9svh, 5.25rem) 0 3.5rem; }
+  .method-lead { grid-template-columns: 1fr; gap: clamp(1.6rem, 4.4svh, 3rem); }
+  .method-copy h2 { font-size: clamp(2.15rem, 10.9vw, 5.15rem); }
+  .method-summary { max-width: 38ch; font-size: 1rem; line-height: 1.44; }
+  .method-drawing { width: min(100%, 25rem); }
+  .method-details { padding-top: 2rem; }
+  .method-phases { grid-template-columns: 1fr; }
+  .method-phases li,
+  .method-phases li + li { padding: 1.15rem 0; border-left: 0; }
+  .method-phases li + li { border-top: 1px solid var(--method-rule); }
+  .method-phases p { max-width: 39ch; margin-top: .5rem; }
+}

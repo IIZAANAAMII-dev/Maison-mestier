@@ -22,8 +22,25 @@ export default function Header() {
       }
     }, { rootMargin: "-15% 0px -53% 0px" });
     ["seuil", "maison", "etudes", "ateliers", "contact"].forEach(id => { const section = document.getElementById(id); if (section) observer.observe(section); });
-    const setPaper = () => { el.toggleAttribute("data-scrolled", scrollY > 35 || !document.getElementById("seuil")); };
-    setPaper();
+    const onHome = Boolean(document.getElementById("seuil"));
+    const chapter = document.getElementById("maison");
+    let chapterStart = Infinity, chapterEnd = Infinity;
+    const setPaper = () => {
+      el.toggleAttribute("data-scrolled", scrollY > 35 || !onHome);
+      el.toggleAttribute("data-method", scrollY >= chapterStart && scrollY < chapterEnd);
+    };
+    const measureChapter = () => {
+      if (chapter) {
+        const bounds = chapter.getBoundingClientRect();
+        const headerCentre = el.offsetHeight * .5;
+        chapterStart = bounds.top + scrollY - headerCentre;
+        chapterEnd = bounds.bottom + scrollY - headerCentre;
+      }
+      setPaper();
+    };
+    const chapterObserver = chapter?.parentElement ? new ResizeObserver(measureChapter) : undefined;
+    if (chapterObserver && chapter?.parentElement) chapterObserver.observe(chapter.parentElement);
+    measureChapter();
     window.addEventListener("scroll", setPaper, { passive: true, signal });
     window.addEventListener("keydown", event => { if (event.key === "Escape" && details.open) { close(); details.querySelector("summary")?.focus(); } }, { signal });
     document.addEventListener("pointerdown", event => { if (event.target instanceof Node && !details.contains(event.target)) close(); }, { passive: true, signal });
@@ -41,7 +58,7 @@ export default function Header() {
     }
     document.addEventListener("pointermove", e => {
       if (!fine.matches || e.pointerType !== "mouse" || !(e.target instanceof Element)) return;
-      const target = e.target.closest<HTMLElement>(".trace-pill,.leaf-link,.header-contact,.studio-index-link,.mobile-menu summary,.brief summary,.trace-spool button");
+      const target = e.target.closest<HTMLElement>(".trace-pill,.header-contact,.studio-index-link,.mobile-menu summary,.brief summary,.trace-spool button");
       if (current !== target) { clear(); current = target; }
       if (!target) return;
       const box = target.getBoundingClientRect();
@@ -50,7 +67,14 @@ export default function Header() {
       if (!frame) frame = requestAnimationFrame(() => { frame = 0; if (current) { current.style.setProperty("--hand-x", dx.toFixed(1)+"px"); current.style.setProperty("--hand-y",dy.toFixed(1)+"px"); } });
     }, { passive: true, signal });
     document.addEventListener("pointerout", e => { if (!e.relatedTarget) clear(); }, { signal });
-    return () => { controller.abort(); observer.disconnect(); cancelAnimationFrame(frame); clear(); };
+    return () => {
+      controller.abort();
+      observer.disconnect();
+      chapterObserver?.disconnect();
+      el.removeAttribute("data-method");
+      cancelAnimationFrame(frame);
+      clear();
+    };
   }, [pathname]);
   const close = () => { if (menu.current) menu.current.open = false; };
   function links() {

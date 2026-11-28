@@ -5,7 +5,7 @@ const configuredEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim();
 export const studioEmail = configuredEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(configuredEmail) ? configuredEmail : "discutons@maisonmestier.fr";
 
 export const mainLinks = [
-  { title: "Nos métiers", hash: "maison" },
+  { title: "Notre méthode", hash: "maison" },
   { title: "La galerie", hash: "etudes" },
   { title: "Les ateliers", hash: "ateliers" },
 ];

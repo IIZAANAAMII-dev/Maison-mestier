@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { montageChapters, portraitQuery } from "./montage";
+import { connectDrawings } from "./raccord";
 
 export default function Motion() {
   useEffect(() => {
@@ -22,6 +23,7 @@ export default function Motion() {
       const [{ gsap }, { ScrollTrigger }] = modules;
       gsap.registerPlugin(ScrollTrigger);
       const media = gsap.matchMedia();
+      media.add("(prefers-reduced-motion: no-preference) and (min-height: 550px)", () => connectDrawings(main, gsap, ScrollTrigger));
 
       media.add("(prefers-reduced-motion: no-preference)", () => {
         const film = stage.querySelector<HTMLVideoElement>(".trace-film")!;
@@ -208,10 +210,6 @@ export default function Motion() {
           if (footerInk) gsap.fromTo(footerInk, { strokeDashoffset: 1 }, { strokeDashoffset: 0, ease: "none", scrollTrigger: { trigger: ".project", start: "top 92%", end: "center 45%", scrub: .45 } });
           main.querySelectorAll<HTMLElement>("[data-words]").forEach(heading => {
             gsap.from(heading, { y: 25, rotation: -1.4, duration: .8, transformOrigin: "0 100%", ease: "power3.out", scrollTrigger: { trigger: heading, start: "clamp(top 92%)", once: true } });
-          });
-          main.querySelectorAll<HTMLElement>(".leaf-face").forEach((card, index, cards) => {
-            if (index === cards.length - 1) return;
-            gsap.to(card, { scale: .95, transformOrigin: "50% 0", ease: "none", scrollTrigger: { trigger: cards[index + 1], start: "top 82%", end: "top 21%", scrub: .35 } });
           });
         }, main);
 

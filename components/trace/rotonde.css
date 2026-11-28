@@ -97,7 +97,7 @@
 .rotonde-world {
   left: var(--scene-x);
   top: var(--scene-y);
-  transform: rotateX(var(--tilt));
+  transform: rotateX(var(--raccord-tilt, var(--tilt))) scale(var(--raccord-scale, 1));
 }
 .rotonde-orbit {
   inset: 0 auto auto 0;

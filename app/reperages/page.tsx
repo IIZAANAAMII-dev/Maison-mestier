@@ -4,6 +4,12 @@ import { path } from "../../lib/maison";
 export const metadata: Metadata = { title: "Les repérages", description: "Les raccords, gestes et mouvements observés image par image pour concevoir la visite de Maison Mestier." };
 const references = [
   {
+    name: "Oryzo AI", studio: "Lusion", site: "https://lusion.co/projects/oryzo_ai/",
+    film: "https://assets.awwwards.com/awards/element/2026/03/69c13a0cda821248995089.mp4", award: "https://www.awwwards.com/inspiration/3d-2d-3d-transition-oryzo-ai",
+    timing: "0,67 à 5,33 s", copy: "Le regard bascule au-dessus du disque. Son contour reste au même endroit lorsque le décor s’efface, puis le tracé rejoint le titre.",
+    translation: "La Rotonde garde le bord du sol comme repère. La prise de vue zénithale se prolonge en planche du portique, puis « Du premier trait au jour J » entre dans le cadre.",
+  },
+  {
     name: "Magical Reflections", studio: "Makemepulse · Alte Nationalgalerie", site: "https://www.makemepulse.com/case-study/alte-nationalgalerie-magical-reflections",
     film: "https://assets.awwwards.com/awards/sites_of_the_day/2022/06/magische-spiegelungen-reel.mp4", award: "https://www.awwwards.com/sites/magical-reflections",
     timing: "Visite de l’exposition", copy: "Les courbes de la galerie et les repères au sol donnent une échelle aux œuvres. Quand le point de vue tourne, l’espace reste lisible.",
@@ -41,7 +47,7 @@ export default function Reperages() {
   return <main id="contenu" tabIndex={-1} className="inside research-page shell">
     <nav className="crumb" aria-label="Fil d’Ariane"><a href={path("/")}>Maison Mestier</a><span>/</span>Les repérages</nav>
     <p className="trace-label"><span className="thread-swatch" aria-hidden="true" />Carnet de réalisation</p><h1 className="inside-heading">Les <i>repérages.</i></h1>
-    <p className="detail-deck">Des galeries photographiques aux visites en 3D, ces séquences ont guidé la mise en scène de la Rotonde et du montage du stand.</p>
+    <p className="detail-deck">Des galeries photographiques aux visites en 3D, ces séquences ont guidé la Rotonde, son raccord avec la méthode et le montage du stand.</p>
     <div className="reference-list">{references.map(ref => <article key={ref.name}><div><p className="eyebrow">{ref.studio}</p><h2>{ref.name}</h2><p className="ref-time">{ref.timing}</p></div><div><p>{ref.copy}</p><p>{ref.translation}</p><div className="ref-links"><a className="text-link" href={ref.site} target="_blank" rel="noreferrer">Visiter le site</a><a className="text-link" href={ref.film} target="_blank" rel="noreferrer">Voir le film de référence</a>{ref.award && <a className="text-link" href={ref.award} target="_blank" rel="noreferrer">Voir sur Awwwards</a>}</div></div></article>)}</div>
     <a className="trace-pill" href={path("/#seuil")}><span className="action-pearl" aria-hidden="true" />Entrer dans la Rotonde</a>
   </main>;
