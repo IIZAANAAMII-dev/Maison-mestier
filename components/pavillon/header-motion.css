@@ -200,3 +200,67 @@ html[data-header-menu-open] body { overflow-y: hidden; }
 @keyframes header-menu-retract { from {transform: none;} to {transform: translateX(100%);} }
 @keyframes menu-entry-in { from {opacity: 0; transform: translateX(.9rem);} to {opacity: 1; transform: none;} }
 @keyframes menu-glass { from {opacity: 0;} to {opacity: 1;} }
+
+/* Contrast follows the material behind the masthead. The clear film stage
+   leaves its controls at the edges of the image. */
+.trace-header {
+  --mast-ink: #2d251f;
+  --mast-surface: #f4f0e7;
+  --mast-clear: #f4f0e700;
+}
+.trace-header[data-lacquer],
+body:has(#seuil[data-sequence-tone="film"]) .trace-header {
+  --mast-ink: #fff6e8;
+  --mast-surface: #2c1d19;
+  --mast-clear: #2c1d1900;
+}
+header.trace-header::before {
+  background: linear-gradient(to bottom, var(--mast-surface), color-mix(in srgb,var(--mast-surface) 93%, transparent) 58%, var(--mast-clear));
+}
+body:has(#seuil[data-sequence-tone="film"]) .trace-header::before {
+  bottom: -32%;
+  background: linear-gradient(to bottom, #251a16bd 0%, #251a16a9 32%, #251a1666 61%, #251a1600 100%);
+}
+.trace-header > .trace-brand { color: var(--mast-ink); }
+.trace-header[data-lacquer] > .trace-brand img,
+body:has(#seuil[data-sequence-tone="film"]) .trace-header > .trace-brand img { filter: brightness(0) invert(1); }
+.trace-header .header-tools .header-contact {
+  background: var(--mast-ink); color: var(--mast-surface);
+  border: 1px solid transparent; min-height: 2.75rem;
+}
+.trace-header .header-tools .header-contact:is(:hover,:focus-visible) { background: #7d3026; color: #fff8eb; }
+@media (min-width: 861px) {
+  .trace-header .header-tools { column-gap: clamp(.95rem,2.5vw,2.8rem); }
+  .trace-header .trace-nav {
+    background: transparent; color: var(--mast-ink); border: 0; padding: 0;
+    gap: clamp(1.1rem,2vw,2.5rem);
+  }
+  .trace-header .trace-nav a {
+    position: relative; display: inline-flex; align-items: center;
+    min-height: 2.75rem; padding: 0; border-radius: 0;
+  }
+  .trace-header .trace-nav a:is(:hover,:focus-visible,[aria-current]) { background: transparent; }
+  .trace-header .trace-nav a::after {
+    content: ""; position: absolute; inset: auto 0 .48rem;
+    height: 1px; background: currentColor; transform: scaleX(0);
+    transform-origin: left; transition: transform .25s ease-out;
+  }
+  .trace-header .trace-nav a:is(:hover,:focus-visible,[aria-current])::after { transform: scaleX(1); }
+}
+@media (max-width: 470px) {
+  .trace-header > .trace-brand { position: relative; }
+  .trace-header > .trace-brand > span {
+    display: block; position: absolute; left: calc(100% - .4rem);
+    opacity: 0; visibility: hidden; transform: translateX(-.22rem);
+    transition: opacity .19s ease, transform .23s ease, visibility .19s;
+  }
+  .trace-header[data-opening] > .trace-brand > span,
+  body:has(#seuil) .trace-header:not([data-scrolled]) > .trace-brand > span {
+    visibility: visible; opacity: 1; transform: none;
+  }
+  .trace-header[data-opening] .header-tools .header-contact,
+  body:has(#seuil) .trace-header:not([data-scrolled]) .header-tools .header-contact {
+    display: inline-flex; opacity: 0; visibility: hidden;
+  }
+  .trace-header .header-tools .header-contact { transition: opacity .2s, visibility .2s; }
+}

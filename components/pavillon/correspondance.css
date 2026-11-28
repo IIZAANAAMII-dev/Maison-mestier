@@ -207,3 +207,15 @@ html[data-brief-open] { overflow: hidden; overscroll-behavior: none; }
 @keyframes desk-out { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(.95rem); } }
 @keyframes desk-backdrop { from { opacity: 0; } to { opacity: 1; } }
 @keyframes letter-turn { from { opacity: .55; transform: translateX(.55rem); } to { opacity: 1; transform: none; } }
+
+/* The final surface carries the signature printed on the Maison stationery. */
+body .trace-footer { background: #30201c; }
+.trace-home:has(.correspondence) + .trace-footer { background: linear-gradient(#642622,#462521 37%,#30201c 90%); }
+.trace-footer .foot-sign { display: block; width: fit-content; }
+.trace-footer .foot-sign img { width: clamp(10.5rem,25vw,27rem); height: auto; }
+@media (prefers-reduced-motion: no-preference) {
+  .correspondence-envelope[data-reveal-state="shown"] .envelope-stamp { animation: press-seal .48s cubic-bezier(.2,.72,.25,1); }
+  .foot-sign[data-reveal-state="shown"] img { animation: print-signature .76s ease-out both; }
+  @keyframes press-seal { from { transform: translateY(-.42rem) rotate(-8deg) scale(1.1); } to { transform: none; } }
+  @keyframes print-signature { from { clip-path: inset(0 78% 0 0); opacity: .6; } to { clip-path: inset(0); opacity: 1; } }
+}

@@ -379,7 +379,8 @@ def render(suffix, width, height, location, aim, focal_length, work):
     (destination / f"plan{suffix}.svg").write_text(plan)
 
 
-with tempfile.TemporaryDirectory(prefix="mestier-seuil-") as temporary:
-    work = Path(temporary)
-    render("", 1280, 960, (-2.6, -7.1, 1.83), (.04, .70, 1.66), 41, work)
-    render("-mobile", 720, 960, (-1.47, -7.55, 1.75), (0, .43, 1.64), 55, work)
+if __name__ == "__main__":
+    with tempfile.TemporaryDirectory(prefix="mestier-seuil-") as temporary:
+        work = Path(temporary)
+        render("", 1280, 960, (-2.6, -7.1, 1.83), (.04, .70, 1.66), 41, work)
+        render("-mobile", 720, 960, (-1.47, -7.55, 1.75), (0, .43, 1.64), 55, work)

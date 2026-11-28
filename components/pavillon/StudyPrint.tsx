@@ -19,7 +19,7 @@ const fragments: Record<string, Detail[]> = {
   ],
 };
 
-export default function StudyPrint({ src, alt, artwork, slug }: { src: string; alt: string; artwork: string; slug: string }) {
+export default function StudyPrint({ src, alt, artwork }: { src: string; alt: string; artwork: string }) {
   const [focus, setFocus] = useState<number | null>(null);
   const details = fragments[artwork];
   const active = focus === null ? null : details[focus];
@@ -30,11 +30,10 @@ export default function StudyPrint({ src, alt, artwork, slug }: { src: string; a
     "--paper-zoom": zoom,
     "--paper-pan-x": offset(active?.x ?? 50),
     "--paper-pan-y": offset(active?.y ?? 50),
-    viewTransitionName: "etude-" + slug,
   } as CSSProperties;
 
   return <figure className="study-print">
-    <div className="study-print-window" id="study-image" data-detail={active ? "true" : undefined} style={style}>
+    <div className="study-print-window" id="study-image" data-folio-cover="" data-detail={active ? "true" : undefined} style={style}>
       <img src={src} alt={alt} width="1200" height="900" fetchPriority="high"/>
     </div>
     <figcaption className="study-print-tools">

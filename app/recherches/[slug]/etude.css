@@ -62,3 +62,22 @@
   .study-print-window img { transition: transform .8s cubic-bezier(.22,.67,.22,1); }
   .study-print-tools button { transition: background-color .2s, border-color .2s; }
 }
+
+.study-actions { align-items: flex-start; }
+.study-atelier-link,.study-next-print { display: flex; align-items: center; gap: .85rem; }
+.study-atelier-link { flex-basis: 100%; margin-top: .75rem; padding-block: .8rem; border-block: 1px solid var(--rule); }
+.study-atelier-link img,.study-next-print img { flex: none; width: clamp(3.25rem,5.2vw,6rem); height: auto; aspect-ratio: 1.06; object-fit: cover; border-radius: .2rem .85rem .2rem .2rem; }
+.study-atelier-link small,.study-next-print small { display: block; font: 500 .87rem/1.4 var(--sans),sans-serif; color: var(--muted); }
+.study-atelier-link strong { display: block; color: #72332c; font: 400 clamp(1.35rem,2vw,2.3rem)/1.12 var(--serif),serif; }
+.study-next { border-top: 1px solid var(--rule); }
+.study-next-print i { display: block; }
+@media(max-width:480px) {
+  .inside .study-next { gap: .75rem; align-items: center; }
+  .study-next-print { gap: .6rem; }
+  .study-next-print img { width: 2.6rem; }
+  .inside .study-next i { font-size: clamp(1.45rem,6.2vw,2.2rem); }
+}
+@media (hover:hover) and (prefers-reduced-motion:no-preference) {
+  .study-atelier-link img,.study-next-print img { transition: transform .28s ease; }
+  :is(.study-atelier-link,.study-next-print):hover img { transform: rotate(-3deg); }
+}

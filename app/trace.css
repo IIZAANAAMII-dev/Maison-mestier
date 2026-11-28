@@ -48,7 +48,6 @@ body { background: var(--paper); }
 .project { position: relative; isolation: isolate; overflow: hidden; background: radial-gradient(ellipse at 80% 2%, #823e2d, transparent 66%), #502019; color: #fff1dc; padding-top: clamp(7rem,12vw,14rem); margin-top: calc(-1 * clamp(2.4rem,6vw,7rem)); }
 .project>.shell { position: relative; z-index: 1; }
 .project-thread { position: absolute; z-index: -1; top: -1.5rem; right: -4%; width: 66%; height: 20rem; opacity: .5; pointer-events: none; stroke: #ffe4cb; stroke-width: 1.3; }
-.footer-ink { stroke-dasharray: 1; }
 .project .thread-swatch { border-color: currentColor; }
 .project h2 { color: inherit; }
 .project h2 i { color: #efc7a5; }
@@ -72,8 +71,6 @@ body { background: var(--paper); }
 }
 .project .brief summary:hover strong { background: #fff5e7; }
 .project .brief summary:active strong { scale: .97; }
-.method-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .9rem 1.3rem; }
-.method-contact { display: inline-flex; min-height: 2.75rem; align-items: center; text-decoration: underline; text-underline-offset: .24em; }
 .trace-footer { background: #291b16; color: var(--paper); padding: clamp(3.7rem,7vw,7.5rem) 0 1.4rem; }
 .foot-sign { display: flex; align-items: center; width: max-content; max-width: 100%; gap: .24em; font: 450 clamp(2.8rem,8.2vw,10rem)/.88 var(--serif); letter-spacing: -.084em; }
 .foot-sign img { width: .62em; height: auto; }
@@ -149,4 +146,9 @@ body { background: var(--paper); }
 @media (hover:hover) and (prefers-reduced-motion: no-preference) {
   .trace-pill:hover .action-pearl::after { transform: scale(1); opacity: .6; }
   .invitation-action:hover img { transform: rotate(-6deg); }
+}
+
+/* Native fragment navigation also runs the same film timeline as a hand scroll. */
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.sequence[data-ready]) { scroll-behavior: smooth; }
 }

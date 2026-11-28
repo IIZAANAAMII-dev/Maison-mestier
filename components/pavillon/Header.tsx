@@ -15,11 +15,10 @@ const mobileLinks = [...navigationLinks, laboratory];
 const sectionIds = ["seuil", ...mainLinks.map(({ hash }) => hash), "contact"];
 
 const linkNotes: Record<string, string> = {
-  maison: "Du dessin à la fabrication",
-  montage: "Le montage d’un stand",
-  etudes: "Les études de création",
+  maison: "Du croquis au plan 3D",
+  montage: "Du mobilier au montage",
+  etudes: "Trois pièces à découvrir",
   ateliers: "Les métiers de la Maison",
-  offre: "Les savoir-faire de la Maison",
 };
 
 function MenuMark({ section }: { section: string }) {
@@ -28,7 +27,6 @@ function MenuMark({ section }: { section: string }) {
     montage: "M3 7h22v16H3zM3 11h22M8 7l3 4m3-4 3 4m3-4 3 4",
     etudes: "M4 5h15v18H4zM19 10h5v16H9v-3M7 17l3-3 3 2 3-4",
     ateliers: "M5 6h7v7H5zM16 6h7v7h-7zM5 17h7v7H5zM16 17h7v7h-7z",
-    offre: "M4 8h20M4 15h20M4 22h13",
     contact: "M3 7h22v15H3zM4 8l10 8L24 8",
   };
   return <svg className="menu-mark" aria-hidden="true" viewBox="0 0 28 30" width="27" height="30" fill="none">
@@ -109,28 +107,17 @@ export default function Header() {
       const section = document.getElementById(id);
       return section ? [{ id, section }] : [];
     });
-    const chapter = document.getElementById("maison");
-    const film = document.getElementById("montage");
-    const projection = document.getElementById("etudes");
-    const digital = document.getElementById("offre-web");
-    const project = document.getElementById("contact");
+    const darkSurfaces = Array.from(document.querySelectorAll<HTMLElement>('[data-masthead="dark"], #contact, .trace-footer'));
     let positions: { id: string; top: number }[] = [];
-    let chapterStart = Infinity;
-    let chapterEnd = Infinity;
-    let projectionStart = Infinity;
-    let digitalStart = Infinity;
-    let digitalEnd = Infinity;
-    let contactStart = Infinity;
+    let contrasts: { from: number; until: number }[] = [];
     let currentSection = "";
 
     const updateHeader = () => {
       const y = window.scrollY;
       el.toggleAttribute("data-scrolled", y > 35 || !onHome);
       el.toggleAttribute("data-opening", onHome && y <= 35);
-      el.toggleAttribute("data-threshold-tone", onHome && y < chapterStart);
-      el.toggleAttribute("data-projection", y >= projectionStart && y < chapterEnd);
-      el.toggleAttribute("data-lacquer", (y >= chapterStart && y < chapterEnd) || (y >= digitalStart && y < digitalEnd) || y >= contactStart);
-      const sightline = y + Math.min(window.innerHeight * .3, 240);
+      el.toggleAttribute("data-lacquer", contrasts.some(surface => y >= surface.from && y < surface.until));
+      const sightline = y + Math.min(window.innerHeight * .19, 160);
       let nextSection = interiorSection;
       for (const location of positions) {
         if (location.top > sightline) break;
@@ -151,25 +138,16 @@ export default function Header() {
       positions = chapters.map(({ id, section }) => ({ id, top: section.getBoundingClientRect().top + y }))
         .sort((a, b) => a.top - b.top);
       const halfHeader = el.offsetHeight * .5;
-      if (chapter) {
-        const bounds = chapter.getBoundingClientRect();
-        chapterStart = bounds.top + y - halfHeader;
-        chapterEnd = (projection?.getBoundingClientRect().bottom ?? film?.getBoundingClientRect().bottom ?? bounds.bottom) + y - halfHeader;
-      }
-      if (projection) projectionStart = projection.getBoundingClientRect().top + y - halfHeader;
-      if (digital) {
-        const bounds = digital.getBoundingClientRect();
-        digitalStart = bounds.top + y - halfHeader;
-        digitalEnd = bounds.bottom + y - halfHeader;
-      }
-      if (project) contactStart = project.getBoundingClientRect().top + y - halfHeader;
+      contrasts = darkSurfaces.map(surface => {
+        const bounds = surface.getBoundingClientRect();
+        return { from: bounds.top + y - halfHeader, until: bounds.bottom + y - halfHeader };
+      });
       updateHeader();
     };
     const layoutObserver = new ResizeObserver(measureHeader);
-    if (chapter?.parentElement) layoutObserver.observe(chapter.parentElement);
+    layoutObserver.observe(document.body);
     for (const { section } of chapters) layoutObserver.observe(section);
-    if (film) layoutObserver.observe(film);
-    if (digital) layoutObserver.observe(digital);
+    for (const surface of darkSurfaces) layoutObserver.observe(surface);
     measureHeader();
 
     const closeImmediately = () => {
@@ -202,7 +180,7 @@ export default function Header() {
     }
     document.addEventListener("pointermove", event => {
       if (!fine.matches || event.pointerType !== "mouse" || !(event.target instanceof Element)) return;
-      const target = event.target.closest<HTMLElement>(".trace-pill,.header-contact,.studio-index-link,.mobile-menu summary,.header-menu-toggle,.header-menu-close,.brief summary,.trace-spool button");
+      const target = event.target.closest<HTMLElement>(".trace-pill,.header-contact,.mobile-menu summary,.header-menu-toggle,.header-menu-close");
       if (control !== target) {
         clear();
         control = target;
@@ -227,9 +205,7 @@ export default function Header() {
       layoutObserver.disconnect();
       el.removeAttribute("data-dialog-menu");
       el.removeAttribute("data-lacquer");
-      el.removeAttribute("data-projection");
       el.removeAttribute("data-opening");
-      el.removeAttribute("data-threshold-tone");
       el.querySelectorAll("[data-section][aria-current]").forEach(anchor => anchor.removeAttribute("aria-current"));
       cancelAnimationFrame(frame);
       clear();

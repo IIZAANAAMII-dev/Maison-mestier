@@ -13,10 +13,10 @@ export function siteUrl(route: string) {
 }
 
 const socialImage = {
-  url: "/seuil/vue.webp",
+  url: "/sequence/entree.webp",
   alt: "Le portique en laque rouge de Maison Mestier, devant un comptoir de noyer.",
-  width: 1280,
-  height: 960,
+  width: 1440,
+  height: 900,
 };
 
 type PageMetadata = {

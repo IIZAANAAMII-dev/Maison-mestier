@@ -15,3 +15,21 @@
   ::view-transition-old(root) { animation-duration: .12s; }
   ::view-transition-new(root) { animation-duration: .18s; }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-folio-print],[data-folio-cover] { view-transition-class: tirage; }
+  ::view-transition-group(*.tirage) {
+    z-index: 1;
+    overflow: clip;
+    animation-duration: .62s;
+    animation-timing-function: cubic-bezier(.22,.76,.18,1);
+  }
+  ::view-transition-old(*.tirage),::view-transition-new(*.tirage) {
+    width: 100%; height: 100%; object-fit: cover;
+    mix-blend-mode: normal;
+  }
+  ::view-transition-old(*.tirage):not(:only-child) { animation: none; }
+  ::view-transition-new(*.tirage):not(:only-child) { animation: resolve-print .46s ease-out both; }
+  ::view-transition-old(*.tirage):only-child,::view-transition-new(*.tirage):only-child { animation-duration: .17s; }
+  @keyframes resolve-print { from { opacity: 0; } to { opacity: 1; } }
+}

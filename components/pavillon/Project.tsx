@@ -68,7 +68,7 @@ export default function Project() {
       <p data-reveal="copy">Un lieu, une date ou une idée qui tient en deux lignes. Écrivez-nous ce que vous avez en tête.</p>
       <a className="correspondence-direct" href={"mailto:" + studioEmail}>{studioEmail}</a>
     </div>
-    <a id="projet" className="correspondence-envelope" href={"mailto:" + studioEmail} data-brief-open="" aria-label="Écrire à la Maison">
+    <a id="projet" className="correspondence-envelope" data-reveal="courrier" href={"mailto:" + studioEmail} data-brief-open="" aria-label="Écrire à la Maison">
       <span className="envelope-flap" aria-hidden="true"/>
       <span className="envelope-stamp" aria-hidden="true"><img alt="" src={path("/charte/monogramme-ivoire.svg")} width="38" height="32"/></span>
       <span className="envelope-address" aria-hidden="true">À l’attention de<br/><i>Maison Mestier</i></span>

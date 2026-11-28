@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { atelierPath, carnetAteliers, image, path, studies } from "../../../lib/maison";
-import { studyPath } from "../../../lib/pavillon";
+import { atelierPlate, studyPath } from "../../../lib/pavillon";
 import { pageMetadata } from "../../../lib/seo";
 import StudyPrint from "../../../components/pavillon/StudyPrint";
 import "../../interieur.css";
@@ -40,7 +40,7 @@ export default async function Study({ params }: Props) {
         <p data-reveal="copy">{item.material}</p>
       </div>
     </div>
-    <StudyPrint src={image(item.image)} alt={item.alt} artwork={item.image} slug={item.slug}/>
+    <StudyPrint src={image(item.image)} alt={item.alt} artwork={item.image}/>
     <div className="shell study-reading">
       <figure className="study-reading-plate" data-reveal="figure">
         <img src={path("/images/releves/" + item.image + ".webp")} width="1100" height="825" loading="lazy" alt={"Relevé graphique de l’étude " + item.name}/>
@@ -53,13 +53,19 @@ export default async function Study({ params }: Props) {
         <p data-reveal="copy">{item.use}</p>
         <div className="study-actions">
           <a className="trace-pill" href={path("/?atelier=" + workshop.slug + "#projet")}><span className="action-pearl" aria-hidden="true"/>Discuter d’un projet</a>
-          <a className="text-link" href={atelierPath(workshop.slug)}>Découvrir l’atelier {workshop.name}</a>
+          <a className="study-atelier-link" href={atelierPath(workshop.slug)}>
+            <img data-folio-print="" src={path(atelierPlate[workshop.slug].mobile)} width="96" height="96" alt="" loading="lazy"/>
+            <span><small>Voir les prestations</small><strong>Atelier {workshop.name}</strong></span>
+          </a>
         </div>
       </div>
     </div>
-    <nav className="inside-next shell" aria-label="Poursuivre la visite" data-reveal="row">
+    <nav className="inside-next shell study-next" aria-label="Poursuivre la visite" data-reveal="row">
       <a className="text-link" href={path("/#etudes")}>Toutes les études</a>
-      <a href={studyPath(next.slug)}><span>Étude suivante</span><i>{next.name}</i></a>
+      <a className="study-next-print" href={studyPath(next.slug)}>
+        <img data-folio-print="" src={image(next.image)} width="120" height="96" alt="" loading="lazy"/>
+        <span><small>Étude suivante</small><i>{next.name}</i></span>
+      </a>
     </nav>
   </main>;
 }

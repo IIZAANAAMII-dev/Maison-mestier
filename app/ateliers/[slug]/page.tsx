@@ -49,7 +49,7 @@ export default async function Atelier({ params }: Props) {
           <h1>{plate.title[0]} <i>{plate.title[1]}</i></h1>
         </div>
         <figure className="workshop-print">
-          <picture style={{ viewTransitionName: "atelier-" + item.slug }}>
+          <picture data-folio-cover="">
             <source media="(max-width: 760px)" srcSet={path(plate.mobile)}/>
             <img src={path(plate.file)} width="1280" height="853" alt={plate.alt} fetchPriority="high" decoding="async"/>
           </picture>
@@ -87,7 +87,7 @@ export default async function Atelier({ params }: Props) {
     <nav className="inside-next shell workshop-next" aria-label="Poursuivre la visite">
       <a className="text-link" href={path("/#ateliers")}>Tous les ateliers</a>
       <a className="workshop-next-item" href={atelierPath(next.slug)}>
-        <img src={path(atelierPlate[next.slug].mobile)} width="96" height="96" alt="" loading="lazy"/>
+        <img data-folio-print="" src={path(atelierPlate[next.slug].mobile)} width="96" height="96" alt="" loading="lazy"/>
         <span><small>Atelier suivant</small><i>{next.name}</i></span>
       </a>
     </nav>
