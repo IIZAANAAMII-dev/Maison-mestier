@@ -1,17 +1,17 @@
 .rotonde {
   --seal: #8e2a23;
-  --stone: #f3ebdc;
-  --scene-x: 64%;
-  --scene-y: 45%;
+  --stone: #f4eee3;
+  --scene-x: 68%;
+  --scene-y: 49%;
   --lens: clamp(58rem, 118vw, 116rem);
-  --tilt: -22deg;
+  --tilt: -12deg;
   --radius: clamp(12.6rem, 24.5vw, 25.5rem);
-  --panel-w: calc(var(--radius) * .99);
-  --panel-h: clamp(10.2rem, 29svh, 19.25rem);
-  --ground: calc(var(--panel-h) / 2 + 2.75rem);
+  --panel-w: min(calc(var(--radius) * 1.08), 30rem);
+  --panel-h: clamp(10.7rem, 29svh, 21.5rem);
+  --ground: calc(var(--panel-h) / 2 + 3.25rem);
   --floor-diameter: calc(var(--radius) * 2.59 + 3.5rem);
-  --curve: clamp(1.2rem, 3vw, 3rem);
-  --plinth-depth: clamp(.35rem, .9vw, .75rem);
+  --curve: clamp(1.05rem, 3.35vw, 3.75rem);
+  --hanger-length: clamp(4.2rem, 15svh, 11rem);
   min-height: max(41rem, 100svh);
   position: relative;
   isolation: isolate;
@@ -25,57 +25,56 @@
   inset: 0;
   overflow: hidden;
   background:
-    radial-gradient(ellipse at 63% 11%, #fffcf4 0%, #fbf4e8b8 43%, #dac4a66b 100%),
-    linear-gradient(142deg, #f8f0e1 23%, #eae0cf 62%, #cab396 100%);
+    radial-gradient(ellipse at 24% 25%, #fffaf1 0%, #f8f2e9 47%, transparent 75%),
+    linear-gradient(137deg, #f9f4eb 19%, #e7d9c7 65%, #ccbaa4);
   pointer-events: none;
 }
-.rotonde-wall svg {
-  width: 100%;
-  height: 100%;
-  stroke: #8b655146;
-  stroke-width: 1;
+.rotonde-daylight {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(137deg, transparent 36%, #fbf5ea82 36.5%, #fbf5ea35 51%, transparent 51.6%);
+  opacity: var(--room-objects, 1);
 }
-.rotonde-wall path:last-child { opacity: .76; }
 .rotonde-vault {
   position: absolute;
   left: var(--scene-x);
-  top: 12%;
-  width: clamp(26rem, 66vw, 70rem);
-  height: 68%;
+  top: 8%;
+  width: clamp(24rem, 56vw, 65rem);
+  height: 79%;
   transform: translateX(-50%);
-  border-radius: 48% 48% 17% 17% / 52% 52% 12% 12%;
-  border-top: 1px solid #956d4e36;
+  border-radius: 32% 40% 0 0 / 35% 41% 0 0;
+  border: 1px solid #75543d38;
+  border-bottom: 0;
   background:
-    radial-gradient(ellipse at 41% 2%, #fff8ea 12%, transparent 61%),
-    linear-gradient(114deg, #b3997529, #ead8bec8 34%, #c4a58077 100%);
-  box-shadow: inset 1rem .25rem 2.8rem #86624716, inset -1.25rem 0 3rem #89634220;
-  mask-image: linear-gradient(#000 0 61%, transparent 100%);
+    radial-gradient(ellipse at 43% 16%, #f5ede2 6%, transparent 69%),
+    linear-gradient(114deg, #b39a808a, #ede0cdbd 47%, #9c7d5d35);
+  box-shadow: inset .85rem .65rem 3.1rem #5c3b242c, inset -1.25rem 0 3rem #89634220;
+  mask-image: linear-gradient(#000 0 67%, transparent 100%);
   opacity: var(--room-objects, 1);
   pointer-events: none;
 }
 .rotonde-vault::before {
   content: "";
   position: absolute;
-  inset: clamp(.65rem, 2vw, 1.75rem);
-  border: 1px solid #8666482b;
+  inset: clamp(.43rem, 1.25vw, 1.3rem);
+  border: 1px solid #86664841;
   border-bottom: 0;
   border-radius: inherit;
-  background: linear-gradient(156deg, #fff8ec97 1%, #fff8ec00 31%, #b3946c24 55%, transparent 78%);
+  background: linear-gradient(153deg, #e6d7c294 1%, #fff8ec23 31%, #b3946c17 55%, transparent 78%);
 }
 .rotonde-head {
   position: absolute;
   z-index: 3;
   left: var(--gutter);
-  top: max(calc(var(--head) + 1.4rem), 16%);
+  top: max(calc(var(--head) + 1.2rem), 19%);
   pointer-events: none;
 }
 .rotonde-label {
-  margin-bottom: 1rem;
-  color: var(--seal);
+  margin-bottom: clamp(.9rem, 1.55vw, 1.5rem);
+  color: #75453a;
 }
-.rotonde-label .thread-swatch { border-color: currentColor; }
 .rotonde-head h1 {
-  font: 505 clamp(3.9rem, 6.25vw, 8.5rem)/.88 var(--sans), Arial, sans-serif;
+  font: 500 clamp(3.75rem, 6.65vw, 9.3rem)/.89 var(--sans), Arial, sans-serif;
   letter-spacing: -.07em;
 }
 .rotonde-head h1 span,
@@ -87,12 +86,34 @@
   margin-left: -.025em;
 }
 .rotonde-summary {
-  max-width: 27ch;
-  margin-top: clamp(.75rem, 2.3svh, 1.5rem);
+  max-width: 31ch;
+  margin-top: clamp(.85rem, 2.45svh, 1.85rem);
   font-size: clamp(.98rem, 1.32vw, 1.24rem);
   line-height: 1.37;
   letter-spacing: -.025em;
   color: #534037;
+}
+.rotonde-primary {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.15rem;
+  margin-top: clamp(1rem, 2.4svh, 1.5rem);
+  padding-inline: 1.3rem;
+  border: 1px solid transparent;
+  border-radius: 100vw;
+  background: #702d24;
+  color: #fff7e9;
+  font-weight: 630;
+  font-size: .94rem;
+  letter-spacing: -.01em;
+  pointer-events: auto;
+  transition: background .22s ease-out, border-color .22s ease-out;
+}
+.rotonde-primary:is(:hover, :focus-visible) {
+  background: #51201a;
+  border-color: #9c4939;
 }
 
 .rotonde-view {
@@ -135,9 +156,8 @@
   transform: rotateY(var(--azimuth)) translateZ(var(--radius));
 }
 .rotonde-floor,
-.rotonde-plinth,
-.rotonde-base,
-.rotonde-post,
+.rotonde-shadow,
+.rotonde-hanger,
 .rotonde-frame,
 .rotonde-back {
   margin: 0;
@@ -145,94 +165,72 @@
   inset: 0 auto auto 0;
 }
 .rotonde-floor,
-.rotonde-plinth,
-.rotonde-base,
-.rotonde-post,
+.rotonde-shadow,
+.rotonde-hanger,
 .rotonde-back { pointer-events: none; }
-.rotonde-plinth {
-  width: var(--floor-diameter);
-  height: var(--floor-diameter);
-  border-radius: 50%;
-  transform: translate3d(-50%, calc(var(--ground) + var(--plinth-depth) - 50%), 0) rotateX(90deg);
-  background: linear-gradient(158deg, #e4cdb0, #9b7255 80%, #795037);
-  box-shadow: 0 .65rem 2rem #4d2f1a56;
-  opacity: calc(var(--room-floor, 1) * (1 - var(--room-ink, 0)));
-}
 .rotonde-floor {
   width: var(--floor-diameter);
   height: var(--floor-diameter);
   border-radius: 50%;
   transform: translate3d(-50%, calc(var(--ground) - 50%), 0) rotateX(90deg);
-  border: 1px solid #a991777b;
-  box-shadow: inset 0 0 0 .25rem #f2e5d341;
-  background: radial-gradient(ellipse at 37% 24%, #fff8e8, #f0e2ca 51%, #d6bca0 100%);
 }
-.rotonde-floor::before,
-.rotonde-floor::after {
+.rotonde-floor::before {
   content: "";
   position: absolute;
+  inset: 10%;
   border-radius: 50%;
-  border: 1px solid #9b7d5c59;
+  border: 1px solid #8e4b3440;
+  opacity: calc(1 - var(--room-ink, 0));
 }
-.rotonde-floor::before { inset: 2.6%; }
-.rotonde-floor::after { inset: 23.5%; }
-.rotonde-inlay {
-  position: absolute;
-  inset: 9%;
-  border: 2px solid #8e2a2396;
+.rotonde-shadow {
+  width: var(--panel-w);
+  height: clamp(3.5rem, 9vw, 9rem);
   border-radius: 50%;
-  mask-image: conic-gradient(#000 0deg 57deg, transparent 57deg 63deg, #000 63deg 117deg, transparent 117deg 123deg, #000 123deg 177deg, transparent 177deg 183deg, #000 183deg 237deg, transparent 237deg 243deg, #000 243deg 297deg, transparent 297deg 303deg, #000 303deg 357deg, transparent 357deg);
-}
-.rotonde-floor-centre {
-  position: absolute;
-  display: grid;
-  place-items: center;
-  inset: 42%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 38% 34%, #a64235, #70271e);
-  border: 2px solid #f0d9bb;
-  box-shadow: 0 0 0 1px #92563e91;
-}
-.rotonde-floor-centre img { width: 62%; height: auto; }
-.rotonde-base {
-  width: min(calc(var(--panel-w) * .88), 19rem);
-  height: clamp(3rem, 7.8vw, 7rem);
-  border-radius: 50%;
-  background: radial-gradient(ellipse, #4b28186b, #613c282a 38%, transparent 72%);
+  background: radial-gradient(ellipse, #57352144, #65432a19 38%, transparent 72%);
   transform: translate3d(-50%, calc(var(--ground) - 50% - 1px), 0) rotateX(90deg);
+  opacity: var(--room-objects, 1);
 }
-.rotonde-post {
-  width: clamp(.56rem, 1.05vw, .95rem);
-  height: calc(var(--ground) - var(--panel-h) / 2 + .9rem);
-  border-radius: 5px;
-  background: linear-gradient(90deg, #856147, #b58f66 24%, #e5caaa 49%, #94704f 82%, #6b503c);
-  transform: translate3d(-50%, calc(var(--panel-h) / 2 - .8rem), -7px);
+.rotonde-hanger {
+  width: var(--panel-w);
+  height: var(--hanger-length);
+  transform: translate3d(-50%, calc(-100% - var(--panel-h) / 2 + 1px), -2px);
+  opacity: var(--room-objects, 1);
 }
+.rotonde-hanger::before,
+.rotonde-hanger::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  width: 1px;
+  background: linear-gradient(transparent, #78584572 35%, #62412a9c);
+}
+.rotonde-hanger::before { left: 27%; }
+.rotonde-hanger::after { right: 27%; }
 .rotonde-frame,
 .rotonde-back {
   width: var(--panel-w);
   height: var(--panel-h);
-  border-radius: var(--curve) var(--curve) calc(var(--curve) * .68) calc(var(--curve) * .68);
+  border-radius: calc(var(--curve) * 1.18) var(--curve) .2rem calc(var(--curve) * .63);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
 .rotonde-frame {
   display: block;
-  padding: clamp(.28rem, .52vw, .52rem);
-  background: linear-gradient(145deg, #fdf2e0, #ab8b69);
-  box-shadow: 0 .65rem 1.5rem #4b2e2347, 0 0 0 1px #8a645546;
+  padding: 2px;
+  background: linear-gradient(145deg, #f2e4cf, #88644e);
+  box-shadow: 0 .85rem 2.5rem #1e100b32, 0 .15rem .3rem #3b211a19;
   transform: translate3d(-50%, -50%, 2px);
 }
 .rotonde-frame[data-facing] {
-  background: linear-gradient(145deg, #fffbf1, #d3b596);
-  box-shadow: 0 .8rem 1.85rem #492b2349, 0 0 0 1px #8a64555c;
+  background: linear-gradient(145deg, #faf1e1, #ba9073);
+  box-shadow: 0 1.65rem 3.8rem #1e100b3d, 0 .25rem .65rem #3b211a22;
 }
 .rotonde-frame picture {
   position: relative;
   display: block;
   width: 100%;
   height: 100%;
-  border-radius: calc(var(--curve) * .88) calc(var(--curve) * .88) calc(var(--curve) * .59) calc(var(--curve) * .59);
+  border-radius: inherit;
   overflow: hidden;
   background: #d5b299;
 }
@@ -242,10 +240,11 @@
   inset: 0;
   pointer-events: none;
   border-radius: inherit;
-  box-shadow: inset 0 0 1.15rem #301a1466, inset 0 1px #fff7e07a;
+  background: linear-gradient(124deg, #3c1f1f00 12%, #29151133 100%);
+  box-shadow: inset 0 1px #fff7e07a;
 }
 .rotonde-frame[data-facing] picture::after {
-  box-shadow: inset 0 0 .95rem #331c142e, inset 0 1px #fff7e08c;
+  background: transparent;
 }
 .rotonde-frame img {
   width: 100%;
@@ -257,19 +256,14 @@
 .rotonde-back {
   display: grid;
   place-items: center;
-  border: 1px solid #5c251d88;
-  background: radial-gradient(ellipse at 29% 4%, #a05846, #75302a 58%, #4c1e1b 100%);
-  box-shadow: 0 .5rem 1.18rem #4b2e2329;
+  border: 1px solid #6b392f73;
+  background:
+    repeating-linear-gradient(90deg, #4f25150d 0 1px, transparent 1px 4px),
+    radial-gradient(ellipse at 29% 4%, #916047, #714337 56%, #3a2322 100%);
+  box-shadow: 0 .65rem 1.6rem #4b2e2329;
   transform: translate3d(-50%, -50%, -6px) rotateY(180deg);
 }
-.rotonde-back::before {
-  content: "";
-  position: absolute;
-  inset: .45rem;
-  border-radius: inherit;
-  border: 1px solid #e7bda752;
-}
-.rotonde-back img { width: clamp(2.5rem, 5vw, 4.3rem); height: auto; opacity: .74; }
+.rotonde-back img { width: clamp(1.6rem, 3.15vw, 2.65rem); height: auto; opacity: .58; }
 
 .rotonde-desk {
   position: absolute;
@@ -300,24 +294,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: .55rem;
-  min-height: 2.65rem;
+  min-height: 2.75rem;
   color: var(--seal);
   font-size: .88rem;
   font-weight: 580;
   letter-spacing: -.015em;
+  text-decoration: underline;
+  text-underline-offset: .26em;
+  text-decoration-color: #8e2a2370;
+  transition: color .24s ease-out, text-decoration-color .24s ease-out;
 }
-.rotonde-detail span,
-.rotonde-all span {
-  display: grid;
-  place-items: center;
-  width: 1.65rem;
-  height: 1.65rem;
-  border-radius: 50%;
-  border: 1px solid #8e2a2355;
-  transition: color .25s, background .25s;
+:is(.rotonde-detail,.rotonde-all):is(:hover,:focus-visible) {
+  color: #502019;
+  text-decoration-color: currentColor;
 }
-:is(.rotonde-detail,.rotonde-all):is(:hover,:focus-visible) span { background: var(--seal); color: #fff5e4; }
 .rotonde-all { grid-column: 3; justify-self: end; white-space: nowrap; }
 .rotonde-navigation {
   display: none;
@@ -337,25 +327,17 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #f8efe2b0;
+  background: #fff8ea88;
   transition: color .24s, background .24s;
 }
 .rotonde-step:is(:hover,:focus-visible) { background: var(--seal); color: #fff5e4; }
 .rotonde-arrow-next { rotate: 180deg; }
 .rotonde-dial {
-  width: clamp(4.7rem, 6.5vw, 6rem);
-  aspect-ratio: 1;
-  position: relative;
-}
-.rotonde-dial svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  display: grid;
+  align-content: center;
+  gap: .15rem;
 }
 .rotonde-index {
-  position: absolute;
-  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -366,13 +348,12 @@
 }
 .rotonde-index span:first-child { font-weight: 650; }
 .rotonde-index span:last-child { opacity: .75; }
+.rotonde-marks { display: flex; }
 .rotonde-mark {
-  position: absolute;
-  translate: -50% -50%;
-  width: 1.65rem;
-  height: 1.65rem;
+  width: 1.15rem;
+  height: 1.2rem;
   border: 0;
-  border-radius: 50%;
+  border-radius: .3rem;
   padding: 0;
   display: grid;
   place-items: center;
@@ -380,15 +361,14 @@
 }
 .rotonde-mark::after {
   content: "";
-  width: .32rem;
-  height: .32rem;
-  border-radius: 50%;
+  width: .33rem;
+  height: 2px;
+  border-radius: 1rem;
   background: #956b54;
-  transition: width .23s, height .23s, background .23s;
+  transition: width .23s, background .23s;
 }
 .rotonde-mark:is(:hover,:focus-visible,[aria-pressed="true"])::after {
-  width: .55rem;
-  height: .55rem;
+  width: .68rem;
   background: var(--seal);
 }
 .rotonde-instruction {
@@ -433,17 +413,18 @@
 @media (max-width: 760px) {
   .rotonde {
     --scene-x: 50%;
-    --scene-y: 50.75%;
-    --lens: 61rem;
-    --tilt: -23deg;
-    --radius: clamp(9.4rem, 51.4vw, 17.75rem);
-    --panel-h: clamp(10.1rem, 28svh, 16rem);
+    --scene-y: 47%;
+    --lens: 54rem;
+    --tilt: -9deg;
+    --radius: clamp(8.75rem, 48vw, 17.75rem);
+    --panel-w: min(68vw, calc(var(--radius) * 1.17));
+    --panel-h: clamp(8.8rem, 25svh, 14.85rem);
     --ground: calc(var(--panel-h) / 2 + 1.8rem);
     --floor-diameter: calc(var(--radius) * 2.45 + 2rem);
-    --curve: 1.55rem;
-    min-height: max(37rem, 100svh);
+    --curve: clamp(1.15rem, 6.2vw, 2.15rem);
+    --hanger-length: clamp(2rem, 7.8svh, 4.45rem);
+    min-height: max(35rem, 100svh);
   }
-  .rotonde-wall svg { opacity: .62; }
   .rotonde-head { top: calc(var(--head) + .58rem); }
   .rotonde-label { font-size: .67rem; margin-bottom: .64rem; }
   .rotonde-head h1 { font-size: clamp(3.1rem, 12.1vw, 5.35rem); }
@@ -451,6 +432,12 @@
     max-width: 31ch;
     margin-top: .48rem;
     font-size: .91rem;
+  }
+  .rotonde-primary {
+    min-height: 2.75rem;
+    margin-top: .72rem;
+    padding-inline: 1.02rem;
+    font-size: .84rem;
   }
   .rotonde-desk {
     grid-template-columns: auto minmax(0, 1fr);
@@ -468,13 +455,11 @@
   .rotonde-caption h2 { font-size: clamp(1.6rem, 6.6vw, 2.4rem); }
   .rotonde-caption p { font-size: .78rem; margin-top: .25rem; }
   .rotonde-detail,
-  .rotonde-all { min-height: 2.65rem; gap: .33rem; font-size: .77rem; }
-  .rotonde-detail span,
-  .rotonde-all span { width: 1.34rem; height: 1.34rem; font-size: .78rem; }
-  .rotonde-detail { grid-column: 2; grid-row: 1 / 3; min-height: 2.75rem; }
+  .rotonde-all { font-size: .77rem; }
+  .rotonde-detail { grid-column: 2; grid-row: 1 / 3; }
   .rotonde-all { grid-column: 2; }
   .rotonde-navigation { column-gap: .17rem; align-self: end; }
-  .rotonde-dial { width: 4.18rem; }
+  .rotonde-mark { width: .85rem; }
   .rotonde-instruction { font-size: .65rem; margin-top: .13rem; }
   .rotonde-step { width: 2.75rem; height: 2.75rem; background: #f3ebddc4; }
   .rotonde-step svg { width: 1rem; height: 1rem; }
@@ -483,22 +468,14 @@
 @media (max-width: 760px) and (orientation: portrait) {
   .rotonde {
     --scene-gutter: var(--gutter);
-    --scene-y: 37%;
-    --lens: 54rem;
-    --tilt: -19deg;
-    --radius: clamp(8.75rem, 48.5vw, 17.75rem);
-    --panel-h: clamp(9.6rem, 26svh, 15.5rem);
     --floor-diameter: calc(var(--radius) * 2.4 + 1.45rem);
-    --curve: clamp(1.35rem, 6.2vw, 2.15rem);
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(13rem, 1fr) auto;
-    row-gap: .2rem;
+    grid-template-rows: auto minmax(12rem, 1fr) auto;
+    row-gap: .28rem;
     padding-top: calc(var(--head) + clamp(.72rem, 2.25svh, 1.45rem));
     padding-bottom: max(.7rem, calc(env(safe-area-inset-bottom) + .2rem));
-    min-height: max(35rem, 100svh);
   }
-  .rotonde-wall svg { opacity: .3; }
   .rotonde-head,
   .rotonde-desk {
     position: relative;
@@ -506,22 +483,15 @@
     margin-inline: var(--scene-gutter);
   }
   .rotonde-head h1 { font-size: clamp(2.68rem, 11.7vw, 5.05rem); }
-  .rotonde-summary { max-width: 29ch; margin-top: .65rem; }
+  .rotonde-summary { max-width: 31ch; margin-top: .65rem; }
   .rotonde-view { position: relative; inset: auto; }
   .rotonde-vault {
-    width: min(108%, 40rem);
-    top: -.2rem;
-    height: 99%;
-    border-radius: 50% 50% 18% 18% / 53% 53% 11% 11%;
+    width: min(90%, 40rem);
+    top: .25rem;
+    height: 100%;
+    border-radius: 36% 42% 0 0 / 39% 41% 0 0;
   }
   .rotonde-desk { align-self: end; }
-  .rotonde-desk::before {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    inset: -.95rem calc(-1 * var(--scene-gutter)) calc(-.7rem - env(safe-area-inset-bottom));
-    background: linear-gradient(to bottom, #f3e9d800, #f3e9d8 1.6rem, #efe3d1 100%);
-  }
   .rotonde-readout {
     display: grid;
     align-content: end;
@@ -532,23 +502,23 @@
 
 @media (max-width: 760px) and (max-height: 675px) and (orientation: portrait) {
   .rotonde {
-    --scene-y: 44%;
-    --tilt: -13deg;
+    --scene-y: 47%;
+    --tilt: -8deg;
     --radius: clamp(8rem, 45.5vw, 11.4rem);
     --panel-h: clamp(6.65rem, 19.65svh, 8.2rem);
     --ground: calc(var(--panel-h) / 2 + 1.15rem);
-    grid-template-rows: auto minmax(11.5rem, 1fr) auto;
+    --hanger-length: clamp(1.6rem, 5.5svh, 3.05rem);
+    grid-template-rows: auto minmax(10.5rem, 1fr) auto;
     padding-top: calc(var(--head) + .56rem);
   }
   .rotonde-label { margin-bottom: .48rem; }
   .rotonde-head h1 { font-size: clamp(2.35rem, 10.8vw, 4.05rem); }
-  .rotonde-summary { margin-top: .39rem; }
+  .rotonde-summary { margin-top: .39rem; font-size: .85rem; }
+  .rotonde-primary { margin-top: .62rem; }
   .rotonde-desk { row-gap: .26rem; }
   .rotonde-readout { min-height: 4.3rem; }
   .rotonde-caption h2 { font-size: 1.48rem; }
   .rotonde-caption p { font-size: .75rem; }
-  .rotonde-dial { width: 3.76rem; }
-  .rotonde-mark { width: 1.5rem; height: 1.5rem; }
 }
 @media (max-width: 355px) and (orientation: portrait) {
   .rotonde { --scene-gutter: 1rem; }
@@ -560,15 +530,16 @@
     --radius: clamp(8rem, 20vw, 13rem);
     --panel-h: clamp(6.6rem, 28svh, 10rem);
     --ground: calc(var(--panel-h) / 2 + 1.65rem);
+    --hanger-length: clamp(2rem, 11svh, 4.4rem);
     min-height: max(26rem, 100svh);
   }
   .rotonde-head { top: calc(var(--head) + .4rem); }
   .rotonde-head h1 { font-size: clamp(3.1rem, 7.3vw, 4.8rem); }
   .rotonde-summary { margin-top: .5rem; max-width: 28ch; }
+  .rotonde-primary { margin-top: .55rem; }
   .rotonde-caption h2 { font-size: 2rem; }
   .rotonde-desk { bottom: .38rem; }
   .rotonde-navigation { column-gap: .35rem; }
-  .rotonde-dial { width: 4.2rem; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -585,8 +556,9 @@
   [data-arrival] .rotonde-head h1 span { animation: rotonde-caption-in .74s cubic-bezier(.16,.72,.3,1) .26s both; }
   [data-arrival] .rotonde-head h1 i { animation: rotonde-caption-in .76s cubic-bezier(.16,.72,.3,1) .36s both; }
   [data-arrival] :is(.rotonde-summary,.rotonde-desk) { animation: rotonde-caption-in .66s ease-out .48s both; }
+  [data-arrival] .rotonde-primary { animation: rotonde-caption-in .62s ease-out .55s both; }
   [data-arrival] .rotonde-camera { animation: rotonde-arrive .9s cubic-bezier(.16,.72,.3,1) both; }
-  [data-arrival] .rotonde-wall svg { animation: rotonde-light .94s ease-out both; }
+  [data-arrival] .rotonde-daylight { animation: rotonde-light .94s ease-out both; }
 }
 @keyframes rotonde-caption-in {
   from { opacity: 0; transform: translateY(.65rem); }

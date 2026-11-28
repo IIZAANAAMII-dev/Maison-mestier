@@ -57,9 +57,16 @@ export default function Project({ entries }: { entries: Entry[] }) {
       setSlugs(next); save(selectionKey, next); setReady(true);
       if ((fromLink || location.hash === "#projet") && details.current) details.current.open = true;
     };
+    const openFromAnchor = () => {
+      if (location.hash === "#projet" && details.current) details.current.open = true;
+    };
     restore();
     window.addEventListener("pageshow", restore);
-    return () => window.removeEventListener("pageshow", restore);
+    window.addEventListener("hashchange", openFromAnchor);
+    return () => {
+      window.removeEventListener("pageshow", restore);
+      window.removeEventListener("hashchange", openFromAnchor);
+    };
   }, [entries]);
   function edit(next: Draft) { setDraft(next); save(draftKey, { ...next, slugs }); setPrepared(false); }
   function toggle(slug: string) {
@@ -80,10 +87,10 @@ export default function Project({ entries }: { entries: Entry[] }) {
   return <section className="project" id="contact" aria-labelledby="project-title"><div className="shell">
     <svg className="project-thread" viewBox="0 0 950 260" preserveAspectRatio="none" aria-hidden="true"><path className="footer-ink" d="M-35 220C91 116 198 265 310 154S477 13 532 98S471 228 475 156S643 54 746 94S931 107 1000 -5" fill="none" pathLength="1" /></svg>
     <p className="trace-label" data-reveal="label"><span className="thread-swatch" aria-hidden="true" />Correspondance</p>
-    <div className="project-intro"><h2 id="project-title" data-reveal="title"><span data-reveal-line>Quel est</span>{" "}<i data-reveal-line>votre projet&nbsp;?</i></h2>
+    <div className="project-intro"><h2 id="project-title" data-reveal="title" data-relais="contact"><span data-reveal-line>Quel est</span>{" "}<i data-reveal-line>votre projet&nbsp;?</i></h2>
       <div data-reveal="copy"><p>Un lieu, une date ou simplement une idée de départ. Dites-nous ce que vous préparez.</p><a className="text-link" href={"mailto:" + studioEmail}>{studioEmail}</a></div>
     </div>
-    <details className="brief" id="projet" ref={details}><summary data-reveal="row">Préparer mon message <span aria-hidden="true">+</span></summary>
+    <details className="brief" id="projet" ref={details}><summary data-reveal="row"><strong>Préparer mon message</strong> <span aria-hidden="true">+</span></summary>
       <form onSubmit={prepare} action={"mailto:" + studioEmail} method="get">
         <fieldset><legend>Quels ateliers vous intéressent ?</legend><div className="checks">{entries.map(e => <label key={e.slug}><input type="checkbox" checked={slugs.includes(e.slug)} onChange={() => toggle(e.slug)} />{e.name}</label>)}</div></fieldset>
         <div className="field-row"><label>Votre nom<input autoComplete="name" name="name" maxLength={120} required value={draft.name} onChange={e => edit({ ...draft, name: e.target.value })} /></label><label>Votre e-mail<input autoComplete="email" type="email" name="email" maxLength={254} required value={draft.email} onChange={e => edit({ ...draft, email: e.target.value })} /></label></div>

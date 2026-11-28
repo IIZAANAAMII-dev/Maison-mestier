@@ -109,31 +109,31 @@
   {
     "slug": "digital",
     "name": "Digital",
-    "summary": "Des sites sur mesure, rapides, pensés pour vendre en B2B.",
+    "summary": "Sites vitrines, boutiques et applications métier sur mesure.",
     "image": "etude",
     "title": "Création de sites, e-commerce et applications · Maison Mestier",
-    "description": "Sites sur mesure reliés à votre CRM et à vos logiciels internes, boutiques en ligne, applications web et mobiles, expériences 3D. Conçus pour générer des demandes et des ventes.",
-    "headline": "Un site qui travaille pendant que vous êtes en rendez-vous.",
-    "intro": "Après un salon, beaucoup de visiteurs passent par votre site avant de vous rappeler. En quelques secondes, il doit confirmer ce qu’ils ont vu sur le stand. Pour une marque de mode, c’est souvent là que se fait la vente. Notre développeur web et notre directrice artistique le conçoivent ensemble, en interne.",
+    "description": "Maison Mestier conçoit et développe des sites vitrines, boutiques en ligne et applications web ou mobiles, avec intégrations CRM, logiciels métier et expériences 3D.",
+    "headline": "Sites, boutiques et applications dessinés autour de vos usages.",
+    "intro": "Un visiteur doit comprendre votre offre et trouver le bon interlocuteur. Un client doit pouvoir commander ou consulter ses documents. Notre directrice artistique et notre développeur web travaillent ensemble, du parcours et du design jusqu’au développement et à la mise en ligne.",
     "chapters": [
       {
-        "title": "Un site dessiné pour vous",
-        "body": "Pas de modèle acheté. Nous concevons le parcours, le design et les animations à partir de votre marque et de vos clients. Ensuite, vous modifiez vous-même vos textes et vos réalisations."
+        "title": "Sites vitrines et boutiques",
+        "body": "Présentation de votre offre, catalogue, devis ou achat en ligne. Nous définissons les parcours, dessinons les interfaces, puis développons les pages, les formulaires et le paiement selon votre besoin. Vous gérez vos textes, produits et réalisations depuis l’administration."
       },
       {
-        "title": "Montrer ce qui ne se photographie pas",
-        "body": "Une machine qu’on fait tourner, un produit qu’on configure, un showroom qu’on visite en ligne. La 3D est utilisée quand elle aide à comprendre ou à choisir."
+        "title": "Applications et espaces clients",
+        "body": "Suivre des commandes, partager des documents ou coordonner un événement. Nous préparons un prototype autour du travail réel, puis développons l’application web ou mobile, les comptes, les droits d’accès et les tableaux de bord."
       },
       {
-        "title": "Un espace réservé à vos clients",
-        "body": "Catalogue confidentiel, espace distributeurs, commandes en ligne entre professionnels. Vos clients trouvent leurs documents et leurs tarifs sans avoir à vous appeler."
+        "title": "Modèles 3D et outils connectés",
+        "body": "Faites tourner une machine, configurez un produit ou faites visiter un showroom. Côté gestion, nous relions le site ou l’application à votre CRM, à votre logiciel de gestion ou à vos outils internes selon les interfaces disponibles."
       },
       {
-        "title": "Solide dans la durée",
-        "body": "Rapide sur mobile, accessible, conforme au RGPD, hébergé de façon sécurisée. Après la mise en ligne, nous pouvons assurer les mises à jour et la maintenance, en option."
+        "title": "Mise en ligne et suivi",
+        "body": "Nous testons les parcours sur mobile et ordinateur, la navigation au clavier et les temps de chargement. Nous préparons la mise en ligne et la prise en main. La maintenance et les évolutions peuvent être prévues ensuite."
       }
     ],
-    "cta": "Envoyez-nous l’adresse de votre site actuel. Nous vous dirons ce qui freine vos visiteurs.",
+    "cta": "Quel parcours voulez-vous améliorer pour vos clients ou votre équipe ?",
     "related": [
       "Visibilité",
       "Identité",

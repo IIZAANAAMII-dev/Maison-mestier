@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { atelierPath, carnetAteliers, path } from "../../../lib/maison";
 import { atelierPlate } from "../../../lib/pavillon";
 import { KeepAtelier } from "../../../components/pavillon/Project";
+import DigitalShowcase from "../../../components/pavillon/DigitalShowcase";
+import { pageMetadata } from "../../../lib/seo";
 import "../../interieur.css";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -14,7 +16,13 @@ async function readAtelier(params: Props["params"]) {
 }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const item = await readAtelier(params);
-  return { title: { absolute: item.title }, description: item.description, openGraph: { title: item.title, description: item.description, url: atelierPath(item.slug), images: [path(atelierPlate[item.slug].file)] } };
+  const plate = atelierPlate[item.slug];
+  return pageMetadata({
+    route: "/ateliers/" + item.slug + "/",
+    title: item.title,
+    description: item.description,
+    image: { url: plate.file, alt: plate.alt },
+  });
 }
 
 export default async function Atelier({ params }: Props) {
@@ -22,6 +30,12 @@ export default async function Atelier({ params }: Props) {
   const plate = atelierPlate[item.slug];
   const next = carnetAteliers[(carnetAteliers.indexOf(item) + 1) % carnetAteliers.length];
   const related = carnetAteliers.filter(a => item.related.includes(a.name));
+  const projectUrl = path("/?atelier=" + item.slug + "#projet");
+  const example = item.slug === "digital"
+    ? { href: "#demonstrations", label: "Voir les démonstrations" }
+    : item.slug === "stands-salons"
+      ? { href: path("/#montage"), label: "Voir le stand en mouvement" }
+      : { href: "#prestations", label: "Découvrir les prestations" };
   return <main id="contenu" tabIndex={-1} className="inside atelier-page">
     <div className="shell">
       <nav className="crumb" aria-label="Fil d’Ariane">
@@ -30,29 +44,34 @@ export default async function Atelier({ params }: Props) {
       <div className="detail-intro">
         <div className="atelier-title">
           <p className="eyebrow rule-label" data-reveal="label">Atelier de la Maison</p>
-          <h1 className="inside-heading" data-reveal="title"><span data-reveal-line>{item.name}</span></h1>
+          <h1 className="inside-heading" data-reveal="title"><span data-reveal-line>{item.slug === "digital" ? "Sites web et applications" : item.name}</span></h1>
         </div>
         <figure className="atelier-figure" data-reveal="figure">
           <div className={"detail-hero work-" + item.slug} style={{ viewTransitionName: "atelier-" + item.slug }}>
-            <img src={path(plate.file)} width="1400" height="1000" alt={plate.alt} fetchPriority="high"/>
+            <img src={path(plate.file)} width="1400" height="1000" alt={plate.alt} fetchPriority="high" decoding="async"/>
           </div>
           <figcaption>{plate.caption}</figcaption>
         </figure>
         <div className="atelier-deck" data-reveal="copy">
           <p className="detail-deck">{item.headline}</p>
-          <KeepAtelier slug={item.slug}/>
+          <div className="atelier-actions">
+            <a className="trace-pill" href={projectUrl}><span className="action-pearl" aria-hidden="true"/>Parler de votre projet</a>
+            <a className="text-link" href={example.href}>{example.label}</a>
+          </div>
         </div>
       </div>
-      <div className="reading">
+      {item.slug === "digital" && <DigitalShowcase/>}
+      <div className="reading atelier-reading" id="prestations">
         <aside aria-label="Dans cet atelier">
           <p className="eyebrow rule-label" data-reveal="label">Dans cet atelier</p>
           <ol>{item.chapters.map((chapter, i) => <li key={chapter.title} data-reveal="row" data-reveal-order={Math.min(i, 3)}>
             <a href={"#geste-" + (i + 1)}>{chapter.title}</a>
           </li>)}</ol>
+          <div className="atelier-save" data-reveal="row"><KeepAtelier slug={item.slug}/></div>
         </aside>
         <div>
           <p className="reading-lead" data-reveal="copy">{item.intro}</p>
-          {item.chapters.map((chapter, i) => <section key={chapter.title} id={"geste-" + (i + 1)}>
+          {item.chapters.map((chapter, i) => <section className="atelier-chapter" key={chapter.title} id={"geste-" + (i + 1)}>
             <h2 data-reveal="title">{chapter.title}</h2>
             <p data-reveal="copy">{chapter.body}</p>
           </section>)}
@@ -66,7 +85,7 @@ export default async function Atelier({ params }: Props) {
       <div className="shell">
         <p className="eyebrow rule-label" data-reveal="label">Parlons projet</p>
         <h2 data-reveal="title">{item.cta}</h2>
-        <a className="pill" href={path("/?atelier=" + item.slug + "#contact")} data-reveal="row">Écrire à la Maison</a>
+        <a className="pill" href={projectUrl} data-reveal="row">Parler de votre projet</a>
       </div>
     </section>
     <nav className="inside-next shell" aria-label="Poursuivre la visite" data-reveal="row">

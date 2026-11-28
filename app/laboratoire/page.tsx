@@ -1,9 +1,13 @@
-import type { Metadata } from "next";
 import { path } from "../../lib/maison";
+import { pageMetadata } from "../../lib/seo";
 import ModelViewer from "../../components/pavillon/ModelViewer";
 import "../interieur.css";
 
-export const metadata: Metadata = { title: "Le Trait — Maquette de stand", description: "Explorez le stand dessiné par le ruban de Maison Mestier, du premier pli au comptoir d’accueil." };
+export const metadata = pageMetadata({
+  route: "/laboratoire/",
+  title: "Le Trait — Maquette 3D de stand · Maison Mestier",
+  description: "Explorez la maquette 3D du stand dessiné par Maison Mestier, du portique en laque vermillon au comptoir d’accueil.",
+});
 export default function Laboratoire() {
   return <main id="contenu" tabIndex={-1} className="inside lab-page">
     <div className="shell">

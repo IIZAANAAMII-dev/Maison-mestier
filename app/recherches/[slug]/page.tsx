@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { atelierPath, carnetAteliers, image, path, studies } from "../../../lib/maison";
 import { studyPath } from "../../../lib/pavillon";
+import { pageMetadata } from "../../../lib/seo";
 import "../../interieur.css";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -13,7 +14,12 @@ async function readStudy(params: Props["params"]) {
 }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const item = await readStudy(params);
-  return { title: item.name + " — Étude de création", description: item.intro, openGraph: { title: item.name + " · Maison Mestier", description: item.intro, url: studyPath(item.slug), images: [image(item.image)] } };
+  return pageMetadata({
+    route: studyPath(item.slug),
+    title: item.name + " — Étude de création · Maison Mestier",
+    description: item.intro,
+    image: { url: image(item.image), alt: item.alt },
+  });
 }
 export default async function Study({ params }: Props) {
   const item = await readStudy(params);

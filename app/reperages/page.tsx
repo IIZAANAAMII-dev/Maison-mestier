@@ -1,8 +1,13 @@
-import type { Metadata } from "next";
 import { path } from "../../lib/maison";
+import { pageMetadata } from "../../lib/seo";
 import "../interieur.css";
 
-export const metadata: Metadata = { title: "Les repérages", description: "Les raccords, gestes et mouvements observés image par image pour concevoir la visite de Maison Mestier." };
+export const metadata = pageMetadata({
+  route: "/reperages/",
+  title: "Les repérages · Maison Mestier",
+  description: "Les raccords, gestes et mouvements observés image par image pour concevoir la visite de Maison Mestier.",
+  index: false,
+});
 const references = [
   {
     name: "Apple Vision Pro", studio: "Apple", site: "https://www.apple.com/apple-vision-pro/",

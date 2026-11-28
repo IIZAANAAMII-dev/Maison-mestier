@@ -29,7 +29,6 @@ export default function Motion() {
       media.add("(prefers-reduced-motion: no-preference)", () => {
         const assembly = stage.querySelector<HTMLVideoElement>(".trace-table .trace-film")!;
         const walk = stage.querySelector<HTMLVideoElement>(".trace-walkthrough")!;
-        const guide = stage.querySelector<HTMLElement>(".trace-aperture-guide")!;
         const parallax = stage.querySelector<HTMLElement>(".trace-parallax")!;
         const player = stage.querySelector<HTMLButtonElement>(".trace-player")!;
         const playerName = player.querySelector<HTMLElement>(".player-name")!;
@@ -67,33 +66,6 @@ export default function Motion() {
         }, { passive: true, signal });
         stage.addEventListener("pointerleave", clearPointer, { signal });
 
-        function frameBox(pose: "aperture" | "table" | "room") {
-          const width = stage!.clientWidth, height = stage!.clientHeight;
-          const mobile = portrait.matches;
-          if (pose === "room") return { x: 0, y: 0, scale: 1, clip: "inset(0px 0px 0px 0px round 0px 0px 0px 0px)" };
-          const open = pose === "table";
-          const x = open ? width * (mobile ? .028 : .277) : guide.offsetLeft;
-          const y = open ? height * (mobile ? .133 : .101) : guide.offsetTop;
-          const w = open ? width * (mobile ? .944 : .687) : guide.offsetWidth;
-          const h = open ? height * (mobile ? .655 : .79) : guide.offsetHeight;
-          const style = getComputedStyle(guide);
-          const radii = [style.borderTopLeftRadius, style.borderTopRightRadius, style.borderBottomRightRadius, style.borderBottomLeftRadius];
-          const pixels = (part: string, axis: number) => part.endsWith("%") ? parseFloat(part) * axis / 100 : parseFloat(part);
-          const corners = open
-            ? mobile ? "30px 54px 32px 32px" : "49px 88px 57px 44px"
-            : radii.map(value => pixels(value.split(" ")[0], w) + "px").join(" ") + " / " +
-              radii.map(value => pixels(value.split(" ")[1] || value.split(" ")[0], h) + "px").join(" ");
-          const aspect = mobile ? .8 : 14 / 11;
-          const sourceWidth = Math.min(width, height * aspect);
-          // The portrait render has blank paper above and below the model.
-          const displayWidth = mobile ? Math.min(w * .98, h / .82) : Math.min(w, h * aspect);
-          return {
-            x: x + w / 2 - width / 2, y: y + h / 2 - height / 2,
-            scale: displayWidth / sourceWidth,
-            clip: "inset(" + y + "px " + (width - x - w) + "px " + (height - y - h) + "px " + x + "px round " + corners + ")",
-          };
-        }
-
         function display(position: number) {
           if (progress <= .16 && position > .16) clearPointer();
           progress = position;
@@ -104,7 +76,7 @@ export default function Motion() {
             chapters.forEach((button, index) => button.setAttribute("aria-pressed", String(index === chapter)));
           }
           loadVisibleFilms();
-          assemblyFilm.show((position - .02) / (.56 - .02));
+          assemblyFilm.show((position - .13) / (.55 - .13));
           walkFilm.show((position - arrivalCut) / (.99 - arrivalCut));
         }
 
@@ -115,7 +87,8 @@ export default function Motion() {
             scrollTrigger: { trigger: cinema, start: "clamp(top 91%)", end: "top 31%", scrub: .18 },
           })
             .fromTo(".trace-lead .trace-label", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .26 }, 0)
-            .fromTo(".trace-lead .trace-line", { opacity: 0, yPercent: 27 }, { opacity: 1, yPercent: 0, stagger: .07, duration: .42 }, .09)
+            .fromTo(".trace-lead .trace-line", { opacity: 0 }, { opacity: 1, stagger: .07, duration: .4 }, .09)
+            .fromTo(".trace-lead .trace-line > *", { yPercent: 108 }, { yPercent: 0, stagger: .065, duration: .44, clearProps: "transform" }, .09)
             .fromTo(".trace-lead .trace-pitch", { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: .3 }, .3);
 
           const cursor = { position: 0 };
@@ -124,31 +97,24 @@ export default function Motion() {
             scrollTrigger: { trigger: cinema, start: "top top", end: "bottom bottom", scrub: .22, invalidateOnRefresh: true },
           });
           scene.to(cursor, { position: 1, duration: 1, onUpdate: () => display(cursor.position) }, 0)
-            .to(".trace-lead .trace-line > *", { yPercent: -116, stagger: .024, duration: .17, ease: "power2.in" }, .085)
+            .to(".trace-approach", { scale: 1.13, duration: .32, ease: "sine.inOut" }, 0)
+            .to(".trace-lead .trace-line", { yPercent: -21, stagger: .024, duration: .17, ease: "power2.in" }, .075)
             .to(".trace-lead", { autoAlpha: 0, y: -10, duration: .17 }, .1)
-            .to(".trace-backlight", { opacity: .36, duration: .29 }, .12)
-            .fromTo(".trace-frame", { clipPath: () => frameBox("aperture").clip }, {
-              clipPath: () => frameBox("table").clip, duration: .32, ease: "power2.inOut",
-            }, .08)
-            .fromTo(".trace-focal", {
-              x: () => frameBox("aperture").x, y: () => frameBox("aperture").y, scale: () => frameBox("aperture").scale,
-            }, {
-              x: () => frameBox("table").x, y: () => frameBox("table").y, scale: () => frameBox("table").scale,
-              duration: .32, ease: "power2.inOut",
-            }, .08)
-            .to(".thread-ink", { opacity: 0, duration: .17 }, .09)
-            .to(".thread-plan", { strokeDashoffset: 0, duration: .28, ease: "power2.inOut" }, .23)
-            .to(".thread-plan", { opacity: 0, duration: .17 }, .49)
-            .to(".trace-fold", { opacity: 1, duration: .22 }, .16)
-            .to(".trace-built", { opacity: 1, duration: .23 }, .34)
+            .to(".trace-workshop", { opacity: .96, duration: .17, ease: "sine.inOut" }, .105)
+            .fromTo(".trace-table", { autoAlpha: 0, scale: .91, yPercent: 5 }, {
+              autoAlpha: 1, scale: 1, yPercent: 0, duration: .22, ease: "power2.out",
+            }, .145)
+            .to(".trace-drawing path", { strokeDashoffset: 0, duration: .23, ease: "sine.inOut" }, .25)
+            .to(".trace-fold", { opacity: 1, duration: .13 }, .235)
+            .to(".trace-built", { opacity: 1, duration: .13 }, .375)
             .fromTo(".cut-fold", { autoAlpha: 0 }, { autoAlpha: 1, duration: .1 }, .265)
             .fromTo(".cut-fold .trace-caption-line > *", { yPercent: 116 }, { yPercent: 0, stagger: .02, duration: .13, ease: "power3.out" }, .265)
-            .to(".cut-fold", { autoAlpha: 0, y: -12, duration: .1 }, .48)
-            .to(".trace-interior", { autoAlpha: 1, duration: .16, ease: "sine.inOut" }, .53)
-            .to(".trace-frame", { clipPath: () => frameBox("room").clip, duration: .21, ease: "power2.inOut" }, .55)
-            .to(".trace-focal", { x: 0, y: 0, scale: 1, duration: .21, ease: "power2.inOut" }, .55)
-            .to(".trace-vignette", { opacity: 1, duration: .16 }, .57)
-            .to(".trace-approach", { scale: 1.11, duration: .32, ease: "sine.inOut" }, .62)
+            .to(".cut-fold", { autoAlpha: 0, y: -12, duration: .1 }, .5)
+            .to(".trace-approach", { scale: 1, duration: .12, ease: "sine.inOut" }, .45)
+            .to(".trace-table", { autoAlpha: 0, scale: 1.09, duration: .18, ease: "sine.inOut" }, .5)
+            .to(".trace-workshop", { opacity: 0, duration: .16, ease: "sine.inOut" }, .565)
+            .to(".trace-travel", { opacity: 1, duration: .085, ease: "sine.inOut" }, arrivalCut)
+            .to(".trace-approach", { scale: 1.09, duration: .28, ease: "sine.inOut" }, arrivalCut)
             .to(".trace-passage", { opacity: 1, duration: .061 }, .9)
             .fromTo(".cut-passage", { autoAlpha: 0 }, { autoAlpha: 1, duration: .13, ease: "power2.out" }, .745)
             .fromTo(".cut-passage .trace-caption-line > *", { yPercent: 115 }, { yPercent: 0, stagger: .024, duration: .17, ease: "power3.out" }, .745)

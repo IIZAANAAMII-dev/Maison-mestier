@@ -18,7 +18,8 @@ export function connectDrawings(main: HTMLElement, animation: typeof gsap, Scrol
   const plate = method?.querySelector<HTMLElement>(".method-plate");
   const view = room?.querySelector<HTMLElement>(".rotonde-view");
   const desk = room?.querySelector<HTMLElement>(".rotonde-desk");
-  if (!opening || !room || !method || !camera || !world || !floor || !drawing || !plate || !view || !desk) return;
+  const heading = room?.querySelector<HTMLElement>(".rotonde-head");
+  if (!opening || !room || !method || !camera || !world || !floor || !drawing || !plate || !view || !desk || !heading) return;
 
   const ease = animation.parseEase("sine.inOut");
   const mix = (from: number, to: number, stage: number) => from + (to - from) * stage;
@@ -52,6 +53,7 @@ export function connectDrawings(main: HTMLElement, animation: typeof gsap, Scrol
       roomInactive = disabled;
       view!.inert = disabled;
       desk!.inert = disabled;
+      heading!.inert = disabled;
     }
 
     set(world!, "--raccord-tilt", mix(roomTilt, -90, cameraLift) + "deg");
@@ -117,6 +119,7 @@ export function connectDrawings(main: HTMLElement, animation: typeof gsap, Scrol
     delete room.dataset.raccordLeaving;
     view.inert = false;
     desk.inert = false;
+    heading.inert = false;
     [world, room, floor, method, drawing].forEach(element => {
       Array.from(element.style).filter(name => /^--(raccord-|room-|method-|portico-trace$)/.test(name))
         .forEach(name => element.style.removeProperty(name));

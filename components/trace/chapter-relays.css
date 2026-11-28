@@ -1,0 +1,50 @@
+.chapter-relay-gate { display: block; height: 1px; pointer-events: none; position: relative; }
+.chapter-relay-gate[data-relais-vers="stand"] { background: #391413; }
+.chapter-relay-gate[data-relais-vers="projection"] { background: #391413; }
+.chapter-relay-gate[data-relais-vers="contact"] { margin-bottom: -1px; }
+
+.chapter-relay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 18;
+  color: #edaa83;
+  pointer-events: none;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.chapter-relay:is([data-relay-tone="offre"], [data-relay-tone="ateliers"]) { color: #a94833; }
+.chapter-relay-trace {
+  stroke: currentColor;
+  stroke-width: 1.45;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.chapter-relay-portico { transform-origin: 0 0; }
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-relais] { position: relative; }
+  [data-relais] > :last-child:is(span, i, em) {
+    transform: translate3d(0, var(--relais-y, 0px), 0);
+  }
+  [data-relais]::before {
+    content: "";
+    position: absolute;
+    top: -.41em;
+    left: 0;
+    width: clamp(1.5rem, 9vw, 7rem);
+    height: 1px;
+    background: currentColor;
+    opacity: var(--relais-ink, 0);
+    transform: scaleX(var(--relais-ink, 0));
+    transform-origin: left;
+    pointer-events: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chapter-relay { display: none; }
+}

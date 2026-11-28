@@ -17,12 +17,21 @@ export default function Cinema() {
   return <section className="trace-cinema" id="montage" aria-labelledby="titre-montage">
       <div className="trace-sticky">
         <div className="trace-stage" suppressHydrationWarning>
-          <div className="trace-backlight" aria-hidden="true"/>
-          <div className="trace-aperture-guide" aria-hidden="true"/>
           <div className="trace-frame">
-            <div className="trace-focal">
-             <div className="trace-parallax">
-              <div className="trace-image-plane trace-table">
+            <div className="trace-parallax">
+              <div className="trace-image-plane trace-interior">
+                <Frame file="approche" className="trace-approach" alt={passageDescription}/>
+                <div className="trace-travel">
+                  <video className="trace-film trace-walkthrough" aria-hidden="true" tabIndex={-1}
+                    muted playsInline preload="none" disablePictureInPicture
+                    data-film={artwork("traversee.mp4")} data-portrait={artwork("traversee-mobile.mp4")}/>
+                  <Frame file="passage" className="trace-passage"/>
+                </div>
+              </div>
+            </div>
+            <div className="trace-workshop" aria-hidden="true"/>
+            <div className="trace-table">
+              <div className="trace-image-plane trace-model">
                 <Frame file="entree" className="trace-poster" alt={entranceDescription}/>
                 <Frame file="pli" className="trace-still trace-fold"/>
                 <Frame file="stand" className="trace-still trace-built"/>
@@ -30,29 +39,16 @@ export default function Cinema() {
                   muted playsInline preload="none" disablePictureInPicture
                   data-film={artwork("montage.mp4")} data-portrait={artwork("montage-mobile.mp4")}/>
               </div>
-              <div className="trace-image-plane trace-interior">
-                <Frame file="approche" className="trace-approach" alt={passageDescription}/>
-                <video className="trace-film trace-walkthrough" aria-hidden="true" tabIndex={-1}
-                  muted playsInline preload="none" disablePictureInPicture
-                  data-film={artwork("traversee.mp4")} data-portrait={artwork("traversee-mobile.mp4")}/>
-                <Frame file="passage" className="trace-passage"/>
-              </div>
-              <svg className="trace-drawing trace-drawing-wide" viewBox="0 0 1120 880" aria-hidden="true">
-                <path className="thread-ink" pathLength="1" d="M1119 43C982 32 926 113 799 109C664 105 541 73 388.54 122.27"/>
-                <path className="thread-plan" pathLength="1" d="M1119 674C1031 679 1029 754 941 779C845 806 752 760 618.78 747.42"/>
+              <svg className="trace-drawing" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                <path pathLength="1" d="M4 59v15m0-7h18M96 27V12H81M81 89h15V74"/>
               </svg>
-              <svg className="trace-drawing trace-drawing-portrait" viewBox="0 0 720 900" aria-hidden="true">
-                <path className="thread-ink" pathLength="1" d="M719 94C638 83 601 166 539 172C424 184 351 195 235.84 233.77"/>
-                <path className="thread-plan" pathLength="1" d="M719 663C667 697 651 750 585 751C503 753 492 669 412.32 646.33"/>
-              </svg>
-             </div>
             </div>
           </div>
           <div className="trace-vignette" aria-hidden="true"/>
           <div className="trace-lead">
             <p className="trace-label"><span className="thread-swatch" aria-hidden="true"/>Étude de stand</p>
-            <h2 id="titre-montage"><span className="trace-line"><b>Entrez dans</b></span>{" "}<span className="trace-line"><i>le stand.</i></span></h2>
-            <p className="trace-pitch">Le stand se monte. La caméra passe sous le portique.</p>
+            <h2 id="titre-montage" data-relais="stand"><span className="trace-line"><b>Entrez dans</b></span>{" "}<span className="trace-line"><i>le stand.</i></span></h2>
+            <p className="trace-pitch">Nous concevons des stands sur mesure pour les salons et les événements.</p>
           </div>
           <div className="trace-captions">
             <div className="trace-caption cut-fold" aria-hidden="true">

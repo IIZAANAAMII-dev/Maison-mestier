@@ -1,0 +1,119 @@
+.offre {
+  position: relative;
+  padding-block: clamp(4.5rem, 10vw, 10rem);
+  color: #281e18;
+  background: #f6efe3;
+}
+.offre-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.24fr) minmax(0, .76fr);
+  align-items: end;
+  gap: clamp(1.5rem, 5vw, 6rem);
+  margin-bottom: clamp(2.75rem, 6vw, 6rem);
+}
+.offre h2, .offre-digitale h2 {
+  margin-block: .23em 0;
+  font: 510 clamp(3.5rem, 7.6vw, 8rem)/.89 var(--sans), sans-serif;
+  letter-spacing: -.076em;
+}
+.offre h2 i, .offre-digitale h2 i {
+  color: #8e3428;
+  font: italic 400 1.13em/.93 var(--serif), Georgia, serif;
+  letter-spacing: -.04em;
+}
+.offre-pitch p, .offre-digitale-copy > p:not(.trace-label) {
+  max-width: 34ch;
+  font-size: clamp(1.05rem, 1.54vw, 1.45rem);
+  line-height: 1.41;
+}
+.offre .trace-pill, .offre-digitale .trace-pill {
+  min-height: 2.8rem;
+  margin-top: 1.3rem;
+}
+.offre-families {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(1rem, 2.45vw, 3.6rem);
+}
+.offre-family {
+  --family-radius: clamp(1.25rem, 3vw, 3.7rem);
+  min-width: 0;
+}
+.offre-family:nth-child(2) { margin-top: clamp(1.6rem, 4.4vw, 5rem); }
+.offre-photo {
+  display: block;
+  aspect-ratio: 1.17;
+  background: #cdb5a0;
+  overflow: hidden;
+  border-radius: var(--family-radius) var(--family-radius) .95rem .95rem;
+  outline-offset: 4px;
+}
+.offre-photo img, .offre-digitale-image img { width: 100%; height: 100%; object-fit: cover; }
+.offre-photo img { transition: transform .68s cubic-bezier(.2,.7,.2,1); }
+.offre-photo:is(:hover, :focus-visible) img { transform: scale(1.055); }
+.offre-family h3 {
+  margin: 1.25rem 0 .5rem;
+  font: 440 clamp(1.8rem, 3.8vw, 4.4rem)/.95 var(--serif), Georgia, serif;
+  letter-spacing: -.044em;
+}
+.offre-family p { max-width: 35ch; color: #56453a; font-size: 1rem; line-height: 1.44; }
+.offre-services { display: flex; flex-wrap: wrap; gap: .35rem .4rem; padding: 0; list-style: none; margin-top: .9rem; }
+.offre-services a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 1px solid #8c6d5780;
+  border-radius: 999px;
+  padding: .48rem .83rem;
+  color: #683328;
+  font-size: .91rem;
+  transition: background .24s, color .24s, scale .24s;
+}
+.offre-services a:is(:hover, :focus-visible) { color: #fff1df; background: #78362a; }
+.offre-services a:active { scale: .97; }
+
+.offre-digitale {
+  background: linear-gradient(120deg, #3a1a16, #57211b 58%, #4e1d17);
+  color: #fff2df;
+  padding-block: clamp(3.45rem, 7.4vw, 8.5rem);
+  border-radius: 0 0 clamp(2rem, 5vw, 5rem) clamp(2rem, 5vw, 5rem);
+  position: relative;
+  z-index: 1;
+}
+.offre-digitale-layout {
+  display: grid;
+  grid-template-columns: minmax(0, .96fr) minmax(0, 1.04fr);
+  gap: clamp(1.8rem, 5vw, 6.5rem);
+  align-items: center;
+}
+.offre-digitale h2 { font-size: clamp(3rem, 5.6vw, 6.8rem); }
+.offre-digitale h2 i { color: #f5bf9d; }
+.offre-digitale .thread-swatch { border-color: #ed9e7c; }
+.offre-digitale-copy > p:not(.trace-label) { margin-top: 1rem; }
+.offre-digitale .trace-pill { background: #fae8cd; color: #3c211b; }
+.offre-digitale .trace-pill:hover { background: #fff6e5; color: #3c211b; }
+.offre-digitale-image {
+  margin: 0;
+  overflow: hidden;
+  aspect-ratio: 1.26;
+  border-radius: clamp(1.6rem, 5vw, 5.8rem) clamp(1.6rem, 5vw, 5.8rem) .85rem .85rem;
+  box-shadow: 0 1rem 3.75rem #1909078c;
+  background: #742e21;
+}
+
+@media (max-width: 760px) {
+  .offre-intro, .offre-families, .offre-digitale-layout { grid-template-columns: minmax(0, 1fr); }
+  .offre h2, .offre-digitale h2 { font-size: clamp(3.05rem, 12vw, 5.6rem); }
+  .offre-families { gap: 2.8rem; }
+  .offre-family:nth-child(2) { margin-top: 0; }
+  .offre-photo { aspect-ratio: 1.36; }
+  .offre-digitale-image { aspect-ratio: 1.35; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .offre-photo img, .offre-services a { transition: none; }
+  .offre-photo:is(:hover, :focus-visible) img { transform: none; }
+}

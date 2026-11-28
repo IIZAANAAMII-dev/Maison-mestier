@@ -11,8 +11,7 @@
   opacity: var(--room-ink, 0);
 }
 .rotonde-floor { opacity: var(--room-floor, 1); }
-.rotonde-floor-centre { opacity: calc(1 - var(--room-ink, 0)); }
-.rotonde-station :is(.rotonde-frame, .rotonde-back, .rotonde-base, .rotonde-post) {
+.rotonde-station :is(.rotonde-frame, .rotonde-back) {
   opacity: var(--room-objects, 1);
 }
 .rotonde-head, .rotonde-desk {
@@ -145,9 +144,9 @@
   font-size: 1rem;
   line-height: 1.45;
 }
+.method-actions { margin-top: clamp(1.15rem, 2.3vw, 2rem); }
 .method-action.trace-pill {
   min-height: 2.8rem;
-  margin-top: clamp(1.15rem, 2.3vw, 2rem);
   border-color: #f1cea491;
   color: var(--method-ink);
   background: transparent;
@@ -172,6 +171,7 @@
   transition: opacity .22s;
 }
 .trace-header[data-lacquer]::after { opacity: 1; }
+.trace-header[data-projection]::after { background: linear-gradient(180deg, #241713f2, #241713bc 57%, #24171300); }
 .trace-header[data-lacquer]:not(:has(details[open]))::before { opacity: 0; }
 .trace-header[data-lacquer] .trace-brand { color: #fff1dd; }
 .trace-header[data-lacquer] .trace-brand img { filter: brightness(0) invert(1); }
@@ -183,6 +183,8 @@
 .trace-header[data-lacquer] .trace-nav a:is(:hover, :focus-visible, [aria-current]) { background: #a3513e; }
 .trace-header[data-lacquer] .header-contact { color: #61241e; background: #f6ddc2; }
 .trace-header[data-lacquer] .header-contact .action-pearl { background: #9a392c; }
+.trace-header[data-projection] .trace-nav { background: #2a1d18eb; }
+.trace-header[data-projection] .trace-nav a:is(:hover, :focus-visible, [aria-current]) { background: #543a2f; }
 
 @media (max-width: 760px) {
   .service-section { padding: clamp(3.85rem, 9svh, 5.25rem) 0 2.75rem; }

@@ -59,6 +59,21 @@ body { background: var(--paper); }
 .project .prepared { border-color: #edc6a765; }
 .project .brief summary:hover,.project .brief summary:active { color: #f6c89d; }
 .project .brief summary span { translate: var(--hand-x,0px) var(--hand-y,0px); }
+.project .brief summary strong {
+  display: inline-flex;
+  min-height: 2.85rem;
+  align-items: center;
+  padding: .62rem 1.15rem;
+  background: #f8e6d2;
+  color: #502019;
+  border-radius: 999px;
+  font: 600 clamp(.87rem, 1.45vw, 1.05rem)/1.15 var(--sans);
+  transition: background .24s, scale .24s;
+}
+.project .brief summary:hover strong { background: #fff5e7; }
+.project .brief summary:active strong { scale: .97; }
+.method-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .9rem 1.3rem; }
+.method-contact { display: inline-flex; min-height: 2.75rem; align-items: center; text-decoration: underline; text-underline-offset: .24em; }
 .trace-footer { background: #291b16; color: var(--paper); padding: clamp(3.7rem,7vw,7.5rem) 0 1.4rem; }
 .foot-sign { display: flex; align-items: center; width: max-content; max-width: 100%; gap: .24em; font: 450 clamp(2.8rem,8.2vw,10rem)/.88 var(--serif); letter-spacing: -.084em; }
 .foot-sign img { width: .62em; height: auto; }

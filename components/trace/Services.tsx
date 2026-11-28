@@ -28,7 +28,10 @@ export default function Services() {
           <p>{phase.description}</p>
         </li>)}
       </ol>
-      <a className="trace-pill method-action" href="#montage" data-reveal="copy"><span className="action-pearl" aria-hidden="true"/>Entrer dans le stand</a>
+      <div className="method-actions" data-reveal="copy">
+        <a className="trace-pill method-action" href="#montage"><span className="action-pearl" aria-hidden="true"/>Entrer dans le stand</a>
+        <a className="method-contact" href="#projet">Parler de votre projet</a>
+      </div>
     </div>
   </section>;
 }

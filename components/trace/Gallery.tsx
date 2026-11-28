@@ -14,52 +14,30 @@ type Point = { x: number; y: number };
 type Edge = { top: Point; bottom: Point };
 type Camera = { width: number; height: number; pitch: number; filmHeight: number; x: number; y: number; bend: number };
 
-function filmTexture(photo: HTMLImageElement, width: number, height: number) {
+function printTexture(photo: HTMLImageElement, width: number, height: number) {
   const texture = document.createElement("canvas");
   texture.width = width;
   texture.height = height;
   const ctx = texture.getContext("2d")!;
-  const rail = height * .076;
-  const inset = width * .012;
+  const inset = Math.max(2, width * .004);
+  const aperture = [height * .05, height * .115, height * .055, height * .065];
   const pictureWidth = width - inset * 2;
-  const pictureHeight = height - rail * 2;
-  const stock = ctx.createLinearGradient(0, 0, 0, height);
-  stock.addColorStop(0, "#655242");
-  stock.addColorStop(.022, "#403930");
-  stock.addColorStop(.15, "#292721");
-  stock.addColorStop(.86, "#292721");
-  stock.addColorStop(.985, "#3c342a");
-  stock.addColorStop(1, "#8d755f");
-  ctx.fillStyle = stock;
+  const pictureHeight = height - inset * 2;
+  const facet = ctx.createLinearGradient(0, 0, width, height);
+  facet.addColorStop(0, "#b79c86");
+  facet.addColorStop(.46, "#584237");
+  facet.addColorStop(1, "#86675a");
+  ctx.fillStyle = facet;
   ctx.beginPath();
-  ctx.roundRect(0, 0, width, height, Math.max(3, width * .008));
+  ctx.roundRect(0, 0, width, height, aperture);
   ctx.fill();
-  ctx.save();
   ctx.beginPath();
-  ctx.roundRect(inset, rail, pictureWidth, pictureHeight, Math.min(28, width * .034));
+  ctx.roundRect(inset, inset, pictureWidth, pictureHeight, aperture.map(radius => radius - inset));
   ctx.clip();
   const scale = Math.max(pictureWidth / photo.naturalWidth, pictureHeight / photo.naturalHeight);
   const dw = photo.naturalWidth * scale;
   const dh = photo.naturalHeight * scale;
   ctx.drawImage(photo, (width - dw) / 2, (height - dh) / 2, dw, dh);
-  ctx.restore();
-  const holes = 14;
-  const spacing = width / holes;
-  const holeWidth = spacing * .40;
-  const holeHeight = rail * .32;
-  for (let i = 0; i < holes; i++) {
-    const x = (i + .5) * spacing - holeWidth / 2;
-    for (const y of [(rail - holeHeight) / 2, height - (rail + holeHeight) / 2]) {
-      ctx.fillStyle = "#7c6d5c";
-      ctx.beginPath();
-      ctx.roundRect(x, y + 1.2, holeWidth, holeHeight, holeHeight * .25);
-      ctx.fill();
-      ctx.fillStyle = "#181916";
-      ctx.beginPath();
-      ctx.roundRect(x, y, holeWidth, holeHeight, holeHeight * .25);
-      ctx.fill();
-    }
-  }
   return texture;
 }
 
@@ -68,12 +46,13 @@ function edgeAt(t: number, camera: Camera): Edge {
   const { width, height, pitch, filmHeight, x, y, bend } = camera;
   const angle = t * .78;
   const turn = 1 - Math.cos(angle);
-  const depth = width * .76 * turn;
+  const depth = width * .67 * turn;
   const zoom = (width * 1.05) / (width * 1.05 + depth);
-  const curveX = (pitch / .78) * (.52 * Math.sin(angle) + .48 * angle);
-  const middleX = width / 2 + (curveX + x * 8 * turn) * zoom;
-  const middleY = height * .51 - height * .045 * turn + (height * .038 + y * 6 + bend * 2) * Math.sin(angle);
-  const twist = (Math.sin(angle) * .145 + bend * .018 * Math.cos(angle)) * filmHeight * zoom;
+  const curveX = (pitch / .78) * (.45 * Math.sin(angle) + .55 * angle);
+  const middleX = width / 2 + (curveX + x * (3 + 8 * turn)) * zoom;
+  const middleY = height * .5 - height * .018 * turn + y * 2.8 * zoom
+    + (height * .042 + y * 8 + bend * 2) * Math.sin(angle);
+  const twist = (Math.sin(angle) * .09 + bend * .014 * Math.cos(angle)) * filmHeight * zoom;
   const radius = filmHeight * .5 * zoom;
   return {
     top: { x: middleX - twist, y: middleY - radius },
@@ -121,8 +100,9 @@ function drawPlate(ctx: CanvasRenderingContext2D, texture: HTMLCanvasElement, dr
   const shade = ctx.createLinearGradient(start.x, 0, Math.max(start.x + 1, last.x), 0);
   for (const at of [0, .5, 1]) {
     const distance = Math.abs(offset + at - .5);
-    shade.addColorStop(at, "rgba(15,16,13," + Math.min(.68, .28 * distance ** 1.55) + ")");
+    shade.addColorStop(at, "rgba(16,10,9," + Math.min(.72, .33 * distance ** 1.6) + ")");
   }
+  ctx.globalCompositeOperation = "source-atop";
   ctx.fillStyle = shade;
   ctx.fill();
   ctx.restore();
@@ -188,11 +168,11 @@ export default function Gallery() {
       }
     }
     function filmHeight() {
-      return Math.min(height * .89, pitch / (width < 640 ? 1.28 : 1.56));
+      return Math.min(height * .926, pitch / (width < 640 ? 1.13 : 1.43));
     }
     function textures(images: HTMLImageElement[]) {
       const w = width <= 700 ? 620 : 940;
-      return images.map(photo => filmTexture(photo, w, Math.round(w * filmHeight() / (pitch * .975))));
+      return images.map(photo => printTexture(photo, w, Math.round(w * filmHeight() / (pitch * .91))));
     }
     function fitLink(link: HTMLAnchorElement, edges: Edge[]) {
       const outline = edges.filter((_, index) => index % 3 === 0 || index === edges.length - 1);
@@ -228,12 +208,12 @@ export default function Gallery() {
       ctx.clearRect(0, 0, width, height);
       const camera = { width, height, pitch, filmHeight: filmHeight(), x: eyeX, y: eyeY, bend };
       const steps = width < 640 ? 18 : 34;
-      // The closest frame is painted last where the tail of the film curls behind it.
+      // Paint the closest photograph last so it stays in front of its neighbours.
       const order = [focus - 2, focus + 2, focus - 1, focus + 1, focus];
       for (const filmIndex of order) {
         const offset = filmIndex - position;
         const index = wrap(filmIndex);
-        const edges = Array.from({ length: steps + 1 }, (_, step) => edgeAt(offset + (step / steps - .5) * .978, camera));
+        const edges = Array.from({ length: steps + 1 }, (_, step) => edgeAt(offset + (step / steps - .5) * .91, camera));
         if (edges[steps].top.x <= 0 || edges[0].top.x >= width || edges[steps].top.x < edges[0].top.x) continue;
         drawPlate(ctx, photos[index], drawings[index], blend, edges, density, offset);
         if (Math.abs(filmIndex - focus) <= 1) fitLink(hits[index], edges);
@@ -248,7 +228,7 @@ export default function Gallery() {
       if (!w || !h || (w === width && h === height)) return;
       const position = pitch && optical ? viewport.scrollLeft / pitch : total + lastIndex;
       width = w; height = h;
-      pitch = Math.min(840, width * (width < 640 ? .83 : .565));
+      pitch = Math.min(1040, width * (width < 640 ? .94 : .78));
       density = Math.min(devicePixelRatio || 1, width < 640 ? 1.65 : 1.5);
       panel.width = Math.round(width * density);
       panel.height = Math.round(height * density);
@@ -481,7 +461,7 @@ export default function Gallery() {
     <div className="projection-head">
       <div className="projection-intro">
         <p className="projection-label" data-reveal="label"><span aria-hidden="true" /> Les études de création</p>
-        <h2 id="projection-title" data-reveal="title"><span data-reveal-line>En <i>projection.</i></span></h2>
+        <h2 id="projection-title" data-reveal="title" data-relais="projection"><span data-reveal-line>En <i>projection.</i></span></h2>
       </div>
       <div className="projection-side"><p data-reveal="copy">Un stand, une identité imprimée, une scénographie. Trois études pour voir comment naît un projet.</p>
         {hydrated && <div className="projection-switch" role="group" aria-label="Vue des études">
@@ -490,38 +470,43 @@ export default function Gallery() {
         </div>}
       </div>
     </div>
-    <div className="projection-stage" onKeyDown={e => {
-      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
-      if (e.key === "ArrowLeft" || e.key === "ArrowRight") { e.preventDefault(); controls.current?.to(e.key === "ArrowLeft" ? -1 : 1, true, e.target instanceof HTMLAnchorElement); }
-      if (e.key === "Home" || e.key === "End") { e.preventDefault(); controls.current?.to(e.key === "Home" ? 0 : total - 1, false, e.target instanceof HTMLAnchorElement); }
-    }}>
-      <div className="projection-fallback" ref={fallback} aria-hidden={projected || undefined} aria-label="Parcourir les études">
-        {plates.map((plate, i) => <a href={studyPath(plate.slug)} className="projection-fallback-card" key={plate.slug} tabIndex={projected ? -1 : undefined}>
-          <img src={source(i, view === "dessin")} alt={view === "dessin" ? "Relevé dessiné de l’étude " + plate.name : studies[i].alt} style={{ viewTransitionName: projected ? undefined : "etude-" + plate.slug }} loading="lazy" draggable={false} width="1000" height="750" />
-          <span>{plate.name}</span></a>)}
-      </div>
-      <div ref={rail} className="projection-viewport" aria-hidden={!projected || undefined} tabIndex={projected ? 0 : -1} role="region" aria-label="Pellicule horizontale des études, utiliser les flèches gauche et droite">
-        <div className="projection-track">
-          {Array.from({ length: total * 3 }, (_, index) => <i key={index} className="projection-stop" aria-hidden="true" style={{ left: 'calc(var(--projection-pitch) * ' + index + ')' }} />)}
-          <div className="projection-window">
-            <canvas ref={canvas} aria-hidden="true" />
-            {plates.map((plate, i) => <a key={plate.slug} className="projection-hit" href={studyPath(plate.slug)} tabIndex={projected && active === i ? 0 : -1} aria-label={"Ouvrir l’étude " + plate.name} draggable={false} />)}
+    <div className="projection-screen">
+      <div className="projection-stage" data-reveal="figure" onKeyDown={e => {
+        if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+        if (e.key === "ArrowLeft" || e.key === "ArrowRight") { e.preventDefault(); controls.current?.to(e.key === "ArrowLeft" ? -1 : 1, true, e.target instanceof HTMLAnchorElement); }
+        if (e.key === "Home" || e.key === "End") { e.preventDefault(); controls.current?.to(e.key === "Home" ? 0 : total - 1, false, e.target instanceof HTMLAnchorElement); }
+      }}>
+        <div className="projection-fallback" ref={fallback} aria-hidden={projected || undefined} aria-label="Parcourir les études">
+          {plates.map((plate, i) => <a href={studyPath(plate.slug)} className="projection-fallback-card" key={plate.slug} tabIndex={projected ? -1 : undefined}>
+            <img src={source(i, view === "dessin")} alt={view === "dessin" ? "Relevé dessiné de l’étude " + plate.name : studies[i].alt} style={{ viewTransitionName: projected ? undefined : "etude-" + plate.slug }} loading="lazy" draggable={false} width="1000" height="750" />
+            <span>{plate.name}</span></a>)}
+        </div>
+        <div ref={rail} className="projection-viewport" aria-hidden={!projected || undefined} tabIndex={projected ? 0 : -1} role="region" aria-label="Parcourir les études avec les flèches gauche et droite">
+          <div className="projection-track">
+            {Array.from({ length: total * 3 }, (_, index) => <i key={index} className="projection-stop" aria-hidden="true" style={{ left: 'calc(var(--projection-pitch) * ' + index + ')' }} />)}
+            <div className="projection-window">
+              <canvas ref={canvas} aria-hidden="true" />
+              {plates.map((plate, i) => <a key={plate.slug} className="projection-hit" href={studyPath(plate.slug)} tabIndex={projected && active === i ? 0 : -1} aria-label={"Ouvrir l’étude " + plate.name} draggable={false} />)}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div className="projection-caption" hidden={!hydrated}>
-      <div className="projection-selected" data-direction={direction} aria-live="polite" aria-atomic="true">
-        <span className="projection-count"><span key={active}>{String(active + 1).padStart(2, "0")}</span><b> / {String(total).padStart(2, "0")}</b></span>
-        <div className="projection-name">
-          <span className="projection-category"><span key={active}>{plates[active].category}</span></span>
-          <h3><a href={studyPath(plates[active].slug)}><span key={active}>{plates[active].name}</span></a></h3>
+      <div className="projection-caption" hidden={!hydrated}>
+        <div className="projection-selected" data-direction={direction} aria-live="polite" aria-atomic="true">
+          <span className="projection-count"><span key={active}>{String(active + 1).padStart(2, "0")}</span><b> / {String(total).padStart(2, "0")}</b></span>
+          <div className="projection-name">
+            <span className="projection-category"><span key={active}>{plates[active].category}</span></span>
+            <h3><a href={studyPath(plates[active].slug)}>
+              <span key={active}>{plates[active].name}</span>
+              <svg aria-hidden="true" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2.5 10.5 10.5 2.5m0 0H3.25m7.25 0v7.25" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </a></h3>
+          </div>
         </div>
+        {hydrated && <div className="projection-controls">
+          <button type="button" aria-label="Étude précédente" onClick={() => controls.current?.to(-1, true)}><Chevrons /></button>
+          <button type="button" aria-label="Étude suivante" onClick={() => controls.current?.to(1, true)}><Chevrons next /></button>
+        </div>}
       </div>
-      {hydrated && <div className="projection-controls">
-        <button type="button" aria-label="Étude précédente" onClick={() => controls.current?.to(-1, true)}><Chevrons /></button>
-        <button type="button" aria-label="Étude suivante" onClick={() => controls.current?.to(1, true)}><Chevrons next /></button>
-      </div>}
     </div>
   </section>;
 }

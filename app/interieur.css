@@ -1,16 +1,76 @@
+.atelier-page {
+  background: radial-gradient(ellipse at 90% 3%, #ebd7be 0%, #f5ebdb 24rem, transparent 48rem), #f8f1e4;
+}
+.atelier-page .crumb { margin-bottom: clamp(1.35rem, 4vw, 4.4rem); }
 .atelier-page .detail-intro {
-  grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+  grid-template-columns: minmax(0, .93fr) minmax(0, 1.07fr);
   grid-template-areas: "titre image" "chapeau image";
-  row-gap: 1rem;
+  row-gap: clamp(.9rem, 1.65vw, 1.8rem);
 }
 .atelier-title { grid-area: titre; align-self: end; }
 .atelier-figure { grid-area: image; }
 .atelier-deck { grid-area: chapeau; align-self: start; }
-.atelier-title .inside-heading { margin-bottom: 0; }
+.atelier-title .inside-heading {
+  margin-bottom: 0;
+  font-size: clamp(3.7rem, 7.1vw, 8.4rem);
+  max-width: 10ch;
+}
+.atelier-page .atelier-figure .detail-hero {
+  aspect-ratio: 1.12;
+  border-radius: clamp(2rem, 7.5vw, 8.2rem) clamp(2rem, 7.5vw, 8.2rem) clamp(1rem, 2vw, 2.2rem) clamp(1rem, 2vw, 2.2rem);
+  box-shadow: 0 1.6rem 4rem #3e241e23;
+}
+.atelier-figure figcaption { color: #693b2a; font-size: .9rem; }
+.atelier-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1.15rem; margin-top: 1.35rem; }
+.atelier-actions .trace-pill { min-height: 2.85rem; background: #692e25; }
+.atelier-actions .trace-pill:hover { background: #41201c; }
+.atelier-page .atelier-actions .text-link { margin-top: 0; white-space: normal; font-size: .94rem; }
 .inside .inside-heading { line-height: .94; text-wrap: balance; }
 .inside .detail-deck { text-wrap: pretty; }
-.atelier-page .inside-invite { background: #6e2b24; color: #fff3e4; }
+.atelier-page .inside-invite {
+  background: radial-gradient(ellipse at 85% -10%, #965440, transparent 70%), #62271f;
+  color: #fff3e4;
+}
 .atelier-page .inside-invite h2 { text-wrap: balance; }
+.atelier-reading { grid-template-columns: minmax(0, .57fr) minmax(0, 1.43fr); }
+.atelier-reading aside {
+  padding: clamp(1rem, 2.25vw, 2.2rem);
+  background: #eee3d0;
+  border: 1px solid #b5977947;
+  border-radius: clamp(1.15rem, 2.85vw, 2.85rem);
+}
+.atelier-reading aside .eyebrow { color: #6f3529; }
+.atelier-reading aside li a {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  line-height: 1.25;
+}
+.atelier-reading aside li a:is(:hover, :focus-visible) { color: #862f23; text-decoration: underline; text-underline-offset: .22em; }
+.atelier-save { margin-top: .8rem; }
+.atelier-save :is(button,a) { min-height: 2.75rem; font-size: .87rem; text-align: left; }
+.atelier-reading > div > .reading-lead { color: #48291f; }
+.atelier-reading section.atelier-chapter {
+  position: relative;
+  padding: clamp(1.4rem, 3.15vw, 3.05rem) 0;
+}
+.atelier-chapter::before {
+  content: "";
+  position: absolute;
+  inset: -1px auto auto 0;
+  width: clamp(1.7rem, 7vw, 6rem);
+  height: 2px;
+  background: #9a4330;
+  opacity: .48;
+  transition: width .45s cubic-bezier(.2,.7,.2,1), opacity .32s;
+}
+.atelier-chapter:is(:hover, :target)::before { width: 100%; opacity: .85; }
+.atelier-reading .atelier-chapter h2 {
+  font: 430 clamp(2rem, 3.7vw, 4.15rem)/.99 var(--serif), Georgia, serif;
+  letter-spacing: -.04em;
+  text-wrap: balance;
+}
+.atelier-reading .atelier-chapter p { color: #584139; }
 .inside .inside-next > a { min-width: 0; }
 .inside .inside-next i { display: inline-block; }
 .research-page .reference-list h2 { overflow-wrap: anywhere; text-wrap: balance; }
@@ -38,10 +98,14 @@
   .inside .detail-deck { font-size: 1.15rem; line-height: 1.42; }
   .atelier-page .detail-intro {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "titre" "image" "chapeau";
+    grid-template-areas: "titre" "chapeau" "image";
     gap: 1.15rem;
   }
-  .atelier-page .detail-hero { aspect-ratio: 1.20; }
+  .atelier-title .inside-heading { font-size: clamp(3.3rem, 12.2vw, 6rem); }
+  .atelier-page .atelier-figure .detail-hero { aspect-ratio: 1.25; }
+  .atelier-actions { margin-top: .9rem; }
+  .atelier-reading { grid-template-columns: minmax(0, 1fr); gap: 1.85rem; }
+  .atelier-reading aside { position: static; }
   .atelier-page .detail-intro .text-link { margin-top: .65rem; }
   .inside .text-link {
     display: inline-flex;
@@ -118,4 +182,8 @@
 @media (prefers-reduced-motion: no-preference) {
   .inside .inside-next i { transition: translate .23s ease-out; }
   .inside .inside-next a:last-child:is(:hover, :focus-visible) i { translate: -.17em 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atelier-chapter::before { transition: none; }
 }
